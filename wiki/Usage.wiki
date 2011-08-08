@@ -1,3 +1,7 @@
+# events-on-fire usage
+
+[http://code.google.com/p/events-on-fire/wiki/Overview Back to Overview]
+
 = Usage =
 
 == Include the library ==
