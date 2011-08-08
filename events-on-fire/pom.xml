@@ -5,9 +5,11 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.google.code.eventsonfire</groupId>
-	<artifactId>eventsonfire</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<groupId>com.googlecode.events-on-fire</groupId>
+	<artifactId>events-on-fire</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	
 	<name>Events On Fire</name>
 	<description>
 		The repeated implementation of the listener pattern for Java is a boring task which 
@@ -16,7 +18,9 @@
 		without the need for any configuration and without the danger of memory leaks.
 	</description>
 
-	<url>http://http://code.google.com/p/events-on-fire/</url>
+	<url>http://events-on-fire.googlecode.com</url>
+
+	<inceptionYear>2011</inceptionYear>
 
 	<licenses>
 		<license>
@@ -24,6 +28,30 @@
 			<url>http://www.opensource.org/licenses/mit-license.php</url>
 		</license>
 	</licenses>
+
+	<issueManagement>
+		<system>Google Project Hosting</system>
+		<url>http://code.google.com/p/events-on-fire/issues/list</url>
+	</issueManagement>
+
+	<scm>
+		<connection>scm:svn:http://events-on-fire.googlecode.com/svn</connection>
+		<developerConnection>scm:svn:https://events-on-fire.googlecode.com/svn</developerConnection>
+		<url>http://code.google.com/p/events-on-fire/source/browse</url>
+	</scm>
+
+	<developers>
+		<developer>
+			<id>manfred.hantschel</id>
+			<name>Manfred Hantschel</name>
+			<organization>Porsche Informatik</organization>
+			<organizationUrl>http://www.porscheinformatik.com</organizationUrl>
+			<roles>
+				<role>Project Manager</role>
+				<role>Architect</role>
+			</roles>
+		</developer>
+	</developers>
 
 	<dependencies>
 		<dependency>
@@ -34,8 +62,6 @@
 		</dependency>
 	</dependencies>
 
-	<packaging>jar</packaging>
-
 	<build>
 		<defaultGoal>package</defaultGoal>
 
@@ -43,7 +69,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.0</version>
+				<version>2.3.2</version>
 				<configuration>
 					<source>1.5</source>
 					<target>1.5</target>
@@ -75,29 +101,22 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.7.1</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.3</version>
+				<configuration>
+				   <suppressionsLocation>${basedir}/src/checkstyle/checkstyle-supressions.xml</suppressionsLocation>
+				</configuration>
+			</plugin>
 		</plugins>
-
 	</build>
-
-	<issueManagement>
-		<system>Google Project Hosting</system>
-		<url>http://code.google.com/p/events-on-fire/issues/list</url>
-	</issueManagement>
-
-	<developers>
-		<developer>
-			<id>ham</id>
-			<name>Manfred Hantschel</name>
-			<roles>
-				<role>Project Manager</role>
-				<role>Architect</role>
-			</roles>
-		</developer>
-	</developers>
-
-	<scm>
-		<connection>scm:svn:http://events-on-fire.googlecode.com/svn</connection>
-		<developerConnection>scm:svn:https://events-on-fire.googlecode.com/svn</developerConnection>
-	</scm>
-
+	
 </project>
