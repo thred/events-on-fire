@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
 /**
  * Tests the {@link Producer} class
  * 
- * @author Manfred HANTSCHEL
+ * @author Manfred Hantschel
  */
 @Test
 public class ProducerUnitTest

@@ -22,7 +22,7 @@ package com.google.code.eventsonfire;
 /**
  * An action within the {@link Events} object. All references are hard ones, because this object should not live long.
  * 
- * @author Manfred HANTSCHEL
+ * @author Manfred Hantschel
  */
 class Action
 {

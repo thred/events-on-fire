@@ -30,6 +30,22 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import com.google.code.eventsonfire.Action.Type;
 
+/**
+ * <p>
+ * The base class for events-on-fire.
+ * </p>
+ * <p>
+ * For a detailed usage description see <a href="http://code.google.com/p/events-on-fire/wiki/Usage">Usage on Google
+ * Project Hosting</a>.
+ * </p>
+ * <p>
+ * All references in this class are weak, unless otherwise noted. Any producer or consumer will get garbage collected,
+ * if there is no reference to it outside this class. All checks will be made on identity instead of equality.
+ * </p>
+ * 
+ * @see <a href="http://code.google.com/p/events-on-fire/wiki/Usage" target="_blank">Usage on Google Project Hosting</a>
+ * @author Manfred Hantschel
+ */
 public class Events implements Runnable
 {
 
@@ -56,12 +72,17 @@ public class Events implements Runnable
 	}
 
 	/**
-	 * Binds the specified consumer to the specified producer
+	 * Binds the specified consumer / listener to the specified producer. The consumer must contain at least one
+	 * <code>public void handleEvent(* event)</code> method, otherwise an exception is thrown. Both, the producer and
+	 * the consumer must have references outside of the Events class. All references within the Events class are weak,
+	 * so the objects and the binding gets garbage collected if not referenced. Does nothing if the objects are already
+	 * bonded.
 	 * 
-	 * @param producer the producer
-	 * @param consumer the consumer / the listener
+	 * @param producer the producer, must not be null
+	 * @param consumer the consumer / the listener, must not be null
+	 * @throws IllegalArgumentException if the producer or the consumer is null or the consumer cannot handle events
 	 */
-	public static void bind(final Object producer, final Object consumer)
+	public static void bind(final Object producer, final Object consumer) throws IllegalArgumentException
 	{
 		if (producer == null)
 		{
@@ -77,12 +98,13 @@ public class Events implements Runnable
 	}
 
 	/**
-	 * Unbinds the specified consumer from the specified producer
+	 * Unbinds the specified consumer from the specified producer. Does nothing if the objects are not bonded.
 	 * 
-	 * @param producer the producer
-	 * @param consumer the consumer / the listener
+	 * @param producer the producer, must not be null
+	 * @param consumer the consumer / the listener, must not be null
+	 * @throws IllegalArgumentException if the producer or the consumer is null
 	 */
-	public static void unbind(final Object producer, final Object consumer)
+	public static void unbind(final Object producer, final Object consumer) throws IllegalArgumentException
 	{
 		if (producer == null)
 		{
@@ -98,12 +120,15 @@ public class Events implements Runnable
 	}
 
 	/**
-	 * Fires the specified event from the specified producer
+	 * Fires the specified event from the specified producer. Calls the appropriate
+	 * <code>public void handleEvent(* event)</code> method of all consumers. Does nothing, if events are disabled for
+	 * the current thread. Does nothing, if there are no consumers bonded to the producer.
 	 * 
-	 * @param producer the producer
-	 * @param event the event
+	 * @param producer the producer, must not be null
+	 * @param event the event, must not be null
+	 * @throws IllegalArgumentException if the producer or the event is null
 	 */
-	public static void fire(final Object producer, final Object event)
+	public static void fire(final Object producer, final Object event) throws IllegalArgumentException
 	{
 		if (producer == null)
 		{
@@ -142,7 +167,7 @@ public class Events implements Runnable
 	}
 
 	/**
-	 * Returns true if events from the current thread are disabled
+	 * Returns true if events from the current thread are disabled.
 	 * 
 	 * @return true if disabled
 	 */
@@ -156,9 +181,10 @@ public class Events implements Runnable
 	/**
 	 * Enables events from the current thread. It is wise to place call to this method within a finally block. Multiple
 	 * calls to disable, increase a counter and it is necessary to call enable as often as you have called disable.
-	 * Throws an {@link IllegalStateException} if events from the current thread are not disabled.
+	 * 
+	 * @throws IllegalStateException if events from the current thread are not disabled
 	 */
-	public static void enable()
+	public static void enable() throws IllegalStateException
 	{
 		final Integer count = DISABLED.get();
 
@@ -195,39 +221,44 @@ public class Events implements Runnable
 	}
 
 	/**
-	 * Adds a bind to the pending list of binds
+	 * Adds a bind action to the pending actions
 	 * 
-	 * @param producer the producer
-	 * @param consumer the consumer
+	 * @param producer the producer, must not be null
+	 * @param consumer the consumer, must not be null
+	 * @throws IllegalArgumentException if the producer or the consumer is null
 	 */
-	private void enqueueBind(final Object producer, final Object consumer)
+	private void enqueueBind(final Object producer, final Object consumer) throws IllegalArgumentException
 	{
 		pendingActions.add(new Action(Type.BIND, producer, consumer));
 	}
 
 	/**
-	 * Adds an unbind to the pending list of unbinds
+	 * Adds an unbind action to the pending actions
 	 * 
-	 * @param producer the producer
-	 * @param consumer the consumer
+	 * @param producer the producer, must not be null
+	 * @param consumer the consumer, must not be null
+	 * @throws IllegalArgumentException if the producer or the consumer is null
 	 */
-	private void enqueueUnbind(final Object producer, final Object consumer)
+	private void enqueueUnbind(final Object producer, final Object consumer) throws IllegalArgumentException
 	{
 		pendingActions.add(new Action(Type.UNBIND, producer, consumer));
 	}
 
 	/**
-	 * Enqueues an event
+	 * Adds a fire action to the pending actions
 	 * 
-	 * @param producer the producer
-	 * @param event the event
+	 * @param producer the producer, must not be null
+	 * @param event the event, must not be null
+	 * @throws IllegalArgumentException if the producer or the consumer is null
 	 */
-	private void enqueueEvent(final Object producer, final Object event)
+	private void enqueueEvent(final Object producer, final Object event) throws IllegalArgumentException
 	{
 		pendingActions.add(new Action(Type.FIRE, producer, event));
 	}
 
 	/**
+	 * Worker for pending actions. There is no need to call this method.
+	 * 
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run()
@@ -275,10 +306,17 @@ public class Events implements Runnable
 		}
 	}
 
+	/**
+	 * Binds a consumer to a producer
+	 * 
+	 * @param action the action
+	 */
 	private void executeBindAction(final Action action)
 	{
-		final Reference<Object> producerReference = new WeakIdentityReference<Object>(action.getProducer(), referenceQueue);
-		final Reference<Object> consumerReference = new WeakIdentityReference<Object>(action.getParameter(), referenceQueue);
+		final Reference<Object> producerReference =
+		    new WeakIdentityReference<Object>(action.getProducer(), referenceQueue);
+		final Reference<Object> consumerReference =
+		    new WeakIdentityReference<Object>(action.getParameter(), referenceQueue);
 
 		Producer producer = producers.get(producerReference);
 
@@ -292,10 +330,17 @@ public class Events implements Runnable
 		producer.add(consumerReference);
 	}
 
+	/**
+	 * Unbinds a consumer form a producer
+	 * 
+	 * @param action the action
+	 */
 	private void executeUnbindAction(final Action action)
 	{
-		final Reference<Object> producerReference = new WeakIdentityReference<Object>(action.getProducer(), referenceQueue);
-		final Reference<Object> consumerReference = new WeakIdentityReference<Object>(action.getParameter(), referenceQueue);
+		final Reference<Object> producerReference =
+		    new WeakIdentityReference<Object>(action.getProducer(), referenceQueue);
+		final Reference<Object> consumerReference =
+		    new WeakIdentityReference<Object>(action.getParameter(), referenceQueue);
 		final Producer producer = producers.get(producerReference);
 
 		if (producer == null)
@@ -306,9 +351,15 @@ public class Events implements Runnable
 		producer.remove(consumerReference);
 	}
 
+	/**
+	 * Fires an event from the producer
+	 * 
+	 * @param action the action
+	 */
 	private void executeFireAction(final Action action)
 	{
-		final Reference<Object> producerReference = new WeakIdentityReference<Object>(action.getProducer(), referenceQueue);
+		final Reference<Object> producerReference =
+		    new WeakIdentityReference<Object>(action.getProducer(), referenceQueue);
 		final Producer producer = producers.get(producerReference);
 
 		if (producer != null)

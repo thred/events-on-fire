@@ -26,7 +26,7 @@ import com.google.code.eventsonfire.Action.Type;
 /**
  * Unit test for the {@link Action} class
  * 
- * @author Manfred HANTSCHEL
+ * @author Manfred Hantschel
  */
 @Test
 public class ActionUnitTest
