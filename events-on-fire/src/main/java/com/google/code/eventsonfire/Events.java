@@ -94,7 +94,7 @@ public class Events implements Runnable
 			throw new IllegalArgumentException("Consumer is null");
 		}
 
-		INSTANCE.enqueueBind(producer, consumer);
+		INSTANCE.enqueue(new Action(Type.BIND, producer, consumer));
 	}
 
 	/**
@@ -116,7 +116,7 @@ public class Events implements Runnable
 			throw new IllegalArgumentException("Consumer is null");
 		}
 
-		INSTANCE.enqueueUnbind(producer, consumer);
+		INSTANCE.enqueue(new Action(Type.UNBIND, producer, consumer));
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class Events implements Runnable
 			return;
 		}
 
-		INSTANCE.enqueueEvent(producer, event);
+		INSTANCE.enqueue(new Action(Type.FIRE, producer, event));
 	}
 
 	/**
@@ -199,7 +199,7 @@ public class Events implements Runnable
 	/**
 	 * The queue containing actions which wait to get executed
 	 */
-	private final BlockingQueue<Action> pendingActions;
+	private final BlockingQueue<Action> actions;
 
 	/**
 	 * A map containing all {@link Producer} objects containing the consumers by the producers.
@@ -215,45 +215,19 @@ public class Events implements Runnable
 	{
 		super();
 
-		pendingActions = new LinkedBlockingQueue<Action>();
+		actions = new LinkedBlockingQueue<Action>();
 		producers = new ConcurrentHashMap<Reference<Object>, Producer>();
 		referenceQueue = new ReferenceQueue<Object>();
 	}
 
 	/**
-	 * Adds a bind action to the pending actions
+	 * Adds an action to the pending actions
 	 * 
-	 * @param producer the producer, must not be null
-	 * @param consumer the consumer, must not be null
-	 * @throws IllegalArgumentException if the producer or the consumer is null
+	 * @param action the action
 	 */
-	private void enqueueBind(final Object producer, final Object consumer) throws IllegalArgumentException
+	private void enqueue(final Action action)
 	{
-		pendingActions.add(new Action(Type.BIND, producer, consumer));
-	}
-
-	/**
-	 * Adds an unbind action to the pending actions
-	 * 
-	 * @param producer the producer, must not be null
-	 * @param consumer the consumer, must not be null
-	 * @throws IllegalArgumentException if the producer or the consumer is null
-	 */
-	private void enqueueUnbind(final Object producer, final Object consumer) throws IllegalArgumentException
-	{
-		pendingActions.add(new Action(Type.UNBIND, producer, consumer));
-	}
-
-	/**
-	 * Adds a fire action to the pending actions
-	 * 
-	 * @param producer the producer, must not be null
-	 * @param event the event, must not be null
-	 * @throws IllegalArgumentException if the producer or the consumer is null
-	 */
-	private void enqueueEvent(final Object producer, final Object event) throws IllegalArgumentException
-	{
-		pendingActions.add(new Action(Type.FIRE, producer, event));
+		actions.add(action);
 	}
 
 	/**
@@ -269,7 +243,7 @@ public class Events implements Runnable
 			{
 				try
 				{
-					final Action action = pendingActions.take();
+					final Action action = actions.take();
 
 					switch (action.getType())
 					{

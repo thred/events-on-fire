@@ -74,7 +74,7 @@ class Producer
 			}
 		}
 
-		throw new IllegalArgumentException("Consumer is missing method: public void handleEvent(* event)");
+		throw new IllegalArgumentException("Consumer is missing handle event method: public void handleEvent(* event)");
 	}
 
 	/**
