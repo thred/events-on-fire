@@ -4,7 +4,7 @@
 
 == Index ==
 
-[http://code.google.com/p/events-on-fire/wiki/Usage Usage]
+  * [http://code.google.com/p/events-on-fire/wiki/Usage Usage]
 
 == Features ==
 
