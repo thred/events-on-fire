@@ -24,7 +24,7 @@ import org.testng.annotations.Test;
 /**
  * Unit test for the {@link WeakIdentityReference} class
  * 
- * @author Manfred HANTSCHEL
+ * @author Manfred Hantschel
  */
 @Test
 public class WeakIdentityReferenceUnitTest

@@ -27,7 +27,7 @@ import java.lang.ref.WeakReference;
  * methods only works, if the referent has not been garbage collected. After the removal of the referent the equals
  * method only checks for identity of the reference, not the referent.
  * 
- * @author Manfred HANTSCHEL
+ * @author Manfred Hantschel
  * @param <TYPE> the type of the reference
  */
 class WeakIdentityReference<TYPE> extends WeakReference<TYPE>

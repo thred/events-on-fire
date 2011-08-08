@@ -28,7 +28,7 @@ import java.util.Set;
 /**
  * A producer with its consumers
  * 
- * @author Manfred HANTSCHEL
+ * @author Manfred Hantschel
  */
 class Producer
 {
