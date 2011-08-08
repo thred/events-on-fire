@@ -4,12 +4,18 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
 
 	<groupId>com.googlecode.events-on-fire</groupId>
 	<artifactId>events-on-fire</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	
+
 	<name>Events On Fire</name>
 	<description>
 		The repeated implementation of the listener pattern for Java is a boring task which 
@@ -35,9 +41,9 @@
 	</issueManagement>
 
 	<scm>
-		<connection>scm:svn:http://events-on-fire.googlecode.com/svn</connection>
-		<developerConnection>scm:svn:https://events-on-fire.googlecode.com/svn</developerConnection>
-		<url>http://code.google.com/p/events-on-fire/source/browse</url>
+		<connection>scm:svn:http://events-on-fire.googlecode.com/svn/trunk/</connection>
+		<developerConnection>scm:svn:https://events-on-fire.googlecode.com/svn/trunk/</developerConnection>
+		<url>http://events-on-fire.googlecode.com/svn/trunk/</url>
 	</scm>
 
 	<developers>
@@ -101,7 +107,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -113,10 +119,10 @@
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<version>2.3</version>
 				<configuration>
-				   <suppressionsLocation>${basedir}/src/checkstyle/checkstyle-supressions.xml</suppressionsLocation>
+					<suppressionsLocation>${basedir}/src/checkstyle/checkstyle-supressions.xml</suppressionsLocation>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
-	
+
 </project>
