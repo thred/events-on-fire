@@ -74,4 +74,4 @@ The consumer is the class with the handleEvent method. Keep in mind, that you ha
 Events.fire(producer, "some event");
 }}}
 
-Immediately all the event handlers of the consumers, which are bound to the producer will get called. The consumer will only get called, if it has a event handler method that fits the event. 
+Immediately all the event handlers of the consumers, which are bonded to the producer will get called. The consumer will only get called, if it has a event handler method that fits the event. 
