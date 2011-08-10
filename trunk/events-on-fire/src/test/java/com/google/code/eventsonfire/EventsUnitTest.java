@@ -28,7 +28,7 @@ public class EventsUnitTest
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void testBindWithoutProducer()
 	{
-		Events.bind(null, new TestConsumer());
+		Events.bind(null, new EventsTestConsumer());
 	}
 
 	@Test(expectedExceptions = IllegalArgumentException.class)
@@ -41,8 +41,8 @@ public class EventsUnitTest
 	public void testFire() throws InterruptedException
 	{
 		final Object producer = new Object();
-		final TestConsumer consumerA = new TestConsumer();
-		final TestConsumer consumerB = new TestConsumer();
+		final EventsTestConsumer consumerA = new EventsTestConsumer();
+		final EventsTestConsumer consumerB = new EventsTestConsumer();
 
 		Events.bind(producer, consumerA);
 		Events.fire(producer, "Event #1");
@@ -51,15 +51,15 @@ public class EventsUnitTest
 		consumerA.waitForSize(1);
 		assert consumerB.size() == 0;
 		
-		assert "Event #1".equals(consumerA.popEvent());
+		assert "Event #1".equals(consumerA.popEvent().getEvent());
 		
 		Events.fire(producer, "Event #2");
 		
 		consumerA.waitForSize(1);
 		consumerB.waitForSize(1);
 
-		assert "Event #2".equals(consumerA.popEvent());
-		assert "Event #2".equals(consumerB.popEvent());
+		assert "Event #2".equals(consumerA.popEvent().getEvent());
+		assert "Event #2".equals(consumerB.popEvent().getEvent());
 		
 		Events.unbind(producer, consumerB);
 		
@@ -68,7 +68,7 @@ public class EventsUnitTest
 		consumerA.waitForSize(1);
 		assert consumerB.size() == 0;
 
-		assert "Event #3".equals(consumerA.popEvent());
+		assert "Event #3".equals(consumerA.popEvent().getEvent());
 
 	}
 	
@@ -76,7 +76,7 @@ public class EventsUnitTest
 	public void testDisable() throws InterruptedException
 	{
 		final Object producer = new Object();
-		final TestConsumer consumer = new TestConsumer();
+		final EventsTestConsumer consumer = new EventsTestConsumer();
 		
 		Events.bind(producer, consumer);
 		Events.fire(producer, "Event #1");
@@ -89,8 +89,8 @@ public class EventsUnitTest
 		
 		consumer.waitForSize(2);
 		
-		assert "Event #5".equals(consumer.popEvent());
-		assert "Event #1".equals(consumer.popEvent());
+		assert "Event #5".equals(consumer.popEvent().getEvent());
+		assert "Event #1".equals(consumer.popEvent().getEvent());
 	}
 	
 	public void testCleanupConsumer() {

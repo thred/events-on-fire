@@ -39,7 +39,7 @@ class WeakIdentityReference<TYPE> extends WeakReference<TYPE>
 	 * Creates the weak identity reference that refers to the specified referent. The reference is not registered to any
 	 * queue.
 	 * 
-	 * @param referent the object referenced by the weak reference, must not be null
+	 * @param referent the object referenced by the weak reference, mandatory
 	 * @throws IllegalArgumentException if the referent is null
 	 */
 	public WeakIdentityReference(final TYPE referent) throws IllegalArgumentException
@@ -51,7 +51,7 @@ class WeakIdentityReference<TYPE> extends WeakReference<TYPE>
 	 * Creates the weak identity reference with the specified referent. The reference is registered with the specified
 	 * queue.
 	 * 
-	 * @param referent the object referenced by the weak reference, must not be null
+	 * @param referent the object referenced by the weak reference, mandatory
 	 * @param queue the queue with which the reference is to be registered, or null if registration is not required
 	 * @throws IllegalArgumentException if the referent is null
 	 */

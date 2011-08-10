@@ -39,8 +39,8 @@ class Action
 	/**
 	 * Creates a new action.
 	 * 
-	 * @param type the type of the action, must not be null
-	 * @param producer the producer, must not be null
+	 * @param type the type of the action, mandatory
+	 * @param producer the producer, mandatory
 	 * @param parameter the parameter
 	 * @throws IllegalArgumentException if the action or the producer is null
 	 */

@@ -20,8 +20,6 @@
 package com.google.code.eventsonfire;
 
 import java.lang.ref.Reference;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -32,8 +30,6 @@ import java.util.Set;
  */
 class Producer
 {
-
-	private static final String HANDLE_EVENT_METHOD_NAME = "handleEvent";
 
 	/**
 	 * The set of references to consumers. The set it not synchronized. All calls are made by the {@link Events} thread.
@@ -51,7 +47,8 @@ class Producer
 	 * Adds the reference to the consumer to this producer.
 	 * 
 	 * @param consumerReference the reference to the consumer
-	 * @throws IllegalArgumentException if the consumer does not contain at least one handleEvent(..) method
+	 * @throws IllegalArgumentException if the consumer does not contain at least one method annotated with the
+	 *             {@link EventHandler} annotation
 	 */
 	public void add(final Reference<?> consumerReference) throws IllegalArgumentException
 	{
@@ -62,19 +59,10 @@ class Producer
 			return;
 		}
 
-		final Method[] methods = consumer.getClass().getMethods();
+		// ensure validity
+		ConsumerClassInfo.getInstance(consumer.getClass());
 
-		for (final Method method : methods)
-		{
-			if ((HANDLE_EVENT_METHOD_NAME.equals(method.getName())) && (method.getParameterTypes().length == 1))
-			{
-				consumerReferences.add(consumerReference);
-
-				return;
-			}
-		}
-
-		throw new IllegalArgumentException("Consumer is missing handle event method: public void handleEvent(* event)");
+		consumerReferences.add(consumerReference);
 	}
 
 	/**
@@ -107,7 +95,7 @@ class Producer
 	{
 		return consumerReferences.isEmpty();
 	}
-	
+
 	/**
 	 * Fires an event to all consumers
 	 * 
@@ -121,73 +109,96 @@ class Producer
 
 			if (consumer != null)
 			{
-				Class<? extends Object> eventType = event.getClass();
+				final ConsumerClassInfo consumerClassInfo = ConsumerClassInfo.getInstance(consumer.getClass());
 
-				eventTypeLoop: while (eventType != null)
-				{
-					if (fire(consumer, eventType, event))
-					{
-						break;
-					}
-
-					final Class<?>[] eventInterfaces = eventType.getInterfaces();
-
-					for (final Class<?> eventInterface : eventInterfaces)
-					{
-
-						if (fire(consumer, eventInterface, event))
-						{
-							break eventTypeLoop;
-						}
-
-					}
-
-					eventType = eventType.getSuperclass();
-				}
+				consumerClassInfo.invoke(this, consumer, event);
 			}
 		}
 	}
 
-	/**
-	 * Calls the handleEvent method of the consumer if appropriate
-	 * 
-	 * @param consumer the consumer
-	 * @param eventType the type of the event
-	 * @param event the event
-	 * @return
-	 */
-	private boolean fire(final Object consumer, final Class<? extends Object> eventType, final Object event)
-	{
-		try
-		{
-			final Method method = consumer.getClass().getMethod("handleEvent", eventType);
+	//	/**
+	//	 * Fires an event to all consumers
+	//	 * 
+	//	 * @param event the event
+	//	 */
+	//	public void fire(final Object event)
+	//	{
+	//		for (final Reference<?> consumerReference : consumerReferences)
+	//		{
+	//			final Object consumer = consumerReference.get();
+	//
+	//			if (consumer != null)
+	//			{
+	//				final ConsumerClassInfo consumerClassInfo = ConsumerClassInfo.getInstance(consumer.getClass());
+	//				Class<? extends Object> eventType = event.getClass();
+	//
+	//				eventTypeLoop: while (eventType != null)
+	//				{
+	//					if (fire(consumer, consumerClassInfo, eventType, event))
+	//					{
+	//						break;
+	//					}
+	//
+	//					final Class<?>[] eventInterfaces = eventType.getInterfaces();
+	//
+	//					for (final Class<?> eventInterface : eventInterfaces)
+	//					{
+	//
+	//						if (fire(consumer, consumerClassInfo, eventInterface, event))
+	//						{
+	//							break eventTypeLoop;
+	//						}
+	//
+	//					}
+	//
+	//					eventType = eventType.getSuperclass();
+	//				}
+	//			}
+	//		}
+	//	}
 
-			method.invoke(consumer, event);
-
-			return true;
-		}
-		catch (final SecurityException e)
-		{
-			throw new RuntimeException("Failed to handle event", e);
-		}
-		catch (final NoSuchMethodException e)
-		{
-			// ignore
-		}
-		catch (final IllegalArgumentException e)
-		{
-			throw new RuntimeException("Failed to handle event", e);
-		}
-		catch (final IllegalAccessException e)
-		{
-			throw new RuntimeException("Failed to handle event", e);
-		}
-		catch (final InvocationTargetException e)
-		{
-			throw new RuntimeException("Failed to handle event", e);
-		}
-
-		return false;
-	}
+	//	/**
+	//	 * Calls the handleEvent method of the consumer if appropriate
+	//	 * 
+	//	 * @param consumer the consumer
+	//	 * @param consumerClassInfo TODO
+	//	 * @param eventType the type of the event
+	//	 * @param event the event
+	//	 * @return
+	//	 */
+	//	private boolean fire(final Object consumer, final ConsumerClassInfo consumerClassInfo, final Class<? extends Object> eventType, final Object event)
+	//	{
+	//		
+	//		try
+	//		{
+	//			final Method method = consumer.getClass().getMethod("handleEvent", eventType);
+	//
+	//			method.invoke(consumer, event);
+	//
+	//			return true;
+	//		}
+	//		catch (final SecurityException e)
+	//		{
+	//			throw new RuntimeException("Failed to handle event", e);
+	//		}
+	//		catch (final NoSuchMethodException e)
+	//		{
+	//			// ignore
+	//		}
+	//		catch (final IllegalArgumentException e)
+	//		{
+	//			throw new RuntimeException("Failed to handle event", e);
+	//		}
+	//		catch (final IllegalAccessException e)
+	//		{
+	//			throw new RuntimeException("Failed to handle event", e);
+	//		}
+	//		catch (final InvocationTargetException e)
+	//		{
+	//			throw new RuntimeException("Failed to handle event", e);
+	//		}
+	//
+	//		return false;
+	//	}
 
 }

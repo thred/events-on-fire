@@ -35,8 +35,10 @@ public class ProducerUnitTest
 	@Test
 	public void testConsumerReferences()
 	{
-		final Reference<TestConsumer> consumerA = new WeakIdentityReference<TestConsumer>(new TestConsumer());
-		final Reference<TestConsumer> consumerB = new WeakIdentityReference<TestConsumer>(new TestConsumer());
+		final Reference<ProducerTestConsumer> consumerA =
+		    new WeakIdentityReference<ProducerTestConsumer>(new ProducerTestConsumer());
+		final Reference<ProducerTestConsumer> consumerB =
+		    new WeakIdentityReference<ProducerTestConsumer>(new ProducerTestConsumer());
 		final Producer producer = new Producer();
 
 		assert !producer.contains(consumerA);
@@ -80,19 +82,18 @@ public class ProducerUnitTest
 	@Test
 	public void testFire()
 	{
-		final TestConsumer consumer = new TestConsumer();
-		final Reference<TestConsumer> reference = new WeakIdentityReference<TestConsumer>(consumer);
+		final ProducerTestConsumer consumer = new ProducerTestConsumer();
+		final Reference<ProducerTestConsumer> reference = new WeakIdentityReference<ProducerTestConsumer>(consumer);
 		final Producer producer = new Producer();
 
 		producer.add(reference);
-
 		producer.fire("Event #1");
 
-		assert "Event #1".equals(consumer.popEvent());
+		assert "Event #1".equals(consumer.popEvent().getEvent());
 
 		producer.fire(Integer.valueOf(42));
 
-		assert Integer.valueOf(42).equals(consumer.popEvent());
+		assert Integer.valueOf(42).equals(consumer.popEvent().getEvent());
 
 		producer.fire(new Object());
 
