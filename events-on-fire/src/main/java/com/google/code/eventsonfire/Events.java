@@ -78,8 +78,8 @@ public class Events implements Runnable
 	 * so the objects and the binding gets garbage collected if not referenced. Does nothing if the objects are already
 	 * bonded.
 	 * 
-	 * @param producer the producer, must not be null
-	 * @param consumer the consumer / the listener, must not be null
+	 * @param producer the producer, mandatory
+	 * @param consumer the consumer / the listener, mandatory
 	 * @throws IllegalArgumentException if the producer or the consumer is null or the consumer cannot handle events
 	 */
 	public static void bind(final Object producer, final Object consumer) throws IllegalArgumentException
@@ -100,8 +100,8 @@ public class Events implements Runnable
 	/**
 	 * Unbinds the specified consumer from the specified producer. Does nothing if the objects are not bonded.
 	 * 
-	 * @param producer the producer, must not be null
-	 * @param consumer the consumer / the listener, must not be null
+	 * @param producer the producer, mandatory
+	 * @param consumer the consumer / the listener, mandatory
 	 * @throws IllegalArgumentException if the producer or the consumer is null
 	 */
 	public static void unbind(final Object producer, final Object consumer) throws IllegalArgumentException
@@ -124,8 +124,8 @@ public class Events implements Runnable
 	 * <code>public void handleEvent(* event)</code> method of all consumers. Does nothing, if events are disabled for
 	 * the current thread. Does nothing, if there are no consumers bonded to the producer.
 	 * 
-	 * @param producer the producer, must not be null
-	 * @param event the event, must not be null
+	 * @param producer the producer, mandatory
+	 * @param event the event, mandatory
 	 * @throws IllegalArgumentException if the producer or the event is null
 	 */
 	public static void fire(final Object producer, final Object event) throws IllegalArgumentException
@@ -197,7 +197,33 @@ public class Events implements Runnable
 	}
 
 	/**
-	 * The queue containing actions which wait to get executed
+	 * Returns the error handler, the {@link DefaultErrorHandler} if not specified.
+	 * 
+	 * @return the error handler, never null
+	 */
+	public static ErrorHandler getErrorHandler()
+	{
+		return INSTANCE.errorHandler;
+	}
+
+	/**
+	 * Sets the error handler.
+	 * 
+	 * @param errorHandler the error handler, mandatory
+	 * @throws IllegalArgumentException if the error handler is null
+	 */
+	public static void setErrorHandler(final ErrorHandler errorHandler) throws IllegalArgumentException
+	{
+		if (errorHandler == null)
+		{
+			throw new IllegalArgumentException("Error handler is null");
+		}
+
+		INSTANCE.errorHandler = errorHandler;
+	}
+
+	/**
+	 * The queue containing actions which wait to get executed.
 	 */
 	private final BlockingQueue<Action> actions;
 
@@ -207,9 +233,14 @@ public class Events implements Runnable
 	private final Map<Reference<Object>, Producer> producers;
 
 	/**
-	 * The reference queue for all weak references used to get rid of them if the object has been garbage collected
+	 * The reference queue for all weak references used to get rid of them if the object has been garbage collected.
 	 */
 	private final ReferenceQueue<Object> referenceQueue;
+
+	/**
+	 * Handler used for logging.
+	 */
+	private ErrorHandler errorHandler;
 
 	private Events()
 	{
@@ -218,6 +249,7 @@ public class Events implements Runnable
 		actions = new LinkedBlockingQueue<Action>();
 		producers = new ConcurrentHashMap<Reference<Object>, Producer>();
 		referenceQueue = new ReferenceQueue<Object>();
+		errorHandler = new DefaultErrorHandler();
 	}
 
 	/**
@@ -268,15 +300,13 @@ public class Events implements Runnable
 				}
 				catch (final Exception e)
 				{
-					System.err.println("UNHANDLED EXCEPTION in Event Thread: " + e.getMessage());
-
-					e.printStackTrace(System.err);
+					errorHandler.unhandledException("Exception in event thread", e);
 				}
 			}
 		}
 		catch (final InterruptedException e)
 		{
-			System.err.println("Events thread got interrupted: " + e.getMessage());
+			errorHandler.interrupted(e);
 		}
 	}
 

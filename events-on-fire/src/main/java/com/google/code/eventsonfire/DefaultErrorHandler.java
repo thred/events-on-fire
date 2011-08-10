@@ -19,69 +19,50 @@
  */
 package com.google.code.eventsonfire;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.lang.reflect.Method;
 
-public class TestConsumer
+/**
+ * Default implementation of the {@link ErrorHandler}. Writes messages to System.err.
+ * 
+ * @author Manfred HANTSCHEL
+ */
+public class DefaultErrorHandler implements ErrorHandler
 {
 
-	private static final long TIMEOUT = 5000; // 5 seconds
-
-	private final Object semaphore = new Object();
-
-	private final Deque<Object> deque;
-
-	public TestConsumer()
+	/**
+	 * {@inheritDoc}
+	 */
+	public void invocationFailed(final Object producer, final Object consumer, final Object event, final Method method, final String message, final Throwable cause)
 	{
-		super();
+		System.err.println("Invocation of event handler failed: " + message);
+		System.err.println("\tMethod:   " + method);
+		System.err.println("\tProducer: " + producer);
+		System.err.println("\tConsumer: " + consumer);
+		System.err.println("\tEvent:    " + event);
 
-		deque = new ArrayDeque<Object>();
-	}
-
-	public Object popEvent()
-	{
-		return deque.pop();
-	}
-
-	public int size()
-	{
-		return deque.size();
-	}
-
-	public void waitForSize(final int size) throws InterruptedException
-	{
-		final long millis = System.currentTimeMillis() + TIMEOUT;
-
-		synchronized (semaphore)
+		if (cause != null)
 		{
-			while (size() != size)
-			{
-				final long timeToWait = millis - System.currentTimeMillis();
-
-				assert timeToWait > 0 : "Consumer did not reach " + size + " events in time";
-
-				semaphore.wait(timeToWait);
-			}
-
+			System.err.print("\tCause:    ");
+			cause.printStackTrace(System.err);
 		}
 	}
 
-	public void handleEvent(final Number event)
+	/**
+	 * {@inheritDoc}
+	 */
+	public void unhandledException(final String message, final Throwable cause)
 	{
-		synchronized (semaphore)
-		{
-			deque.push(event);
-			semaphore.notifyAll();
-		}
+		System.err.println("UNHANDLED EXCEPTION: " + message);
+		cause.printStackTrace(System.err);
 	}
 
-	public void handleEvent(final String event)
-	{
-		synchronized (semaphore)
-		{
-			deque.push(event);
-			semaphore.notifyAll();
-		}
-	}
+	/**
+	 * {@inheritDoc}
+	 */
+	public void interrupted(InterruptedException e)
+    {
+		System.err.println("Events thread got interrupted.");
+		e.printStackTrace(System.err);
+    }
 
 }
