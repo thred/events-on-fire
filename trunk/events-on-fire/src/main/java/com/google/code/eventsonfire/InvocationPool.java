@@ -21,8 +21,10 @@ package com.google.code.eventsonfire;
 
 import java.lang.reflect.Method;
 
-public interface ExecutionPool
+public interface InvocationPool
 {
+
+	void setMaximumNumberOfThreads(int maximumNumberOfThreads) throws IllegalArgumentException;
 
 	void invoke(Object producer, Object consumer, Object event, Method method);
 

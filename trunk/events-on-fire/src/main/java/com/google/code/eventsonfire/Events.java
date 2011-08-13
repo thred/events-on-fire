@@ -197,30 +197,30 @@ public class Events implements Runnable
 	}
 
 	/**
-	 * Returns the execution pool for event handlers that are executed using pooled threads, the
-	 * {@link DefaultExecutionPool} if not specified.
+	 * Returns the invocation pool for event handlers that are executed using pooled threads, the
+	 * {@link DefaultInvocationPool} if not specified.
 	 * 
-	 * @return the execution pool, never null
+	 * @return the invocation pool, never null
 	 */
-	public static ExecutionPool getExecutionPool()
+	public static InvocationPool getInvocationPool()
 	{
-		return INSTANCE.executionPool;
+		return INSTANCE.invocationPool;
 	}
 
 	/**
-	 * Sets the execution pool for event handlers that are executed using pooled threads.
+	 * Sets the invocation pool for event handlers that are executed using pooled threads.
 	 * 
-	 * @param executionPool the execution pool, mandatory
-	 * @throws IllegalArgumentException if the execution pool is null
+	 * @param invocationPool the invocation pool, mandatory
+	 * @throws IllegalArgumentException if the invocation pool is null
 	 */
-	public void setExecutionPool(final ExecutionPool executionPool)
+	public void setInvocationPool(final InvocationPool invocationPool)
 	{
-		if (executionPool == null)
+		if (invocationPool == null)
 		{
-			throw new IllegalArgumentException("Execution pool is null");
+			throw new IllegalArgumentException("Invocation pool is null");
 		}
 
-		this.executionPool = executionPool;
+		this.invocationPool = invocationPool;
 	}
 
 	/**
@@ -267,7 +267,7 @@ public class Events implements Runnable
 	/**
 	 * The thread pool for pending handler invocations.
 	 */
-	private ExecutionPool executionPool;
+	private InvocationPool invocationPool;
 
 	/**
 	 * Handler used for logging.
@@ -282,7 +282,7 @@ public class Events implements Runnable
 		producers = new ConcurrentHashMap<Reference<Object>, Producer>();
 		referenceQueue = new ReferenceQueue<Object>();
 
-		executionPool = new DefaultExecutionPool();
+		invocationPool = new DefaultInvocationPool();
 		errorHandler = new DefaultErrorHandler();
 	}
 

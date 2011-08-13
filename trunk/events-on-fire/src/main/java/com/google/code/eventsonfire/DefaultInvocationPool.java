@@ -24,8 +24,10 @@ import java.lang.reflect.Method;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class DefaultExecutionPool implements ExecutionPool
+public class DefaultInvocationPool implements InvocationPool
 {
+
+	private static final int DEFAULT_MAXIMUM_NUMBER_OF_THREADS = 4;
 
 	private static class Invoker implements Runnable
 	{
@@ -82,13 +84,39 @@ public class DefaultExecutionPool implements ExecutionPool
 		}
 	}
 
-	private final ExecutorService threadPool;
+	private int maximumNumberOfThreads = DEFAULT_MAXIMUM_NUMBER_OF_THREADS;
+	private ExecutorService threadPool;
 
-	public DefaultExecutionPool()
+	public DefaultInvocationPool()
 	{
 		super();
 
 		threadPool = Executors.newCachedThreadPool();
+	}
+
+	private synchronized ExecutorService getThreadPool()
+	{
+		if (threadPool == null)
+		{
+			threadPool = Executors.newFixedThreadPool(maximumNumberOfThreads);
+		}
+
+		return threadPool;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setMaximumNumberOfThreads(final int maximumNumberOfThreads) throws IllegalArgumentException
+	{
+		if (maximumNumberOfThreads < 1)
+		{
+			throw new IllegalArgumentException("Invalid maximum number of threads: " + maximumNumberOfThreads);
+		}
+
+		this.maximumNumberOfThreads = maximumNumberOfThreads;
+		
+		threadPool = null;
 	}
 
 	/**
@@ -96,7 +124,7 @@ public class DefaultExecutionPool implements ExecutionPool
 	 */
 	public void invoke(final Object producer, final Object consumer, final Object event, final Method method)
 	{
-		threadPool.execute(new Invoker(producer, consumer, event, method));
+		getThreadPool().execute(new Invoker(producer, consumer, event, method));
 	}
 
 }

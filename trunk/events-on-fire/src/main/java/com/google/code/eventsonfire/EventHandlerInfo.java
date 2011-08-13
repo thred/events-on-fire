@@ -103,7 +103,7 @@ class EventHandlerInfo
 
 		if (pooled)
 		{
-			Events.getExecutionPool().invoke(producer, consumer, event, method);
+			Events.getInvocationPool().invoke(producer, consumer, event, method);
 
 			return true;
 		}
