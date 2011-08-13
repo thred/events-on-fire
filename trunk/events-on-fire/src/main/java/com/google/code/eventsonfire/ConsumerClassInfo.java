@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Contains information about a consumer class. Scanns the class for methods annotated with the {@link EventHandler}
+ * Contains information about a consumer class. Scans the class for methods annotated with the {@link EventHandler}
  * annotation. Holds these methods and invoke them if necessary and appropriate.
  * 
  * @author Manfred HANTSCHEL
@@ -81,7 +81,7 @@ class ConsumerClassInfo
 			throw new IllegalArgumentException("Type is null");
 		}
 
-		final List<EventHandlerInfo> result = new ArrayList<EventHandlerInfo>();
+		final List<EventHandlerInfo> infos = new ArrayList<EventHandlerInfo>();
 
 		for (final Method method : type.getMethods())
 		{
@@ -89,16 +89,16 @@ class ConsumerClassInfo
 
 			if (annotation != null)
 			{
-				result.add(new EventHandlerInfo(method));
+				infos.add(new EventHandlerInfo(method));
 			}
 		}
 
-		if (result.size() == 0)
+		if (infos.size() == 0)
 		{
 			throw new IllegalArgumentException("No event handler found: " + type);
 		}
 
-		infos = result.toArray(new EventHandlerInfo[result.size()]);
+		this.infos = infos.toArray(new EventHandlerInfo[infos.size()]);
 	}
 
 	/**

@@ -43,27 +43,29 @@ public @interface EventHandler
 {
 
 	/**
-	 * Optional. One or more classes of producers handled by the method. Checked against the optional producer argument. If empty
-	 * and a producer argument is specified, all classes are allowed that fit the producer argument. If empty and no
-	 * producer argument is specified, all producers are allowed.
+	 * Optional. One or more classes of producers handled by the method. Checked against the optional producer argument.
+	 * If empty and a producer argument is specified, all classes are allowed that fit the producer argument. If empty
+	 * and no producer argument is specified, all producers are allowed.
 	 * 
 	 * @return the allowed producers
 	 */
 	Class<?>[] producer() default {};
 
 	/**
-	 * Optional. One or more classes of events handled by the method. Checked against the event argument. If empty, all classes
-	 * are allowed that fit the events argument.
+	 * Optional. One or more classes of events handled by the method. Checked against the event argument. If empty, all
+	 * classes are allowed that fit the events argument.
 	 * 
 	 * @return the allowed events
 	 */
 	Class<?>[] event() default {};
 
 	/**
-	 * Optional. The type of the invocation of the method, see {@link InvocationType} for details. 
-	 *   
+	 * Optional. If set to true, the invocation of the method will be delegated to a thread pool. The execution of the
+	 * method will not block the event thread. The default value is false, because usually event handler are quite fast
+	 * and should be execute one after another.
+	 * 
 	 * @return the type of the invocation of the method
 	 */
-	InvocationType type() default InvocationType.SEQUENTIAL;
-	
+	boolean pooled() default false;
+
 }
