@@ -19,26 +19,11 @@
  */
 package com.google.code.eventsonfire;
 
-/**
- * Invocation types used by the type parameter of the {@link EventHandler} method. Specifies how a event handler method
- * is called.
- * 
- * @author Manfred HANTSCHEL
- */
-public enum InvocationType
+import java.lang.reflect.Method;
+
+public interface ExecutionPool
 {
 
-	/**
-	 * The method is called along with all other events in sequential order. The execution of the method blocks the
-	 * event handler thread and thus all other events. Usually this is no problem when handling of the event is fast.
-	 */
-	SEQUENTIAL,
-
-	/**
-	 * The method is called parallel to all other events. The execution of the method does not block the event handler
-	 * thread and thus all other events are executed meanwhile. This should be used, if handling of the event takes
-	 * time.
-	 */
-	PARALLEL
+	void invoke(Object producer, Object consumer, Object event, Method method);
 
 }

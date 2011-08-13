@@ -36,7 +36,7 @@ class EventHandlerInfo
 	private final Method method;
 	private final Class<?>[] producerTypes;
 	private final Class<?>[] eventTypes;
-	private final InvocationType type;
+	private final boolean pooled;
 
 	/**
 	 * Creates a new instance by gathering the information from the specified method and its annotation.
@@ -80,7 +80,7 @@ class EventHandlerInfo
 		producerTypes = determineProducers(annotation, method, (parameterTypes.length == 2) ? parameterTypes[0] : null);
 		eventTypes =
 		    determineEvents(annotation, method, (parameterTypes.length == 2) ? parameterTypes[1] : parameterTypes[0]);
-		type = annotation.type();
+		pooled = annotation.pooled();
 	}
 
 	/**
@@ -92,13 +92,20 @@ class EventHandlerInfo
 	 * @param producer the producer, mandatory
 	 * @param consumer the consumer, mandatory
 	 * @param event the event, mandatory
-	 * @return true if invoked, false otherwise
+	 * @return true if invoked (or will be invoked in near future), false otherwise
 	 */
 	public boolean invoke(final Object producer, final Object consumer, final Object event)
 	{
 		if ((!isProducerAssignable(producer.getClass())) || (!isEventAssignable(event.getClass())))
 		{
 			return false;
+		}
+
+		if (pooled)
+		{
+			Events.getExecutionPool().invoke(producer, consumer, event, method);
+
+			return true;
 		}
 
 		final Class<?>[] parameterTypes = method.getParameterTypes();

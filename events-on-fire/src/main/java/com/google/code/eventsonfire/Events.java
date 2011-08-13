@@ -197,6 +197,33 @@ public class Events implements Runnable
 	}
 
 	/**
+	 * Returns the execution pool for event handlers that are executed using pooled threads, the
+	 * {@link DefaultExecutionPool} if not specified.
+	 * 
+	 * @return the execution pool, never null
+	 */
+	public static ExecutionPool getExecutionPool()
+	{
+		return INSTANCE.executionPool;
+	}
+
+	/**
+	 * Sets the execution pool for event handlers that are executed using pooled threads.
+	 * 
+	 * @param executionPool the execution pool, mandatory
+	 * @throws IllegalArgumentException if the execution pool is null
+	 */
+	public void setExecutionPool(final ExecutionPool executionPool)
+	{
+		if (executionPool == null)
+		{
+			throw new IllegalArgumentException("Execution pool is null");
+		}
+
+		this.executionPool = executionPool;
+	}
+
+	/**
 	 * Returns the error handler, the {@link DefaultErrorHandler} if not specified.
 	 * 
 	 * @return the error handler, never null
@@ -238,6 +265,11 @@ public class Events implements Runnable
 	private final ReferenceQueue<Object> referenceQueue;
 
 	/**
+	 * The thread pool for pending handler invocations.
+	 */
+	private ExecutionPool executionPool;
+
+	/**
 	 * Handler used for logging.
 	 */
 	private ErrorHandler errorHandler;
@@ -249,6 +281,8 @@ public class Events implements Runnable
 		actions = new LinkedBlockingQueue<Action>();
 		producers = new ConcurrentHashMap<Reference<Object>, Producer>();
 		referenceQueue = new ReferenceQueue<Object>();
+
+		executionPool = new DefaultExecutionPool();
 		errorHandler = new DefaultErrorHandler();
 	}
 
