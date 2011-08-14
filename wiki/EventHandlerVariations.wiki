@@ -1,0 +1,16 @@
+#summary Describes variations of the event handler method.
+
+= Introduction =
+
+In events-on-fire the event handling is based on an annotation instead of an interface. This allows different types of method signatures.
+
+= Parameters of the Annotation =
+
+The @EventHandler annotation has three parameters: producer, event and pooled. 
+
+== Producer ==
+
+Defines one or more classes to be allowed as producer. 
+
+
+...TBD...
