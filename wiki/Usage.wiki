@@ -30,18 +30,21 @@ You can use any object as event. Usually you create a class that holds all the s
  
 === Create a consumer (your listener) ===
 
-Add a handleEvent method to you class:
+Add a method for the event handlung to your class. Tag it with the @EventHandler annotation:
 
 {{{
 public class MyClass {
   ...
-  public void handleEvent(String event) {
+  @EventHandler
+  public void onEvent(String event) {
     // handle the event
     ...
   }
   ...
 }
 }}}
+
+There are more variations of signatures of the event handler method. Check EventHandlerVariations for more...
 
 === Bind the consumer to a producer ===
 
