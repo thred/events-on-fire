@@ -47,7 +47,8 @@ public class EventHandlerInfoUnitTest
 	public void testInvalidParameters() throws NoSuchMethodException
 	{
 		final Method method =
-		    EventHandlerInfoTestConsumer.class.getMethod("invalidParameters", CharSequence.class, Number.class, Object.class);
+		    EventHandlerInfoTestConsumer.class.getMethod("invalidParameters", CharSequence.class, Number.class,
+		        Object.class);
 
 		new EventHandlerInfo(method);
 	}
@@ -103,7 +104,8 @@ public class EventHandlerInfoUnitTest
 	@Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = ".*String cannot be assigned.*")
 	public void testSingleParameterInvalidAnnotated() throws NoSuchMethodException
 	{
-		final Method method = EventHandlerInfoTestConsumer.class.getMethod("singleParameterInvalidAnnotated", Number.class);
+		final Method method =
+		    EventHandlerInfoTestConsumer.class.getMethod("singleParameterInvalidAnnotated", Number.class);
 
 		new EventHandlerInfo(method);
 	}
@@ -111,7 +113,8 @@ public class EventHandlerInfoUnitTest
 	@Test
 	public void testSingleParameterMultiAnnotated() throws NoSuchMethodException
 	{
-		final Method method = EventHandlerInfoTestConsumer.class.getMethod("singleParameterMultiAnnotated", Number.class);
+		final Method method =
+		    EventHandlerInfoTestConsumer.class.getMethod("singleParameterMultiAnnotated", Number.class);
 		final EventHandlerInfo eventHandlerMethod = new EventHandlerInfo(method);
 		final EventHandlerInfoTestConsumer consumer = new EventHandlerInfoTestConsumer();
 
@@ -131,7 +134,8 @@ public class EventHandlerInfoUnitTest
 	@Test
 	public void testSingleParameterProducerAnnotated() throws NoSuchMethodException
 	{
-		final Method method = EventHandlerInfoTestConsumer.class.getMethod("singleParameterProducerAnnotated", Number.class);
+		final Method method =
+		    EventHandlerInfoTestConsumer.class.getMethod("singleParameterProducerAnnotated", Number.class);
 		final EventHandlerInfo eventHandlerMethod = new EventHandlerInfo(method);
 		final EventHandlerInfoTestConsumer consumer = new EventHandlerInfoTestConsumer();
 
@@ -149,7 +153,8 @@ public class EventHandlerInfoUnitTest
 	public void testDoubleParameterNotAnnotated() throws NoSuchMethodException
 	{
 		final Method method =
-		    EventHandlerInfoTestConsumer.class.getMethod("doubleParameterNotAnnotated", CharSequence.class, Number.class);
+		    EventHandlerInfoTestConsumer.class.getMethod("doubleParameterNotAnnotated", CharSequence.class,
+		        Number.class);
 		final EventHandlerInfo eventHandlerMethod = new EventHandlerInfo(method);
 		final EventHandlerInfoTestConsumer consumer = new EventHandlerInfoTestConsumer();
 
@@ -181,7 +186,8 @@ public class EventHandlerInfoUnitTest
 	@Test
 	public void testDoubleParameterAnnotated() throws NoSuchMethodException
 	{
-		final Method method = EventHandlerInfoTestConsumer.class.getMethod("doubleParameterAnnotated", Object.class, Number.class);
+		final Method method =
+		    EventHandlerInfoTestConsumer.class.getMethod("doubleParameterAnnotated", Object.class, Number.class);
 		final EventHandlerInfo eventHandlerMethod = new EventHandlerInfo(method);
 		final EventHandlerInfoTestConsumer consumer = new EventHandlerInfoTestConsumer();
 
@@ -196,7 +202,8 @@ public class EventHandlerInfoUnitTest
 	public void testDoubleParameterInvalidAnnotated() throws NoSuchMethodException
 	{
 		final Method method =
-		    EventHandlerInfoTestConsumer.class.getMethod("doubleParameterInvalidAnnotated", CharSequence.class, Number.class);
+		    EventHandlerInfoTestConsumer.class.getMethod("doubleParameterInvalidAnnotated", CharSequence.class,
+		        Number.class);
 
 		new EventHandlerInfo(method);
 	}

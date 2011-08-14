@@ -50,19 +50,19 @@ public class EventsUnitTest
 
 		consumerA.waitForSize(1);
 		assert consumerB.size() == 0;
-		
+
 		assert "Event #1".equals(consumerA.popEvent().getEvent());
-		
+
 		Events.fire(producer, "Event #2");
-		
+
 		consumerA.waitForSize(1);
 		consumerB.waitForSize(1);
 
 		assert "Event #2".equals(consumerA.popEvent().getEvent());
 		assert "Event #2".equals(consumerB.popEvent().getEvent());
-		
+
 		Events.unbind(producer, consumerB);
-		
+
 		Events.fire(producer, "Event #3");
 
 		consumerA.waitForSize(1);
@@ -71,13 +71,13 @@ public class EventsUnitTest
 		assert "Event #3".equals(consumerA.popEvent().getEvent());
 
 	}
-	
+
 	@Test
 	public void testDisable() throws InterruptedException
 	{
 		final Object producer = new Object();
 		final EventsTestConsumer consumer = new EventsTestConsumer();
-		
+
 		Events.bind(producer, consumer);
 		Events.fire(producer, "Event #1");
 		Events.disable();
@@ -86,21 +86,20 @@ public class EventsUnitTest
 		Events.fire(producer, "Event #4");
 		Events.enable();
 		Events.fire(producer, "Event #5");
-		
+
 		consumer.waitForSize(2);
-		
+
 		assert "Event #5".equals(consumer.popEvent().getEvent());
 		assert "Event #1".equals(consumer.popEvent().getEvent());
 	}
-	
-	public void testCleanupConsumer() {
-//		final Object producer = new Object();
-//		final TestConsumer consumer = new TestConsumer();
-//		
-//		Events.bind(producer, consumer);
-		
-		
-		
+
+	public void testCleanupConsumer()
+	{
+		//		final Object producer = new Object();
+		//		final TestConsumer consumer = new TestConsumer();
+		//		
+		//		Events.bind(producer, consumer);
+
 	}
 
 }

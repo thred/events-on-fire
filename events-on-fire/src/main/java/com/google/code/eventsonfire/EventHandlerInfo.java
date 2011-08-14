@@ -103,7 +103,7 @@ class EventHandlerInfo
 
 		if (pooled)
 		{
-			Events.getInvocationPool().invoke(producer, consumer, event, method);
+			Events.invokeLater(producer, consumer, event, method);
 
 			return true;
 		}
@@ -143,6 +143,12 @@ class EventHandlerInfo
 		return false;
 	}
 
+	/**
+	 * Returns true if the producer is permitted by the annotation and the parameter
+	 * 
+	 * @param type the type of the producer
+	 * @return true if permitted
+	 */
 	private boolean isProducerAssignable(final Class<?> type)
 	{
 		if (producerTypes.length == 0)
@@ -161,6 +167,12 @@ class EventHandlerInfo
 		return false;
 	}
 
+	/**
+	 * Returns true if the event is permitted by the annotation and the parameter
+	 * 
+	 * @param type the type of the event
+	 * @return true if permitted
+	 */
 	private boolean isEventAssignable(final Class<?> type)
 	{
 		for (final Class<?> eventType : eventTypes)
@@ -174,6 +186,16 @@ class EventHandlerInfo
 		return false;
 	}
 
+	/**
+	 * Extracts all producer classes either from the annotation or the method itself. Checks for failures. Returns an
+	 * empty list if all producers are permitted.
+	 * 
+	 * @param annotation the annotation
+	 * @param method the method
+	 * @param parameterType the parameter type for the producer, null if not specified
+	 * @return all producer classes, empty if all permitted
+	 * @throws IllegalArgumentException on any failure
+	 */
 	private static Class<?>[] determineProducers(final EventHandler annotation, final Method method, final Class<?> parameterType) throws IllegalArgumentException
 	{
 		final Set<Class<?>> result = new HashSet<Class<?>>();
@@ -203,6 +225,15 @@ class EventHandlerInfo
 		return result.toArray(new Class<?>[result.size()]);
 	}
 
+	/**
+	 * Extracts all event classes either from the annotation or the method itself. Checks for failures.
+	 * 
+	 * @param annotation the annotation
+	 * @param method the method
+	 * @param parameterType the parameter type for the event
+	 * @return all event classes, never null, never empty
+	 * @throws IllegalArgumentException on any failure
+	 */
 	private static Class<?>[] determineEvents(final EventHandler annotation, final Method method, final Class<?> parameterType) throws IllegalArgumentException
 	{
 		final Set<Class<?>> result = new HashSet<Class<?>>();

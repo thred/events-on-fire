@@ -47,7 +47,7 @@ class ConsumerClassInfo
 	 * @throws IllegalArgumentException if the type is null or the class does not contain any method annotated with the
 	 *             {@link EventHandler} annotation
 	 */
-	public static ConsumerClassInfo getInstance(final Class<?> type) throws IllegalArgumentException
+	public static ConsumerClassInfo getInstance(Class<?> type) throws IllegalArgumentException
 	{
 		ConsumerClassInfo result = CACHE.get(type);
 
@@ -72,7 +72,7 @@ class ConsumerClassInfo
 	 * @throws IllegalArgumentException if the type is null or the class does not contain any method annotated with the
 	 *             {@link EventHandler} annotation
 	 */
-	private ConsumerClassInfo(final Class<?> type) throws IllegalArgumentException
+	private ConsumerClassInfo(Class<?> type) throws IllegalArgumentException
 	{
 		super();
 
@@ -81,11 +81,11 @@ class ConsumerClassInfo
 			throw new IllegalArgumentException("Type is null");
 		}
 
-		final List<EventHandlerInfo> infos = new ArrayList<EventHandlerInfo>();
+		List<EventHandlerInfo> infos = new ArrayList<EventHandlerInfo>();
 
-		for (final Method method : type.getMethods())
+		for (Method method : type.getMethods())
 		{
-			final EventHandler annotation = method.getAnnotation(EventHandler.class);
+			EventHandler annotation = method.getAnnotation(EventHandler.class);
 
 			if (annotation != null)
 			{
@@ -111,9 +111,9 @@ class ConsumerClassInfo
 	 * @param consumer the consumer, mandatory
 	 * @param event the event, mandatory
 	 */
-	public void invoke(final Object producer, final Object consumer, final Object event)
+	public void invoke(Object producer, Object consumer, Object event)
 	{
-		for (final EventHandlerInfo info : infos)
+		for (EventHandlerInfo info : infos)
 		{
 			info.invoke(producer, consumer, event);
 		}

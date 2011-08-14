@@ -28,14 +28,17 @@
  * application without the need for any configuration and without the danger of memory leaks.
  * </p>
  * <p>
- * For a detailed usage description see <a href="http://code.google.com/p/events-on-fire/wiki/Usage" target="_blank">Usage on Google Project Hosting</a>.
+ * For a detailed usage description see <a href="http://code.google.com/p/events-on-fire/wiki/Usage"
+ * target="_blank">Usage on Google Project Hosting</a>.
  * </p>
  * <p>
  * Copyright &copy; 2011 Manfred Hantschel
  * </p>
  * <p>
- * events-on-fire is distributed under the terms of the <a href="http://www.opensource.org/licenses/mit-license.php">MIT License</a>.
+ * events-on-fire is distributed under the terms of the <a href="http://www.opensource.org/licenses/mit-license.php">MIT
+ * License</a>.
  * </p>
+ * 
  * <pre>
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
@@ -50,6 +53,7 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * </pre>
+ * 
  * @see <a href="http://www.opensource.org/licenses/mit-license.php">MIT License</a>
  * @see <a href="http://code.google.com/p/events-on-fire/wiki/Usage">Usage on Google Project Hosting</a>
  * @author Manfred Hantschel
