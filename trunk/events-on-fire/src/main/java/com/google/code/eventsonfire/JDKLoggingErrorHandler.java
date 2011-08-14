@@ -20,21 +20,39 @@
 package com.google.code.eventsonfire;
 
 import java.lang.reflect.Method;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * Default implementation of the {@link ErrorHandler}. Writes messages to System.err.
+ * Implementation of the {@link ErrorHandler} for the Java logging framework.
  * 
  * @author Manfred HANTSCHEL
  */
-public class DefaultErrorHandler implements ErrorHandler
+public class JDKLoggingErrorHandler implements ErrorHandler
 {
+
+	private static final Logger LOG = Logger.getLogger(JDKLoggingErrorHandler.class.getName());
+
+	private final Logger log;
 
 	/**
 	 * Default constructor for the error handler
 	 */
-	public DefaultErrorHandler()
+	public JDKLoggingErrorHandler()
+	{
+		this(LOG);
+	}
+
+	/**
+	 * Constructor for the error handler using the specified logger
+	 * 
+	 * @param log the logger
+	 */
+	public JDKLoggingErrorHandler(Logger log)
 	{
 		super();
+
+		this.log = log;
 	}
 
 	/**
@@ -42,17 +60,15 @@ public class DefaultErrorHandler implements ErrorHandler
 	 */
 	public void invocationFailed(final Object producer, final Object consumer, final Object event, final Method method, final String message, final Throwable cause)
 	{
-		System.err.println("Invocation of event handler failed: " + message);
-		System.err.println("\tMethod:   " + method);
-		System.err.println("\tProducer: " + producer);
-		System.err.println("\tConsumer: " + consumer);
-		System.err.println("\tEvent:    " + event);
+		StringBuilder builder = new StringBuilder();
 
-		if (cause != null)
-		{
-			System.err.print("\tCause:    ");
-			cause.printStackTrace(System.err);
-		}
+		builder.append("Invocation of event handler failed: ").append(message);
+		builder.append("\n\tMethod:   ").append(method);
+		builder.append("\n\tProducer: ").append(producer);
+		builder.append("\n\tConsumer: ").append(consumer);
+		builder.append("\n\tEvent:    ").append(event);
+
+		log.log(Level.SEVERE, builder.toString(), cause);
 	}
 
 	/**
@@ -60,8 +76,7 @@ public class DefaultErrorHandler implements ErrorHandler
 	 */
 	public void unhandledException(final String message, final Throwable cause)
 	{
-		System.err.println("UNHANDLED EXCEPTION: " + message);
-		cause.printStackTrace(System.err);
+		log.log(Level.SEVERE, "UNHANDLED EXCEPTION: " + message, cause);
 	}
 
 	/**
@@ -69,8 +84,7 @@ public class DefaultErrorHandler implements ErrorHandler
 	 */
 	public void interrupted(InterruptedException e)
 	{
-		System.err.println("Events thread got interrupted.");
-		e.printStackTrace(System.err);
+		log.log(Level.SEVERE, "Events thread got interrupted", e);
 	}
 
 }

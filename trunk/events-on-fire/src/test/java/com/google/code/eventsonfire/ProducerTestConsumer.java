@@ -32,7 +32,7 @@ public class ProducerTestConsumer extends AbstractTestConsumer
 	{
 		pushEvent("stringEventHandler", null, event);
 	}
-	
+
 	@EventHandler
 	public void integerEventHandler(final Integer event)
 	{

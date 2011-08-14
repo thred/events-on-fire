@@ -21,11 +21,14 @@ package com.google.code.eventsonfire;
 
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
+import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.google.code.eventsonfire.Action.Type;
@@ -64,6 +67,11 @@ public class Events implements Runnable
 	 */
 	private static final ThreadLocal<Integer> DISABLED = new ThreadLocal<Integer>();
 
+	/**
+	 * The default maximum number of threads for the executor service
+	 */
+	private static final int DEFAULT_MAXIMUM_NUMBER_OF_THREADS = 4;
+
 	static
 	{
 		EVENTS_THREAD = new Thread(INSTANCE, "Events Thread");
@@ -82,7 +90,7 @@ public class Events implements Runnable
 	 * @param consumer the consumer / the listener, mandatory
 	 * @throws IllegalArgumentException if the producer or the consumer is null or the consumer cannot handle events
 	 */
-	public static void bind(final Object producer, final Object consumer) throws IllegalArgumentException
+	public static void bind(Object producer, Object consumer) throws IllegalArgumentException
 	{
 		if (producer == null)
 		{
@@ -104,7 +112,7 @@ public class Events implements Runnable
 	 * @param consumer the consumer / the listener, mandatory
 	 * @throws IllegalArgumentException if the producer or the consumer is null
 	 */
-	public static void unbind(final Object producer, final Object consumer) throws IllegalArgumentException
+	public static void unbind(Object producer, Object consumer) throws IllegalArgumentException
 	{
 		if (producer == null)
 		{
@@ -128,7 +136,7 @@ public class Events implements Runnable
 	 * @param event the event, mandatory
 	 * @throws IllegalArgumentException if the producer or the event is null
 	 */
-	public static void fire(final Object producer, final Object event) throws IllegalArgumentException
+	public static void fire(Object producer, Object event) throws IllegalArgumentException
 	{
 		if (producer == null)
 		{
@@ -154,7 +162,7 @@ public class Events implements Runnable
 	 */
 	public static void disable()
 	{
-		final Integer count = DISABLED.get();
+		Integer count = DISABLED.get();
 
 		if (count != null)
 		{
@@ -173,7 +181,7 @@ public class Events implements Runnable
 	 */
 	public static boolean isDisabled()
 	{
-		final Integer count = DISABLED.get();
+		Integer count = DISABLED.get();
 
 		return ((count != null) && (count.intValue() > 0));
 	}
@@ -186,7 +194,7 @@ public class Events implements Runnable
 	 */
 	public static void enable() throws IllegalStateException
 	{
-		final Integer count = DISABLED.get();
+		Integer count = DISABLED.get();
 
 		if ((count == null) || (count.intValue() <= 0))
 		{
@@ -197,30 +205,32 @@ public class Events implements Runnable
 	}
 
 	/**
-	 * Returns the invocation pool for event handlers that are executed using pooled threads, the
-	 * {@link DefaultInvocationPool} if not specified.
+	 * Adds an event handler invocation to the pooled threads
 	 * 
-	 * @return the invocation pool, never null
+	 * @param producer the producer
+	 * @param consumer the consumer
+	 * @param event the event
+	 * @param method the method to call
 	 */
-	public static InvocationPool getInvocationPool()
+	static void invokeLater(Object producer, Object consumer, Object event, Method method)
 	{
-		return INSTANCE.invocationPool;
+		INSTANCE.executorService.execute(new Invoker(producer, consumer, event, method));
 	}
 
 	/**
-	 * Sets the invocation pool for event handlers that are executed using pooled threads.
+	 * Sets the executor service for event handlers that are executed using pooled threads.
 	 * 
-	 * @param invocationPool the invocation pool, mandatory
-	 * @throws IllegalArgumentException if the invocation pool is null
+	 * @param executorService the executor service, mandatory
+	 * @throws IllegalArgumentException if the executor service is null
 	 */
-	public void setInvocationPool(final InvocationPool invocationPool)
+	public void setExecutorService(ExecutorService executorService)
 	{
-		if (invocationPool == null)
+		if (executorService == null)
 		{
-			throw new IllegalArgumentException("Invocation pool is null");
+			throw new IllegalArgumentException("Executor service is null");
 		}
 
-		this.invocationPool = invocationPool;
+		this.executorService = executorService;
 	}
 
 	/**
@@ -239,7 +249,7 @@ public class Events implements Runnable
 	 * @param errorHandler the error handler, mandatory
 	 * @throws IllegalArgumentException if the error handler is null
 	 */
-	public static void setErrorHandler(final ErrorHandler errorHandler) throws IllegalArgumentException
+	public static void setErrorHandler(ErrorHandler errorHandler) throws IllegalArgumentException
 	{
 		if (errorHandler == null)
 		{
@@ -267,7 +277,7 @@ public class Events implements Runnable
 	/**
 	 * The thread pool for pending handler invocations.
 	 */
-	private InvocationPool invocationPool;
+	private ExecutorService executorService;
 
 	/**
 	 * Handler used for logging.
@@ -282,7 +292,7 @@ public class Events implements Runnable
 		producers = new ConcurrentHashMap<Reference<Object>, Producer>();
 		referenceQueue = new ReferenceQueue<Object>();
 
-		invocationPool = new DefaultInvocationPool();
+		executorService = Executors.newFixedThreadPool(DEFAULT_MAXIMUM_NUMBER_OF_THREADS);
 		errorHandler = new DefaultErrorHandler();
 	}
 
@@ -291,7 +301,7 @@ public class Events implements Runnable
 	 * 
 	 * @param action the action
 	 */
-	private void enqueue(final Action action)
+	private void enqueue(Action action)
 	{
 		actions.add(action);
 	}
@@ -309,7 +319,7 @@ public class Events implements Runnable
 			{
 				try
 				{
-					final Action action = actions.take();
+					Action action = actions.take();
 
 					switch (action.getType())
 					{
@@ -328,17 +338,17 @@ public class Events implements Runnable
 
 					cleanupReferences();
 				}
-				catch (final InterruptedException e)
+				catch (InterruptedException e)
 				{
 					throw e;
 				}
-				catch (final Exception e)
+				catch (Exception e)
 				{
 					errorHandler.unhandledException("Exception in event thread", e);
 				}
 			}
 		}
-		catch (final InterruptedException e)
+		catch (InterruptedException e)
 		{
 			errorHandler.interrupted(e);
 		}
@@ -349,12 +359,10 @@ public class Events implements Runnable
 	 * 
 	 * @param action the action
 	 */
-	private void executeBindAction(final Action action)
+	private void executeBindAction(Action action)
 	{
-		final Reference<Object> producerReference =
-		    new WeakIdentityReference<Object>(action.getProducer(), referenceQueue);
-		final Reference<Object> consumerReference =
-		    new WeakIdentityReference<Object>(action.getParameter(), referenceQueue);
+		Reference<Object> producerReference = new WeakIdentityReference<Object>(action.getProducer(), referenceQueue);
+		Reference<Object> consumerReference = new WeakIdentityReference<Object>(action.getParameter(), referenceQueue);
 
 		Producer producer = producers.get(producerReference);
 
@@ -373,13 +381,11 @@ public class Events implements Runnable
 	 * 
 	 * @param action the action
 	 */
-	private void executeUnbindAction(final Action action)
+	private void executeUnbindAction(Action action)
 	{
-		final Reference<Object> producerReference =
-		    new WeakIdentityReference<Object>(action.getProducer(), referenceQueue);
-		final Reference<Object> consumerReference =
-		    new WeakIdentityReference<Object>(action.getParameter(), referenceQueue);
-		final Producer producer = producers.get(producerReference);
+		Reference<Object> producerReference = new WeakIdentityReference<Object>(action.getProducer(), referenceQueue);
+		Reference<Object> consumerReference = new WeakIdentityReference<Object>(action.getParameter(), referenceQueue);
+		Producer producer = producers.get(producerReference);
 
 		if (producer == null)
 		{
@@ -394,11 +400,10 @@ public class Events implements Runnable
 	 * 
 	 * @param action the action
 	 */
-	private void executeFireAction(final Action action)
+	private void executeFireAction(Action action)
 	{
-		final Reference<Object> producerReference =
-		    new WeakIdentityReference<Object>(action.getProducer(), referenceQueue);
-		final Producer producer = producers.get(producerReference);
+		Reference<Object> producerReference = new WeakIdentityReference<Object>(action.getProducer(), referenceQueue);
+		Producer producer = producers.get(producerReference);
 
 		if (producer != null)
 		{
@@ -415,12 +420,12 @@ public class Events implements Runnable
 
 		while ((reference = referenceQueue.poll()) != null)
 		{
-			final Iterator<Entry<Reference<Object>, Producer>> it = producers.entrySet().iterator();
+			Iterator<Entry<Reference<Object>, Producer>> it = producers.entrySet().iterator();
 
 			while (it.hasNext())
 			{
-				final Entry<Reference<Object>, Producer> entry = it.next();
-				final Reference<Object> producerReference = entry.getKey();
+				Entry<Reference<Object>, Producer> entry = it.next();
+				Reference<Object> producerReference = entry.getKey();
 
 				if (producerReference == reference)
 				{
@@ -428,7 +433,7 @@ public class Events implements Runnable
 					break;
 				}
 
-				final Producer producer = entry.getValue();
+				Producer producer = entry.getValue();
 
 				producer.remove(reference);
 

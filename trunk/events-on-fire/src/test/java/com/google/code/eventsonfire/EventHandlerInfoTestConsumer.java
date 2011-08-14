@@ -19,7 +19,6 @@
  */
 package com.google.code.eventsonfire;
 
-
 public class EventHandlerInfoTestConsumer extends AbstractTestConsumer
 {
 

@@ -51,7 +51,8 @@ public interface ErrorHandler
 
 	/**
 	 * Called if the event thread got interrupted.
-	 * @param e TODO
+	 * 
+	 * @param e the interrupted exception
 	 */
 	void interrupted(InterruptedException e);
 

@@ -27,9 +27,27 @@ package com.google.code.eventsonfire;
 class Action
 {
 
+	/**
+	 * The types of actions
+	 * 
+	 * @author Manfred HANTSCHEL
+	 */
 	enum Type
 	{
-		BIND, UNBIND, FIRE
+		/**
+		 * Bind a consumer to a producer
+		 */
+		BIND,
+
+		/**
+		 * Unbind a consumer from a producer
+		 */
+		UNBIND,
+
+		/**
+		 * Fire an event
+		 */
+		FIRE
 	}
 
 	private final Type type;
@@ -44,7 +62,7 @@ class Action
 	 * @param parameter the parameter
 	 * @throws IllegalArgumentException if the action or the producer is null
 	 */
-	public Action(final Type type, final Object producer, final Object parameter) throws IllegalArgumentException
+	public Action(Type type, Object producer, Object parameter) throws IllegalArgumentException
 	{
 		super();
 
@@ -106,7 +124,7 @@ class Action
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean equals(final Object obj)
+	public boolean equals(Object obj)
 	{
 		if (obj == this)
 		{
@@ -123,7 +141,7 @@ class Action
 			return false;
 		}
 
-		final Action link = (Action) obj;
+		Action link = (Action) obj;
 
 		return (type == link.type) && (producer == link.producer) && (parameter == link.parameter);
 	}
