@@ -35,17 +35,23 @@ class Action
 	enum Type
 	{
 		/**
-		 * Bind a consumer to a producer
+		 * Binds a consumer to a producer
 		 */
 		BIND,
 
 		/**
-		 * Unbind a consumer from a producer
+		 * Binds a consumer to a producer and implements listeners according to the
+		 * {@link ListenerAutoInstrumentService}
+		 */
+		BIND_AND_LISTEN,
+
+		/**
+		 * Unbinds a consumer from a producer
 		 */
 		UNBIND,
 
 		/**
-		 * Fire an event
+		 * Fires an event
 		 */
 		FIRE
 	}

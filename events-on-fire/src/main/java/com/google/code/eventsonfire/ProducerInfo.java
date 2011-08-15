@@ -24,11 +24,11 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * A producer with its consumers
+ * Bindings of a producer with its consumers
  * 
  * @author Manfred Hantschel
  */
-class Producer
+class ProducerInfo
 {
 
 	/**
@@ -36,7 +36,7 @@ class Producer
 	 */
 	private final Set<Reference<?>> consumerReferences;
 
-	public Producer()
+	public ProducerInfo()
 	{
 		super();
 
@@ -101,7 +101,7 @@ class Producer
 	 * 
 	 * @param event the event
 	 */
-	public void fire(final Object event)
+	public void fire(Object producer, final Object event)
 	{
 		for (final Reference<?> consumerReference : consumerReferences)
 		{
@@ -111,7 +111,7 @@ class Producer
 			{
 				final ConsumerClassInfo consumerClassInfo = ConsumerClassInfo.getInstance(consumer.getClass());
 
-				consumerClassInfo.invoke(this, consumer, event);
+				consumerClassInfo.invoke(producer, consumer, event);
 			}
 		}
 	}

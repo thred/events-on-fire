@@ -21,8 +21,10 @@ package com.google.code.eventsonfire;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -31,7 +33,7 @@ import java.util.Map;
  * 
  * @author Manfred HANTSCHEL
  */
-class ConsumerClassInfo
+class ConsumerClassInfo implements Iterable<EventHandlerInfo>
 {
 
 	/**
@@ -63,7 +65,7 @@ class ConsumerClassInfo
 		return result;
 	}
 
-	private final EventHandlerInfo[] infos;
+	private final Collection<EventHandlerInfo> infos;
 
 	/**
 	 * Creates the info for the specified consumer class.
@@ -81,7 +83,7 @@ class ConsumerClassInfo
 			throw new IllegalArgumentException("Type is null");
 		}
 
-		List<EventHandlerInfo> infos = new ArrayList<EventHandlerInfo>();
+		Collection<EventHandlerInfo> infos = new ArrayList<EventHandlerInfo>();
 
 		for (Method method : type.getMethods())
 		{
@@ -98,7 +100,15 @@ class ConsumerClassInfo
 			throw new IllegalArgumentException("No event handler found: " + type);
 		}
 
-		this.infos = infos.toArray(new EventHandlerInfo[infos.size()]);
+		this.infos = Collections.unmodifiableCollection(infos);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Iterator<EventHandlerInfo> iterator()
+	{
+		return infos.iterator();
 	}
 
 	/**
