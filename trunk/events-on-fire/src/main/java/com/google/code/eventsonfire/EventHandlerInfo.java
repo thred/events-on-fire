@@ -21,6 +21,7 @@ package com.google.code.eventsonfire;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -96,7 +97,7 @@ class EventHandlerInfo
 	 */
 	public boolean invoke(final Object producer, final Object consumer, final Object event)
 	{
-		if ((!isProducerAssignable(producer.getClass())) || (!isEventAssignable(event.getClass())))
+		if (!isAssignable(producer.getClass(), event.getClass()))
 		{
 			return false;
 		}
@@ -141,6 +142,11 @@ class EventHandlerInfo
 		}
 
 		return false;
+	}
+
+	public boolean isAssignable(final Class<?> producerType, final Class<?> eventType)
+	{
+		return isProducerAssignable(producerType) && isEventAssignable(eventType);
 	}
 
 	/**
@@ -258,6 +264,21 @@ class EventHandlerInfo
 		}
 
 		return result.toArray(new Class<?>[result.size()]);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString()
+	{
+		StringBuilder builder = new StringBuilder("EventHandler ");
+
+		builder.append(method);
+		builder.append(" with producers " + Arrays.toString(producerTypes) + " and events "
+		    + Arrays.toString(eventTypes));
+
+		return builder.toString();
 	}
 
 }

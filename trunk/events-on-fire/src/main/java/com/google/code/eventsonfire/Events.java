@@ -90,7 +90,7 @@ public class Events implements Runnable
 	 * @param consumer the consumer / the listener, mandatory
 	 * @throws IllegalArgumentException if the producer or the consumer is null or the consumer cannot handle events
 	 */
-	public static void bind(Object producer, Object consumer) throws IllegalArgumentException
+	public static <PRODUCER_TYPE> PRODUCER_TYPE bind(PRODUCER_TYPE producer, Object consumer) throws IllegalArgumentException
 	{
 		if (producer == null)
 		{
@@ -103,6 +103,36 @@ public class Events implements Runnable
 		}
 
 		INSTANCE.enqueue(new Action(Type.BIND, producer, consumer));
+
+		return producer;
+	}
+
+	/**
+	 * Binds the specified consumer / listener to the specified producer. The consumer must contain at least one
+	 * <code>public void handleEvent(* event)</code> method, otherwise an exception is thrown. Both, the producer and
+	 * the consumer must have references outside of the Events class. All references within the Events class are weak,
+	 * so the objects and the binding gets garbage collected if not referenced. Does nothing if the objects are already
+	 * bonded................................................
+	 * 
+	 * @param producer the producer, mandatory
+	 * @param consumer the consumer / the listener, mandatory
+	 * @throws IllegalArgumentException if the producer or the consumer is null or the consumer cannot handle events
+	 */
+	public static <PRODUCER_TYPE> PRODUCER_TYPE bindAndListen(PRODUCER_TYPE producer, Object consumer) throws IllegalArgumentException
+	{
+		if (producer == null)
+		{
+			throw new IllegalArgumentException("Producer is null");
+		}
+
+		if (consumer == null)
+		{
+			throw new IllegalArgumentException("Consumer is null");
+		}
+
+		INSTANCE.enqueue(new Action(Type.BIND_AND_LISTEN, producer, consumer));
+
+		return producer;
 	}
 
 	/**
@@ -112,7 +142,7 @@ public class Events implements Runnable
 	 * @param consumer the consumer / the listener, mandatory
 	 * @throws IllegalArgumentException if the producer or the consumer is null
 	 */
-	public static void unbind(Object producer, Object consumer) throws IllegalArgumentException
+	public static <PRODUCER_TYPE> PRODUCER_TYPE unbind(PRODUCER_TYPE producer, Object consumer) throws IllegalArgumentException
 	{
 		if (producer == null)
 		{
@@ -125,6 +155,8 @@ public class Events implements Runnable
 		}
 
 		INSTANCE.enqueue(new Action(Type.UNBIND, producer, consumer));
+
+		return producer;
 	}
 
 	/**
@@ -136,8 +168,13 @@ public class Events implements Runnable
 	 * @param event the event, mandatory
 	 * @throws IllegalArgumentException if the producer or the event is null
 	 */
-	public static void fire(Object producer, Object event) throws IllegalArgumentException
+	public static <PRODUCER_TYPE> PRODUCER_TYPE fire(PRODUCER_TYPE producer, Object event) throws IllegalArgumentException
 	{
+		if (isDisabled())
+		{
+			return producer;
+		}
+
 		if (producer == null)
 		{
 			throw new IllegalArgumentException("Producer is null");
@@ -148,12 +185,9 @@ public class Events implements Runnable
 			throw new IllegalArgumentException("Event is null");
 		}
 
-		if (isDisabled())
-		{
-			return;
-		}
-
 		INSTANCE.enqueue(new Action(Type.FIRE, producer, event));
+
+		return producer;
 	}
 
 	/**
@@ -265,9 +299,9 @@ public class Events implements Runnable
 	private final BlockingQueue<Action> actions;
 
 	/**
-	 * A map containing all {@link Producer} objects containing the consumers by the producers.
+	 * A map containing all {@link ProducerInfo} objects containing the consumers by the producers.
 	 */
-	private final Map<Reference<Object>, Producer> producers;
+	private final Map<Reference<Object>, ProducerInfo> producerInfos;
 
 	/**
 	 * The reference queue for all weak references used to get rid of them if the object has been garbage collected.
@@ -289,7 +323,7 @@ public class Events implements Runnable
 		super();
 
 		actions = new LinkedBlockingQueue<Action>();
-		producers = new ConcurrentHashMap<Reference<Object>, Producer>();
+		producerInfos = new ConcurrentHashMap<Reference<Object>, ProducerInfo>();
 		referenceQueue = new ReferenceQueue<Object>();
 
 		executorService = Executors.newFixedThreadPool(DEFAULT_MAXIMUM_NUMBER_OF_THREADS);
@@ -331,6 +365,10 @@ public class Events implements Runnable
 							executeBindAction(action);
 							break;
 
+						case BIND_AND_LISTEN:
+							executeBindAndListenAction(action);
+							break;
+
 						case UNBIND:
 							executeUnbindAction(action);
 							break;
@@ -355,6 +393,22 @@ public class Events implements Runnable
 	}
 
 	/**
+	 * Fires an event from the producer
+	 * 
+	 * @param action the action
+	 */
+	private void executeFireAction(Action action)
+	{
+		Reference<Object> producerReference = new WeakIdentityReference<Object>(action.getProducer(), referenceQueue);
+		ProducerInfo producerInfo = producerInfos.get(producerReference);
+
+		if (producerInfo != null)
+		{
+			producerInfo.fire(action.getProducer(), action.getParameter());
+		}
+	}
+
+	/**
 	 * Binds a consumer to a producer
 	 * 
 	 * @param action the action
@@ -364,16 +418,46 @@ public class Events implements Runnable
 		Reference<Object> producerReference = new WeakIdentityReference<Object>(action.getProducer(), referenceQueue);
 		Reference<Object> consumerReference = new WeakIdentityReference<Object>(action.getParameter(), referenceQueue);
 
-		Producer producer = producers.get(producerReference);
+		ProducerInfo producerInfo = producerInfos.get(producerReference);
 
-		if (producer == null)
+		if (producerInfo == null)
 		{
-			producer = new Producer();
+			producerInfo = new ProducerInfo();
 
-			producers.put(producerReference, producer);
+			producerInfos.put(producerReference, producerInfo);
 		}
 
-		producer.add(consumerReference);
+		producerInfo.add(consumerReference);
+	}
+
+	/**
+	 * Binds a consumer to a producer
+	 * 
+	 * @param action the action
+	 */
+	private void executeBindAndListenAction(Action action)
+	{
+		Reference<Object> producerReference = new WeakIdentityReference<Object>(action.getProducer(), referenceQueue);
+		Reference<Object> consumerReference = new WeakIdentityReference<Object>(action.getParameter(), referenceQueue);
+
+		ProducerInfo producerInfo = producerInfos.get(producerReference);
+
+		if (producerInfo == null)
+		{
+			producerInfo = new ProducerInfo();
+
+			producerInfos.put(producerReference, producerInfo);
+		}
+
+		producerInfo.add(consumerReference);
+
+		Object producer = producerReference.get();
+		Object consumer = consumerReference.get();
+
+		if ((producer != null) && (consumer != null))
+		{
+			ListenerAutoInstrumentService.instrument(producer, consumer);
+		}
 	}
 
 	/**
@@ -385,7 +469,7 @@ public class Events implements Runnable
 	{
 		Reference<Object> producerReference = new WeakIdentityReference<Object>(action.getProducer(), referenceQueue);
 		Reference<Object> consumerReference = new WeakIdentityReference<Object>(action.getParameter(), referenceQueue);
-		Producer producer = producers.get(producerReference);
+		ProducerInfo producer = producerInfos.get(producerReference);
 
 		if (producer == null)
 		{
@@ -393,22 +477,6 @@ public class Events implements Runnable
 		}
 
 		producer.remove(consumerReference);
-	}
-
-	/**
-	 * Fires an event from the producer
-	 * 
-	 * @param action the action
-	 */
-	private void executeFireAction(Action action)
-	{
-		Reference<Object> producerReference = new WeakIdentityReference<Object>(action.getProducer(), referenceQueue);
-		Producer producer = producers.get(producerReference);
-
-		if (producer != null)
-		{
-			producer.fire(action.getParameter());
-		}
 	}
 
 	/**
@@ -420,11 +488,11 @@ public class Events implements Runnable
 
 		while ((reference = referenceQueue.poll()) != null)
 		{
-			Iterator<Entry<Reference<Object>, Producer>> it = producers.entrySet().iterator();
+			Iterator<Entry<Reference<Object>, ProducerInfo>> it = producerInfos.entrySet().iterator();
 
 			while (it.hasNext())
 			{
-				Entry<Reference<Object>, Producer> entry = it.next();
+				Entry<Reference<Object>, ProducerInfo> entry = it.next();
 				Reference<Object> producerReference = entry.getKey();
 
 				if (producerReference == reference)
@@ -433,7 +501,7 @@ public class Events implements Runnable
 					break;
 				}
 
-				Producer producer = entry.getValue();
+				ProducerInfo producer = entry.getValue();
 
 				producer.remove(reference);
 

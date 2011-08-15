@@ -24,7 +24,7 @@ import java.lang.ref.Reference;
 import org.testng.annotations.Test;
 
 /**
- * Tests the {@link Producer} class
+ * Tests the {@link ProducerInfo} class
  * 
  * @author Manfred Hantschel
  */
@@ -39,7 +39,7 @@ public class ProducerUnitTest
 		    new WeakIdentityReference<ProducerTestConsumer>(new ProducerTestConsumer());
 		final Reference<ProducerTestConsumer> consumerB =
 		    new WeakIdentityReference<ProducerTestConsumer>(new ProducerTestConsumer());
-		final Producer producer = new Producer();
+		final ProducerInfo producer = new ProducerInfo();
 
 		assert !producer.contains(consumerA);
 		assert !producer.contains(consumerB);
@@ -74,7 +74,7 @@ public class ProducerUnitTest
 	public void testConsumerReferencesFailA()
 	{
 		final Reference<String> reference = new WeakIdentityReference<String>("not a consumer");
-		final Producer producer = new Producer();
+		final ProducerInfo producer = new ProducerInfo();
 
 		producer.add(reference);
 	}
@@ -84,18 +84,18 @@ public class ProducerUnitTest
 	{
 		final ProducerTestConsumer consumer = new ProducerTestConsumer();
 		final Reference<ProducerTestConsumer> reference = new WeakIdentityReference<ProducerTestConsumer>(consumer);
-		final Producer producer = new Producer();
+		final ProducerInfo producer = new ProducerInfo();
 
 		producer.add(reference);
-		producer.fire("Event #1");
+		producer.fire("Producer", "Event #1");
 
 		assert "Event #1".equals(consumer.popEvent().getEvent());
 
-		producer.fire(Integer.valueOf(42));
+		producer.fire("Producer", Integer.valueOf(42));
 
 		assert Integer.valueOf(42).equals(consumer.popEvent().getEvent());
 
-		producer.fire(new Object());
+		producer.fire("Producer", new Object());
 
 		assert consumer.size() == 0;
 	}

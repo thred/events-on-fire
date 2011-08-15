@@ -17,74 +17,91 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.google.code.eventsonfire;
+package com.google.code.eventsonfire.swing;
 
-import java.lang.reflect.Method;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 
-import org.apache.log4j.Logger;
+import com.google.code.eventsonfire.Events;
 
-/**
- * Implementation of the {@link ErrorHandler} for LOG4J.
- * 
- * @author Manfred HANTSCHEL
- */
-public class Log4jErrorHandler implements ErrorHandler
+public class EventsWindowListener implements WindowListener
 {
 
-	private static final Logger LOG = Logger.getLogger(Log4jErrorHandler.class);
+	private final Reference<Object> producerReference;
 
-	private final Logger log;
-
-	/**
-	 * Default constructor for the error handler
-	 */
-	public Log4jErrorHandler()
-	{
-		this(LOG);
-	}
-
-	/**
-	 * Constructor for the error handler using the specified logger
-	 * 
-	 * @param log the logger
-	 */
-	public Log4jErrorHandler(Logger log)
+	public EventsWindowListener(Object producer)
 	{
 		super();
 
-		this.log = log;
+		producerReference = new WeakReference<Object>(producer);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void invocationFailed(final Object producer, final Object consumer, final Object event, final Method method, final String message, final Throwable cause)
+	public void windowOpened(WindowEvent e)
 	{
-		StringBuilder builder = new StringBuilder();
-
-		builder.append("Invocation of event handler failed: ").append(message);
-		builder.append("\n\tMethod:   ").append(method);
-		builder.append("\n\tProducer: ").append(producer);
-		builder.append("\n\tConsumer: ").append(consumer);
-		builder.append("\n\tEvent:    ").append(event);
-
-		log.error(builder.toString(), cause);
+		fire(e);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void unhandledException(final String message, final Throwable cause)
+	public void windowClosing(WindowEvent e)
 	{
-		log.error("UNHANDLED EXCEPTION: " + message, cause);
+		fire(e);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void interrupted(InterruptedException e)
+	public void windowClosed(WindowEvent e)
 	{
-		log.warn("Events thread got interrupted", e);
+		fire(e);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void windowIconified(WindowEvent e)
+	{
+		fire(e);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void windowDeiconified(WindowEvent e)
+	{
+		fire(e);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void windowActivated(WindowEvent e)
+	{
+		fire(e);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void windowDeactivated(WindowEvent e)
+	{
+		fire(e);
+	}
+
+	private void fire(WindowEvent e)
+	{
+		Object producer = producerReference.get();
+
+		if (producer != null)
+		{
+			Events.fire(producer, e);
+		}
 	}
 
 }
