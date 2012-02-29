@@ -35,22 +35,25 @@ import com.google.code.eventsonfire.Action.Type;
 
 /**
  * <p>
- * The base class for events-on-fire.
+ * The most important class for events-on-fire.
  * </p>
  * <p>
- * For a detailed usage description see <a href="http://code.google.com/p/events-on-fire/wiki/Usage">Usage on Google
- * Project Hosting</a>.
+ * For a detailed usage description see <a
+ * href="http://code.google.com/p/events-on-fire/wiki/Usage"
+ * target="_blank">Usage on Google Project Hosting</a>.
  * </p>
  * <p>
- * All references in this class are weak, unless otherwise noted. Any producer or consumer will get garbage collected,
- * if there is no reference to it outside this class. All checks will be made on identity instead of equality.
+ * All references to producers and consumers in this class are weak, unless
+ * otherwise noted. Any producer or consumer will get garbage collected, if
+ * there is no reference to it outside this class. All checks will be made on
+ * identity instead of equality.
  * </p>
  * 
- * @see <a href="http://code.google.com/p/events-on-fire/wiki/Usage" target="_blank">Usage on Google Project Hosting</a>
+ * @see <a href="http://code.google.com/p/events-on-fire/wiki/Usage"
+ *      target="_blank">Usage on Google Project Hosting</a>
  * @author Manfred Hantschel
  */
-public class Events implements Runnable
-{
+public class Events implements Runnable {
 
 	/**
 	 * The runnable for the thread for firing the events
@@ -72,33 +75,37 @@ public class Events implements Runnable
 	 */
 	private static final int DEFAULT_MAXIMUM_NUMBER_OF_THREADS = 4;
 
-	static
-	{
+	static {
 		EVENTS_THREAD = new Thread(INSTANCE, "Events Thread");
 		EVENTS_THREAD.setDaemon(true);
 		EVENTS_THREAD.start();
 	}
 
 	/**
-	 * Binds the specified consumer / listener to the specified producer. The consumer must contain at least one
-	 * <code>public void handleEvent(* event)</code> method, otherwise an exception is thrown. Both, the producer and
-	 * the consumer must have references outside of the Events class. All references within the Events class are weak,
-	 * so the objects and the binding gets garbage collected if not referenced. Does nothing if the objects are already
-	 * bonded.
+	 * Binds the specified consumer / listener to the specified producer. The
+	 * consumer must contain at least one
+	 * <code>@{@link EventHandler} public void handleEvent(* event)</code>
+	 * method, otherwise an exception is thrown. Both, the producer and the
+	 * consumer must have references outside of the Events class. All references
+	 * within the Events class are weak, so the objects and the binding gets
+	 * garbage collected if not referenced. Does nothing if the objects are
+	 * already bonded.
 	 * 
-	 * @param producer the producer, mandatory
-	 * @param consumer the consumer / the listener, mandatory
-	 * @throws IllegalArgumentException if the producer or the consumer is null or the consumer cannot handle events
+	 * @param producer
+	 *            the producer, mandatory
+	 * @param consumer
+	 *            the consumer / the listener, mandatory
+	 * @throws IllegalArgumentException
+	 *             if the producer or the consumer is null or the consumer
+	 *             cannot handle events
 	 */
-	public static <PRODUCER_TYPE> PRODUCER_TYPE bind(PRODUCER_TYPE producer, Object consumer) throws IllegalArgumentException
-	{
-		if (producer == null)
-		{
+	public static <PRODUCER_TYPE> PRODUCER_TYPE bind(PRODUCER_TYPE producer, Object consumer)
+			throws IllegalArgumentException {
+		if (producer == null) {
 			throw new IllegalArgumentException("Producer is null");
 		}
 
-		if (consumer == null)
-		{
+		if (consumer == null) {
 			throw new IllegalArgumentException("Consumer is null");
 		}
 
@@ -108,21 +115,23 @@ public class Events implements Runnable
 	}
 
 	/**
-	 * Unbinds the specified consumer from the specified producer. Does nothing if the objects are not bonded.
+	 * Unbinds the specified consumer from the specified producer. Does nothing
+	 * if the objects are not bonded.
 	 * 
-	 * @param producer the producer, mandatory
-	 * @param consumer the consumer / the listener, mandatory
-	 * @throws IllegalArgumentException if the producer or the consumer is null
+	 * @param producer
+	 *            the producer, mandatory
+	 * @param consumer
+	 *            the consumer / the listener, mandatory
+	 * @throws IllegalArgumentException
+	 *             if the producer or the consumer is null
 	 */
-	public static <PRODUCER_TYPE> PRODUCER_TYPE unbind(PRODUCER_TYPE producer, Object consumer) throws IllegalArgumentException
-	{
-		if (producer == null)
-		{
+	public static <PRODUCER_TYPE> PRODUCER_TYPE unbind(PRODUCER_TYPE producer, Object consumer)
+			throws IllegalArgumentException {
+		if (producer == null) {
 			throw new IllegalArgumentException("Producer is null");
 		}
 
-		if (consumer == null)
-		{
+		if (consumer == null) {
 			throw new IllegalArgumentException("Consumer is null");
 		}
 
@@ -132,28 +141,31 @@ public class Events implements Runnable
 	}
 
 	/**
-	 * Fires the specified event from the specified producer. Calls the appropriate
-	 * <code>public void handleEvent(* event)</code> method of all consumers. Does nothing, if events are disabled for
-	 * the current thread. Does nothing, if there are no consumers bonded to the producer.
+	 * Fires the specified event from the specified producer. Calls the
+	 * appropriate
+	 * <code>@{@link EventHandler} public void handleEvent(* event)</code>
+	 * method of all consumers. Does nothing, if events are disabled for the
+	 * current thread. Does nothing, if there are no consumers bonded to the
+	 * producer.
 	 * 
-	 * @param producer the producer, mandatory
-	 * @param event the event, mandatory
-	 * @throws IllegalArgumentException if the producer or the event is null
+	 * @param producer
+	 *            the producer, mandatory
+	 * @param event
+	 *            the event, mandatory
+	 * @throws IllegalArgumentException
+	 *             if the producer or the event is null
 	 */
-	public static <PRODUCER_TYPE> PRODUCER_TYPE fire(PRODUCER_TYPE producer, Object event) throws IllegalArgumentException
-	{
-		if (isDisabled())
-		{
+	public static <PRODUCER_TYPE> PRODUCER_TYPE fire(PRODUCER_TYPE producer, Object event)
+			throws IllegalArgumentException {
+		if (isDisabled()) {
 			return producer;
 		}
 
-		if (producer == null)
-		{
+		if (producer == null) {
 			throw new IllegalArgumentException("Producer is null");
 		}
 
-		if (event == null)
-		{
+		if (event == null) {
 			throw new IllegalArgumentException("Event is null");
 		}
 
@@ -163,19 +175,18 @@ public class Events implements Runnable
 	}
 
 	/**
-	 * Disables events from the current thread. Make sure to call the enable method by using a finally block! Multiple
-	 * calls to disable, increase a counter and it is necessary to call enable as often as you have called disable.
+	 * Disables events from the current thread. Make sure to call the enable
+	 * method by using a finally block! Multiple calls to disable, increase a
+	 * counter and it is necessary to call enable as often as you have called
+	 * disable.
 	 */
-	public static void disable()
-	{
+	public static void disable() {
 		Integer count = DISABLED.get();
 
-		if (count != null)
-		{
+		if (count != null) {
 			DISABLED.set(Integer.valueOf(count.intValue() + 1));
 		}
-		else
-		{
+		else {
 			DISABLED.set(Integer.valueOf(1));
 		}
 	}
@@ -185,25 +196,25 @@ public class Events implements Runnable
 	 * 
 	 * @return true if disabled
 	 */
-	public static boolean isDisabled()
-	{
+	public static boolean isDisabled() {
 		Integer count = DISABLED.get();
 
 		return ((count != null) && (count.intValue() > 0));
 	}
 
 	/**
-	 * Enables events from the current thread. It is wise to place call to this method within a finally block. Multiple
-	 * calls to disable, increase a counter and it is necessary to call enable as often as you have called disable.
+	 * Enables events from the current thread. It is wise to place call to this
+	 * method within a finally block. Multiple calls to disable, increase a
+	 * counter and it is necessary to call enable as often as you have called
+	 * disable.
 	 * 
-	 * @throws IllegalStateException if events from the current thread are not disabled
+	 * @throws IllegalStateException
+	 *             if events from the current thread are not disabled
 	 */
-	public static void enable() throws IllegalStateException
-	{
+	public static void enable() throws IllegalStateException {
 		Integer count = DISABLED.get();
 
-		if ((count == null) || (count.intValue() <= 0))
-		{
+		if ((count == null) || (count.intValue() <= 0)) {
 			throw new IllegalStateException("Events not disabled");
 		}
 
@@ -213,52 +224,67 @@ public class Events implements Runnable
 	/**
 	 * Adds an event handler invocation to the pooled threads
 	 * 
-	 * @param producer the producer
-	 * @param consumer the consumer
-	 * @param event the event
-	 * @param method the method to call
+	 * @param producer
+	 *            the producer
+	 * @param consumer
+	 *            the consumer
+	 * @param event
+	 *            the event
+	 * @param method
+	 *            the method to call
 	 */
-	static void invokeLater(Object producer, Object consumer, Object event, Method method)
-	{
+	static void invokeLater(Object producer, Object consumer, Object event, Method method) {
 		INSTANCE.executorService.execute(new Invoker(producer, consumer, event, method));
 	}
 
 	/**
-	 * Sets the executor service for event handlers that are executed using pooled threads.
+	 * Returns the executor service for event handler that are executed using
+	 * pooled threads. The default value is a fixed thread pool using a maximum
+	 * of 4 threads.
 	 * 
-	 * @param executorService the executor service, mandatory
-	 * @throws IllegalArgumentException if the executor service is null
+	 * @return the executor service
 	 */
-	public void setExecutorService(ExecutorService executorService)
-	{
-		if (executorService == null)
-		{
-			throw new IllegalArgumentException("Executor service is null");
-		}
-
-		this.executorService = executorService;
+	public static ExecutorService getExecutorService() {
+		return INSTANCE.executorService;
 	}
 
 	/**
-	 * Returns the error handler, the {@link DefaultErrorHandler} if not specified.
+	 * Sets the executor service for event handlers that are executed using
+	 * pooled threads.
+	 * 
+	 * @param executorService
+	 *            the executor service, mandatory
+	 * @throws IllegalArgumentException
+	 *             if the executor service is null
+	 */
+	public static void setExecutorService(ExecutorService executorService) {
+		if (executorService == null) {
+			throw new IllegalArgumentException("Executor service is null");
+		}
+
+		INSTANCE.executorService = executorService;
+	}
+
+	/**
+	 * Returns the error handler, the {@link DefaultErrorHandler} if not
+	 * specified.
 	 * 
 	 * @return the error handler, never null
 	 */
-	public static ErrorHandler getErrorHandler()
-	{
+	public static ErrorHandler getErrorHandler() {
 		return INSTANCE.errorHandler;
 	}
 
 	/**
 	 * Sets the error handler.
 	 * 
-	 * @param errorHandler the error handler, mandatory
-	 * @throws IllegalArgumentException if the error handler is null
+	 * @param errorHandler
+	 *            the error handler, mandatory
+	 * @throws IllegalArgumentException
+	 *             if the error handler is null
 	 */
-	public static void setErrorHandler(ErrorHandler errorHandler) throws IllegalArgumentException
-	{
-		if (errorHandler == null)
-		{
+	public static void setErrorHandler(ErrorHandler errorHandler) throws IllegalArgumentException {
+		if (errorHandler == null) {
 			throw new IllegalArgumentException("Error handler is null");
 		}
 
@@ -271,12 +297,14 @@ public class Events implements Runnable
 	private final BlockingQueue<Action> actions;
 
 	/**
-	 * A map containing all {@link ProducerInfo} objects containing the consumers by the producers.
+	 * A map containing all {@link ProducerInfo} objects containing the
+	 * consumers by the producers.
 	 */
 	private final Map<Reference<Object>, ProducerInfo> producerInfos;
 
 	/**
-	 * The reference queue for all weak references used to get rid of them if the object has been garbage collected.
+	 * The reference queue for all weak references used to get rid of them if
+	 * the object has been garbage collected.
 	 */
 	private final ReferenceQueue<Object> referenceQueue;
 
@@ -290,8 +318,7 @@ public class Events implements Runnable
 	 */
 	private ErrorHandler errorHandler;
 
-	private Events()
-	{
+	private Events() {
 		super();
 
 		actions = new LinkedBlockingQueue<Action>();
@@ -305,10 +332,10 @@ public class Events implements Runnable
 	/**
 	 * Adds an action to the pending actions
 	 * 
-	 * @param action the action
+	 * @param action
+	 *            the action
 	 */
-	private void enqueue(Action action)
-	{
+	private void enqueue(Action action) {
 		actions.add(action);
 	}
 
@@ -317,18 +344,13 @@ public class Events implements Runnable
 	 * 
 	 * @see java.lang.Runnable#run()
 	 */
-	public void run()
-	{
-		try
-		{
-			while (true)
-			{
-				try
-				{
+	public void run() {
+		try {
+			while (true) {
+				try {
 					Action action = actions.take();
 
-					switch (action.getType())
-					{
+					switch (action.getType()) {
 						case FIRE:
 							executeFireAction(action);
 							break;
@@ -344,18 +366,15 @@ public class Events implements Runnable
 
 					cleanupReferences();
 				}
-				catch (InterruptedException e)
-				{
+				catch (InterruptedException e) {
 					throw e;
 				}
-				catch (Exception e)
-				{
+				catch (Exception e) {
 					errorHandler.unhandledException("Exception in event thread", e);
 				}
 			}
 		}
-		catch (InterruptedException e)
-		{
+		catch (InterruptedException e) {
 			errorHandler.interrupted(e);
 		}
 	}
@@ -363,15 +382,14 @@ public class Events implements Runnable
 	/**
 	 * Fires an event from the producer
 	 * 
-	 * @param action the action
+	 * @param action
+	 *            the action
 	 */
-	private void executeFireAction(Action action)
-	{
+	private void executeFireAction(Action action) {
 		Reference<Object> producerReference = new WeakIdentityReference<Object>(action.getProducer(), referenceQueue);
 		ProducerInfo producerInfo = producerInfos.get(producerReference);
 
-		if (producerInfo != null)
-		{
+		if (producerInfo != null) {
 			producerInfo.fire(action.getProducer(), action.getParameter());
 		}
 	}
@@ -379,17 +397,16 @@ public class Events implements Runnable
 	/**
 	 * Binds a consumer to a producer
 	 * 
-	 * @param action the action
+	 * @param action
+	 *            the action
 	 */
-	private void executeBindAction(Action action)
-	{
+	private void executeBindAction(Action action) {
 		Reference<Object> producerReference = new WeakIdentityReference<Object>(action.getProducer(), referenceQueue);
 		Reference<Object> consumerReference = new WeakIdentityReference<Object>(action.getParameter(), referenceQueue);
 
 		ProducerInfo producerInfo = producerInfos.get(producerReference);
 
-		if (producerInfo == null)
-		{
+		if (producerInfo == null) {
 			producerInfo = new ProducerInfo();
 
 			producerInfos.put(producerReference, producerInfo);
@@ -401,16 +418,15 @@ public class Events implements Runnable
 	/**
 	 * Unbinds a consumer form a producer
 	 * 
-	 * @param action the action
+	 * @param action
+	 *            the action
 	 */
-	private void executeUnbindAction(Action action)
-	{
+	private void executeUnbindAction(Action action) {
 		Reference<Object> producerReference = new WeakIdentityReference<Object>(action.getProducer(), referenceQueue);
 		Reference<Object> consumerReference = new WeakIdentityReference<Object>(action.getParameter(), referenceQueue);
 		ProducerInfo producer = producerInfos.get(producerReference);
 
-		if (producer == null)
-		{
+		if (producer == null) {
 			return;
 		}
 
@@ -418,23 +434,20 @@ public class Events implements Runnable
 	}
 
 	/**
-	 * Uses the reference queue to clean up unused references to garbage collected objects
+	 * Uses the reference queue to clean up unused references to garbage
+	 * collected objects
 	 */
-	private void cleanupReferences()
-	{
+	private void cleanupReferences() {
 		Reference<?> reference;
 
-		while ((reference = referenceQueue.poll()) != null)
-		{
+		while ((reference = referenceQueue.poll()) != null) {
 			Iterator<Entry<Reference<Object>, ProducerInfo>> it = producerInfos.entrySet().iterator();
 
-			while (it.hasNext())
-			{
+			while (it.hasNext()) {
 				Entry<Reference<Object>, ProducerInfo> entry = it.next();
 				Reference<Object> producerReference = entry.getKey();
 
-				if (producerReference == reference)
-				{
+				if (producerReference == reference) {
 					it.remove();
 					break;
 				}
@@ -443,8 +456,7 @@ public class Events implements Runnable
 
 				producer.remove(reference);
 
-				if (producer.isEmpty())
-				{
+				if (producer.isEmpty()) {
 					it.remove();
 				}
 			}
