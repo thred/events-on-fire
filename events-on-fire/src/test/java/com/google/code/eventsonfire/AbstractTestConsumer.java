@@ -19,8 +19,8 @@
  */
 package com.google.code.eventsonfire;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.Stack;
+
 
 public abstract class AbstractTestConsumer
 {
@@ -61,13 +61,15 @@ public abstract class AbstractTestConsumer
 
 	private final Object semaphore = new Object();
 
-	private final Deque<Event> deque;
+    //private final Deque<Event> deque;
+    private final Stack<Event> deque;
 
 	public AbstractTestConsumer()
 	{
 		super();
 
-		deque = new ArrayDeque<Event>();
+        //deque = new ArrayDeque<Event>();
+        deque = new Stack<Event>();
 	}
 
 	public void pushEvent(final String method, final CharSequence producer, final Object event)
