@@ -108,34 +108,6 @@ public class Events implements Runnable
 	}
 
 	/**
-	 * Binds the specified consumer / listener to the specified producer. The consumer must contain at least one
-	 * <code>public void handleEvent(* event)</code> method, otherwise an exception is thrown. Both, the producer and
-	 * the consumer must have references outside of the Events class. All references within the Events class are weak,
-	 * so the objects and the binding gets garbage collected if not referenced. Does nothing if the objects are already
-	 * bonded................................................
-	 * 
-	 * @param producer the producer, mandatory
-	 * @param consumer the consumer / the listener, mandatory
-	 * @throws IllegalArgumentException if the producer or the consumer is null or the consumer cannot handle events
-	 */
-	public static <PRODUCER_TYPE> PRODUCER_TYPE bindAndListen(PRODUCER_TYPE producer, Object consumer) throws IllegalArgumentException
-	{
-		if (producer == null)
-		{
-			throw new IllegalArgumentException("Producer is null");
-		}
-
-		if (consumer == null)
-		{
-			throw new IllegalArgumentException("Consumer is null");
-		}
-
-		INSTANCE.enqueue(new Action(Type.BIND_AND_LISTEN, producer, consumer));
-
-		return producer;
-	}
-
-	/**
 	 * Unbinds the specified consumer from the specified producer. Does nothing if the objects are not bonded.
 	 * 
 	 * @param producer the producer, mandatory
@@ -365,10 +337,6 @@ public class Events implements Runnable
 							executeBindAction(action);
 							break;
 
-						case BIND_AND_LISTEN:
-							executeBindAndListenAction(action);
-							break;
-
 						case UNBIND:
 							executeUnbindAction(action);
 							break;
@@ -428,36 +396,6 @@ public class Events implements Runnable
 		}
 
 		producerInfo.add(consumerReference);
-	}
-
-	/**
-	 * Binds a consumer to a producer
-	 * 
-	 * @param action the action
-	 */
-	private void executeBindAndListenAction(Action action)
-	{
-		Reference<Object> producerReference = new WeakIdentityReference<Object>(action.getProducer(), referenceQueue);
-		Reference<Object> consumerReference = new WeakIdentityReference<Object>(action.getParameter(), referenceQueue);
-
-		ProducerInfo producerInfo = producerInfos.get(producerReference);
-
-		if (producerInfo == null)
-		{
-			producerInfo = new ProducerInfo();
-
-			producerInfos.put(producerReference, producerInfo);
-		}
-
-		producerInfo.add(consumerReference);
-
-		Object producer = producerReference.get();
-		Object consumer = consumerReference.get();
-
-		if ((producer != null) && (consumer != null))
-		{
-			ListenerAutoInstrumentService.instrument(producer, consumer);
-		}
 	}
 
 	/**

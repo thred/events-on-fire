@@ -40,12 +40,6 @@ class Action
 		BIND,
 
 		/**
-		 * Binds a consumer to a producer and implements listeners according to the
-		 * {@link ListenerAutoInstrumentService}
-		 */
-		BIND_AND_LISTEN,
-
-		/**
 		 * Unbinds a consumer from a producer
 		 */
 		UNBIND,
