@@ -31,89 +31,89 @@ import java.util.Set;
 class ProducerInfo
 {
 
-	/**
-	 * The set of references to consumers. The set it not synchronized. All calls are made by the {@link Events} thread.
-	 */
-	private final Set<Reference<?>> consumerReferences;
+    /**
+     * The set of references to consumers. The set it not synchronized. All calls are made by the {@link Events} thread.
+     */
+    private final Set<Reference<?>> consumerReferences;
 
-	public ProducerInfo()
-	{
-		super();
+    public ProducerInfo()
+    {
+        super();
 
-		consumerReferences = new LinkedHashSet<Reference<?>>();
-	}
+        consumerReferences = new LinkedHashSet<Reference<?>>();
+    }
 
-	/**
-	 * Adds the reference to the consumer to this producer.
-	 * 
-	 * @param consumerReference the reference to the consumer
-	 * @throws IllegalArgumentException if the consumer does not contain at least one method annotated with the
-	 *             {@link EventHandler} annotation
-	 */
-	public void add(final Reference<?> consumerReference) throws IllegalArgumentException
-	{
-		final Object consumer = consumerReference.get();
+    /**
+     * Adds the reference to the consumer to this producer.
+     * 
+     * @param consumerReference the reference to the consumer
+     * @throws IllegalArgumentException if the consumer does not contain at least one method annotated with the
+     *             {@link EventHandler} annotation
+     */
+    public void add(final Reference<?> consumerReference) throws IllegalArgumentException
+    {
+        final Object consumer = consumerReference.get();
 
-		if (consumer == null)
-		{
-			return;
-		}
+        if (consumer == null)
+        {
+            return;
+        }
 
-		// ensure validity
-		ConsumerClassInfo.getInstance(consumer.getClass());
+        // ensure validity
+        ConsumerClassInfo.getInstance(consumer.getClass());
 
-		consumerReferences.add(consumerReference);
-	}
+        consumerReferences.add(consumerReference);
+    }
 
-	/**
-	 * Returns true, if the reference to the consumer was already added to the producer
-	 * 
-	 * @param consumerReference the reference to the consume
-	 * @return true if the producer contains the reference to the consumer
-	 */
-	public boolean contains(final Reference<?> consumerReference)
-	{
-		return consumerReferences.contains(consumerReference);
-	}
+    /**
+     * Returns true, if the reference to the consumer was already added to the producer
+     * 
+     * @param consumerReference the reference to the consume
+     * @return true if the producer contains the reference to the consumer
+     */
+    public boolean contains(final Reference<?> consumerReference)
+    {
+        return consumerReferences.contains(consumerReference);
+    }
 
-	/**
-	 * Removes the reference to the consumer from this producer
-	 * 
-	 * @param consumerReference the reference to the consumer
-	 */
-	public void remove(final Reference<?> consumerReference)
-	{
-		consumerReferences.remove(consumerReference);
-	}
+    /**
+     * Removes the reference to the consumer from this producer
+     * 
+     * @param consumerReference the reference to the consumer
+     */
+    public void remove(final Reference<?> consumerReference)
+    {
+        consumerReferences.remove(consumerReference);
+    }
 
-	/**
-	 * Returns true if the set of consumers is empty
-	 * 
-	 * @return true if empty
-	 */
-	public boolean isEmpty()
-	{
-		return consumerReferences.isEmpty();
-	}
+    /**
+     * Returns true if the set of consumers is empty
+     * 
+     * @return true if empty
+     */
+    public boolean isEmpty()
+    {
+        return consumerReferences.isEmpty();
+    }
 
-	/**
-	 * Fires an event to all consumers
-	 * 
-	 * @param event the event
-	 */
-	public void fire(Object producer, final Object event)
-	{
-		for (final Reference<?> consumerReference : consumerReferences)
-		{
-			final Object consumer = consumerReference.get();
+    /**
+     * Fires an event to all consumers
+     * 
+     * @param event the event
+     */
+    public void fire(Object producer, final Object event)
+    {
+        for (final Reference<?> consumerReference : consumerReferences)
+        {
+            final Object consumer = consumerReference.get();
 
-			if (consumer != null)
-			{
-				final ConsumerClassInfo consumerClassInfo = ConsumerClassInfo.getInstance(consumer.getClass());
+            if (consumer != null)
+            {
+                final ConsumerClassInfo consumerClassInfo = ConsumerClassInfo.getInstance(consumer.getClass());
 
-				consumerClassInfo.invoke(producer, consumer, event);
-			}
-		}
-	}
+                consumerClassInfo.invoke(producer, consumer, event);
+            }
+        }
+    }
 
 }

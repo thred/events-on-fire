@@ -31,60 +31,61 @@ import java.util.logging.Logger;
 public class JDKLoggingErrorHandler implements ErrorHandler
 {
 
-	private static final Logger LOG = Logger.getLogger(JDKLoggingErrorHandler.class.getName());
+    private static final Logger LOG = Logger.getLogger(JDKLoggingErrorHandler.class.getName());
 
-	private final Logger log;
+    private final Logger log;
 
-	/**
-	 * Default constructor for the error handler
-	 */
-	public JDKLoggingErrorHandler()
-	{
-		this(LOG);
-	}
+    /**
+     * Default constructor for the error handler
+     */
+    public JDKLoggingErrorHandler()
+    {
+        this(LOG);
+    }
 
-	/**
-	 * Constructor for the error handler using the specified logger
-	 * 
-	 * @param log the logger
-	 */
-	public JDKLoggingErrorHandler(Logger log)
-	{
-		super();
+    /**
+     * Constructor for the error handler using the specified logger
+     * 
+     * @param log the logger
+     */
+    public JDKLoggingErrorHandler(Logger log)
+    {
+        super();
 
-		this.log = log;
-	}
+        this.log = log;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void invocationFailed(final Object producer, final Object consumer, final Object event, final Method method, final String message, final Throwable cause)
-	{
-		StringBuilder builder = new StringBuilder();
+    /**
+     * {@inheritDoc}
+     */
+    public void invocationFailed(final Object producer, final Object consumer, final Object event, final Method method,
+        final String message, final Throwable cause)
+    {
+        StringBuilder builder = new StringBuilder();
 
-		builder.append("Invocation of event handler failed: ").append(message);
-		builder.append("\n\tMethod:   ").append(method);
-		builder.append("\n\tProducer: ").append(producer);
-		builder.append("\n\tConsumer: ").append(consumer);
-		builder.append("\n\tEvent:    ").append(event);
+        builder.append("Invocation of event handler failed: ").append(message);
+        builder.append("\n\tMethod:   ").append(method);
+        builder.append("\n\tProducer: ").append(producer);
+        builder.append("\n\tConsumer: ").append(consumer);
+        builder.append("\n\tEvent:    ").append(event);
 
-		log.log(Level.SEVERE, builder.toString(), cause);
-	}
+        log.log(Level.SEVERE, builder.toString(), cause);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void unhandledException(final String message, final Throwable cause)
-	{
-		log.log(Level.SEVERE, "UNHANDLED EXCEPTION: " + message, cause);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void unhandledException(final String message, final Throwable cause)
+    {
+        log.log(Level.SEVERE, "UNHANDLED EXCEPTION: " + message, cause);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void interrupted(InterruptedException e)
-	{
-		log.log(Level.SEVERE, "Events thread got interrupted", e);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void interrupted(InterruptedException e)
+    {
+        log.log(Level.SEVERE, "Events thread got interrupted", e);
+    }
 
 }

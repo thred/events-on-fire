@@ -36,97 +36,97 @@ import java.util.Map;
 class ConsumerClassInfo implements Iterable<EventHandlerInfo>
 {
 
-	/**
-	 * Holds all previously generated {@link ConsumerClassInfo} objects
-	 */
-	private static final Map<Class<?>, ConsumerClassInfo> CACHE = new HashMap<Class<?>, ConsumerClassInfo>();
+    /**
+     * Holds all previously generated {@link ConsumerClassInfo} objects
+     */
+    private static final Map<Class<?>, ConsumerClassInfo> CACHE = new HashMap<Class<?>, ConsumerClassInfo>();
 
-	/**
-	 * Returns the class info for the specified consumer class. Uses a cache to speed up processing.
-	 * 
-	 * @param type the class, mandatory
-	 * @return the class info for the consumer, never null
-	 * @throws IllegalArgumentException if the type is null or the class does not contain any method annotated with the
-	 *             {@link EventHandler} annotation
-	 */
-	public static ConsumerClassInfo getInstance(Class<?> type) throws IllegalArgumentException
-	{
-		ConsumerClassInfo result = CACHE.get(type);
+    /**
+     * Returns the class info for the specified consumer class. Uses a cache to speed up processing.
+     * 
+     * @param type the class, mandatory
+     * @return the class info for the consumer, never null
+     * @throws IllegalArgumentException if the type is null or the class does not contain any method annotated with the
+     *             {@link EventHandler} annotation
+     */
+    public static ConsumerClassInfo getInstance(Class<?> type) throws IllegalArgumentException
+    {
+        ConsumerClassInfo result = CACHE.get(type);
 
-		if (result != null)
-		{
-			return result;
-		}
+        if (result != null)
+        {
+            return result;
+        }
 
-		result = new ConsumerClassInfo(type);
+        result = new ConsumerClassInfo(type);
 
-		CACHE.put(type, result);
+        CACHE.put(type, result);
 
-		return result;
-	}
+        return result;
+    }
 
-	private final Collection<EventHandlerInfo> infos;
+    private final Collection<EventHandlerInfo> infos;
 
-	/**
-	 * Creates the info for the specified consumer class.
-	 * 
-	 * @param type the class, mandatory
-	 * @throws IllegalArgumentException if the type is null or the class does not contain any method annotated with the
-	 *             {@link EventHandler} annotation
-	 */
-	private ConsumerClassInfo(Class<?> type) throws IllegalArgumentException
-	{
-		super();
+    /**
+     * Creates the info for the specified consumer class.
+     * 
+     * @param type the class, mandatory
+     * @throws IllegalArgumentException if the type is null or the class does not contain any method annotated with the
+     *             {@link EventHandler} annotation
+     */
+    private ConsumerClassInfo(Class<?> type) throws IllegalArgumentException
+    {
+        super();
 
-		if (type == null)
-		{
-			throw new IllegalArgumentException("Type is null");
-		}
+        if (type == null)
+        {
+            throw new IllegalArgumentException("Type is null");
+        }
 
-		Collection<EventHandlerInfo> infos = new ArrayList<EventHandlerInfo>();
+        Collection<EventHandlerInfo> infos = new ArrayList<EventHandlerInfo>();
 
-		for (Method method : type.getMethods())
-		{
-			EventHandler annotation = method.getAnnotation(EventHandler.class);
+        for (Method method : type.getMethods())
+        {
+            EventHandler annotation = method.getAnnotation(EventHandler.class);
 
-			if (annotation != null)
-			{
-				infos.add(new EventHandlerInfo(method));
-			}
-		}
+            if (annotation != null)
+            {
+                infos.add(new EventHandlerInfo(method));
+            }
+        }
 
-		if (infos.size() == 0)
-		{
-			throw new IllegalArgumentException("No event handler found: " + type);
-		}
+        if (infos.size() == 0)
+        {
+            throw new IllegalArgumentException("No event handler found: " + type);
+        }
 
-		this.infos = Collections.unmodifiableCollection(infos);
-	}
+        this.infos = Collections.unmodifiableCollection(infos);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Iterator<EventHandlerInfo> iterator()
-	{
-		return infos.iterator();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Iterator<EventHandlerInfo> iterator()
+    {
+        return infos.iterator();
+    }
 
-	/**
-	 * Invokes all event handler methods of the class if the method is applicable for the type of producer, consumer and
-	 * event. If an error occurs when invoking the method, the invocationFailed method of the {@link ErrorHandler} is
-	 * called. If the invocation type is set to parallel, it uses the thread pool of the {@link Events} class to
-	 * delegate the invocation of the method.
-	 * 
-	 * @param producer the producer, mandatory
-	 * @param consumer the consumer, mandatory
-	 * @param event the event, mandatory
-	 */
-	public void invoke(Object producer, Object consumer, Object event)
-	{
-		for (EventHandlerInfo info : infos)
-		{
-			info.invoke(producer, consumer, event);
-		}
-	}
+    /**
+     * Invokes all event handler methods of the class if the method is applicable for the type of producer, consumer and
+     * event. If an error occurs when invoking the method, the invocationFailed method of the {@link ErrorHandler} is
+     * called. If the invocation type is set to parallel, it uses the thread pool of the {@link Events} class to
+     * delegate the invocation of the method.
+     * 
+     * @param producer the producer, mandatory
+     * @param consumer the consumer, mandatory
+     * @param event the event, mandatory
+     */
+    public void invoke(Object producer, Object consumer, Object event)
+    {
+        for (EventHandlerInfo info : infos)
+        {
+            info.invoke(producer, consumer, event);
+        }
+    }
 
 }

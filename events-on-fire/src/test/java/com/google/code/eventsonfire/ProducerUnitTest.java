@@ -32,72 +32,72 @@ import org.testng.annotations.Test;
 public class ProducerUnitTest
 {
 
-	@Test
-	public void testConsumerReferences()
-	{
-		final Reference<ProducerTestConsumer> consumerA =
-		    new WeakIdentityReference<ProducerTestConsumer>(new ProducerTestConsumer());
-		final Reference<ProducerTestConsumer> consumerB =
-		    new WeakIdentityReference<ProducerTestConsumer>(new ProducerTestConsumer());
-		final ProducerInfo producer = new ProducerInfo();
+    @Test
+    public void testConsumerReferences()
+    {
+        final Reference<ProducerTestConsumer> consumerA =
+            new WeakIdentityReference<ProducerTestConsumer>(new ProducerTestConsumer());
+        final Reference<ProducerTestConsumer> consumerB =
+            new WeakIdentityReference<ProducerTestConsumer>(new ProducerTestConsumer());
+        final ProducerInfo producer = new ProducerInfo();
 
-		assert !producer.contains(consumerA);
-		assert !producer.contains(consumerB);
-		assert producer.isEmpty();
+        assert !producer.contains(consumerA);
+        assert !producer.contains(consumerB);
+        assert producer.isEmpty();
 
-		producer.add(consumerA);
+        producer.add(consumerA);
 
-		assert producer.contains(consumerA);
-		assert !producer.contains(consumerB);
-		assert !producer.isEmpty();
+        assert producer.contains(consumerA);
+        assert !producer.contains(consumerB);
+        assert !producer.isEmpty();
 
-		producer.add(consumerB);
+        producer.add(consumerB);
 
-		assert producer.contains(consumerA);
-		assert producer.contains(consumerB);
-		assert !producer.isEmpty();
+        assert producer.contains(consumerA);
+        assert producer.contains(consumerB);
+        assert !producer.isEmpty();
 
-		producer.remove(consumerA);
+        producer.remove(consumerA);
 
-		assert !producer.contains(consumerA);
-		assert producer.contains(consumerB);
-		assert !producer.isEmpty();
+        assert !producer.contains(consumerA);
+        assert producer.contains(consumerB);
+        assert !producer.isEmpty();
 
-		producer.remove(consumerB);
+        producer.remove(consumerB);
 
-		assert !producer.contains(consumerA);
-		assert !producer.contains(consumerB);
-		assert producer.isEmpty();
-	}
+        assert !producer.contains(consumerA);
+        assert !producer.contains(consumerB);
+        assert producer.isEmpty();
+    }
 
-	@Test(expectedExceptions = IllegalArgumentException.class)
-	public void testConsumerReferencesFailA()
-	{
-		final Reference<String> reference = new WeakIdentityReference<String>("not a consumer");
-		final ProducerInfo producer = new ProducerInfo();
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testConsumerReferencesFailA()
+    {
+        final Reference<String> reference = new WeakIdentityReference<String>("not a consumer");
+        final ProducerInfo producer = new ProducerInfo();
 
-		producer.add(reference);
-	}
+        producer.add(reference);
+    }
 
-	@Test
-	public void testFire()
-	{
-		final ProducerTestConsumer consumer = new ProducerTestConsumer();
-		final Reference<ProducerTestConsumer> reference = new WeakIdentityReference<ProducerTestConsumer>(consumer);
-		final ProducerInfo producer = new ProducerInfo();
+    @Test
+    public void testFire()
+    {
+        final ProducerTestConsumer consumer = new ProducerTestConsumer();
+        final Reference<ProducerTestConsumer> reference = new WeakIdentityReference<ProducerTestConsumer>(consumer);
+        final ProducerInfo producer = new ProducerInfo();
 
-		producer.add(reference);
-		producer.fire("Producer", "Event #1");
+        producer.add(reference);
+        producer.fire("Producer", "Event #1");
 
-		assert "Event #1".equals(consumer.popEvent().getEvent());
+        assert "Event #1".equals(consumer.popEvent().getEvent());
 
-		producer.fire("Producer", Integer.valueOf(42));
+        producer.fire("Producer", Integer.valueOf(42));
 
-		assert Integer.valueOf(42).equals(consumer.popEvent().getEvent());
+        assert Integer.valueOf(42).equals(consumer.popEvent().getEvent());
 
-		producer.fire("Producer", new Object());
+        producer.fire("Producer", new Object());
 
-		assert consumer.size() == 0;
-	}
+        assert consumer.size() == 0;
+    }
 
 }

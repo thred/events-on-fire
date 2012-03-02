@@ -27,123 +27,123 @@ package com.google.code.eventsonfire;
 class Action
 {
 
-	/**
-	 * The types of actions
-	 * 
-	 * @author Manfred HANTSCHEL
-	 */
-	enum Type
-	{
-		/**
-		 * Binds a consumer to a producer
-		 */
-		BIND,
+    /**
+     * The types of actions
+     * 
+     * @author Manfred HANTSCHEL
+     */
+    enum Type
+    {
+        /**
+         * Binds a consumer to a producer
+         */
+        BIND,
 
-		/**
-		 * Unbinds a consumer from a producer
-		 */
-		UNBIND,
+        /**
+         * Unbinds a consumer from a producer
+         */
+        UNBIND,
 
-		/**
-		 * Fires an event
-		 */
-		FIRE
-	}
+        /**
+         * Fires an event
+         */
+        FIRE
+    }
 
-	private final Type type;
-	private final Object producer;
-	private final Object parameter;
+    private final Type type;
+    private final Object producer;
+    private final Object parameter;
 
-	/**
-	 * Creates a new action.
-	 * 
-	 * @param type the type of the action, mandatory
-	 * @param producer the producer, mandatory
-	 * @param parameter the parameter
-	 * @throws IllegalArgumentException if the action or the producer is null
-	 */
-	public Action(Type type, Object producer, Object parameter) throws IllegalArgumentException
-	{
-		super();
+    /**
+     * Creates a new action.
+     * 
+     * @param type the type of the action, mandatory
+     * @param producer the producer, mandatory
+     * @param parameter the parameter
+     * @throws IllegalArgumentException if the action or the producer is null
+     */
+    public Action(Type type, Object producer, Object parameter) throws IllegalArgumentException
+    {
+        super();
 
-		if (type == null)
-		{
-			throw new IllegalArgumentException("Type is null");
-		}
+        if (type == null)
+        {
+            throw new IllegalArgumentException("Type is null");
+        }
 
-		if (producer == null)
-		{
-			throw new IllegalArgumentException("Producer is null");
-		}
+        if (producer == null)
+        {
+            throw new IllegalArgumentException("Producer is null");
+        }
 
-		this.type = type;
-		this.producer = producer;
-		this.parameter = parameter;
-	}
+        this.type = type;
+        this.producer = producer;
+        this.parameter = parameter;
+    }
 
-	/**
-	 * Returns the type of the action.
-	 * 
-	 * @return the type, never null
-	 */
-	public Type getType()
-	{
-		return type;
-	}
+    /**
+     * Returns the type of the action.
+     * 
+     * @return the type, never null
+     */
+    public Type getType()
+    {
+        return type;
+    }
 
-	/**
-	 * Returns the producer
-	 * 
-	 * @return the producer, never null
-	 */
-	public Object getProducer()
-	{
-		return producer;
-	}
+    /**
+     * Returns the producer
+     * 
+     * @return the producer, never null
+     */
+    public Object getProducer()
+    {
+        return producer;
+    }
 
-	/**
-	 * Returns the parameter
-	 * 
-	 * @return the parameter
-	 */
-	public Object getParameter()
-	{
-		return parameter;
-	}
+    /**
+     * Returns the parameter
+     * 
+     * @return the parameter
+     */
+    public Object getParameter()
+    {
+        return parameter;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int hashCode()
-	{
-		return type.hashCode() ^ producer.hashCode() ^ ((parameter != null) ? parameter.hashCode() : -1);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        return type.hashCode() ^ producer.hashCode() ^ ((parameter != null) ? parameter.hashCode() : -1);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (obj == this)
-		{
-			return true;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == this)
+        {
+            return true;
+        }
 
-		if (obj == null)
-		{
-			return false;
-		}
+        if (obj == null)
+        {
+            return false;
+        }
 
-		if (!(obj instanceof Action))
-		{
-			return false;
-		}
+        if (!(obj instanceof Action))
+        {
+            return false;
+        }
 
-		Action link = (Action) obj;
+        Action link = (Action) obj;
 
-		return (type == link.type) && (producer == link.producer) && (parameter == link.parameter);
-	}
+        return (type == link.type) && (producer == link.producer) && (parameter == link.parameter);
+    }
 
 }
