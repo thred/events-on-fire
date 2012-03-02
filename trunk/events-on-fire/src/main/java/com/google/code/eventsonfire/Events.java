@@ -82,8 +82,45 @@ public class Events implements Runnable {
 	}
 
 	/**
-	 * Binds the specified consumer / listener to the specified producer. The
-	 * consumer must contain at least one
+	 * <p>
+	 * Binds the specified consumer / listener to be notified by all events it
+	 * can handle.
+	 * </p>
+	 * <p>
+	 * The consumer must contain at least one
+	 * <code>@{@link EventHandler} public void handleEvent(* event)</code>
+	 * method, otherwise an exception is thrown. The consumer must have
+	 * references outside of the Events class. All references within the Events
+	 * class are weak, so the objects and the binding gets garbage collected if
+	 * not referenced. Does nothing if the objects are already bonded.
+	 * 
+	 * @param consumer
+	 *            the consumer / the listener, mandatory
+	 * @throws IllegalArgumentException
+	 *             if the producer or the consumer is null or the consumer
+	 *             cannot handle events
+	 */
+	public static void bind(Object consumer) {
+		bind(Object.class, consumer);
+	}
+
+	/**
+	 * <p>
+	 * Binds the specified consumer / listener to the specified instance of
+	 * class of a producer. The producer may either be an instance or a class
+	 * reference.
+	 * </p>
+	 * <ul>
+	 * <li>In case of an instance, the consumer / listener is notified, if the
+	 * specified producer fires the event (producers are compared by identity
+	 * rather than equality).</li>
+	 * <li>In case of a class reference, the consumer / listener is notified, if
+	 * a producer, that fires the event, is an instance of the specified class
+	 * (e.g. if the specified producer is a <code>Object.class</code> reference,
+	 * then the consumer get notified by all events it can handle).</li>
+	 * </ul>
+	 * <p>
+	 * The consumer must contain at least one
 	 * <code>@{@link EventHandler} public void handleEvent(* event)</code>
 	 * method, otherwise an exception is thrown. Both, the producer and the
 	 * consumer must have references outside of the Events class. All references
@@ -92,9 +129,10 @@ public class Events implements Runnable {
 	 * already bonded.
 	 * 
 	 * @param producer
-	 *            the producer, mandatory
+	 *            the instance or class of a producer, mandatory
 	 * @param consumer
 	 *            the consumer / the listener, mandatory
+	 * @return the producer
 	 * @throws IllegalArgumentException
 	 *             if the producer or the consumer is null or the consumer
 	 *             cannot handle events
@@ -115,13 +153,46 @@ public class Events implements Runnable {
 	}
 
 	/**
-	 * Unbinds the specified consumer from the specified producer. Does nothing
-	 * if the objects are not bonded.
+	 * <p>
+	 * Unbinds the specified consumer from all producers. Does nothing if the
+	 * objects are not bonded.
+	 * </p>
 	 * 
 	 * @param producer
-	 *            the producer, mandatory
+	 *            the instance or class of a producer, mandatory
 	 * @param consumer
 	 *            the consumer / the listener, mandatory
+	 * @return the producer
+	 * @throws IllegalArgumentException
+	 *             if the producer or the consumer is null
+	 */
+	public static void unbind(Object consumer) {
+		unbind(Object.class, consumer);
+	}
+
+	/**
+	 * <p>
+	 * Unbinds the specified consumer from the specified instance or class of a
+	 * producer. The producer may either be an instance or a class reference.
+	 * </p>
+	 * <ul>
+	 * <li>In case of an instance, the consumer / listener unbonded from the
+	 * specified producer (producers are compared by identity rather than
+	 * equality).</li>
+	 * <li>In case of a class reference, the consumer / listener unbonded from
+	 * any producer that is an instance of the specified class (e.g. if the
+	 * specified producer is a <code>Object.class</code> reference, then the
+	 * consumer get unbonded from all producers).</li>
+	 * </ul>
+	 * <p>
+	 * Does nothing if the objects are not bonded.
+	 * </p>
+	 * 
+	 * @param producer
+	 *            the instance or class of a producer, mandatory
+	 * @param consumer
+	 *            the consumer / the listener, mandatory
+	 * @return the producer
 	 * @throws IllegalArgumentException
 	 *             if the producer or the consumer is null
 	 */
@@ -141,12 +212,19 @@ public class Events implements Runnable {
 	}
 
 	/**
-	 * Fires the specified event from the specified producer. Calls the
-	 * appropriate
+	 * <p>
+	 * Fires the specified event from the specified instance of a producer.
+	 * Notifies all consumers that are either directly bonded to the producer or
+	 * that are bonded to the class, any sub-class or any interface of the
+	 * producer.
+	 * </p>
+	 * <p>
+	 * Calls the appropriate
 	 * <code>@{@link EventHandler} public void handleEvent(* event)</code>
 	 * method of all consumers. Does nothing, if events are disabled for the
 	 * current thread. Does nothing, if there are no consumers bonded to the
 	 * producer.
+	 * </p>
 	 * 
 	 * @param producer
 	 *            the producer, mandatory
@@ -175,10 +253,14 @@ public class Events implements Runnable {
 	}
 
 	/**
-	 * Disables events from the current thread. Make sure to call the enable
-	 * method by using a finally block! Multiple calls to disable, increase a
-	 * counter and it is necessary to call enable as often as you have called
-	 * disable.
+	 * <p>
+	 * Disables events from the current thread.
+	 * </p>
+	 * <p>
+	 * Make sure to call the enable method by using a finally block! Multiple
+	 * calls to disable, increase a counter and it is necessary to call enable
+	 * as often as you have called disable.
+	 * </p>
 	 */
 	public static void disable() {
 		Integer count = DISABLED.get();
@@ -203,10 +285,14 @@ public class Events implements Runnable {
 	}
 
 	/**
-	 * Enables events from the current thread. It is wise to place call to this
-	 * method within a finally block. Multiple calls to disable, increase a
-	 * counter and it is necessary to call enable as often as you have called
-	 * disable.
+	 * <p>
+	 * Enables events from the current thread.
+	 * </p>
+	 * <p>
+	 * It is wise to place call to this method within a finally block. Multiple
+	 * calls to disable, increase a counter and it is necessary to call enable
+	 * as often as you have called disable.
+	 * </p>
 	 * 
 	 * @throws IllegalStateException
 	 *             if events from the current thread are not disabled
@@ -386,11 +472,35 @@ public class Events implements Runnable {
 	 *            the action
 	 */
 	private void executeFireAction(Action action) {
-		Reference<Object> producerReference = new WeakIdentityReference<Object>(action.getProducer(), referenceQueue);
+		Object producer = action.getProducer();
+		Object parameter = action.getParameter();
+
+		if (!(producer instanceof Class)) {
+			executeFireAction(new WeakIdentityReference<Object>(producer, referenceQueue), producer, parameter);
+		}
+
+		Class<?> producersClass = producer.getClass();
+
+		executeFireAction(new WeakIdentityReference<Object>(producersClass, referenceQueue), producer, parameter);
+
+		for (Class<?> producersInterface : producersClass.getInterfaces()) {
+			executeFireAction(new WeakIdentityReference<Object>(producersInterface, referenceQueue), producer,
+					parameter);
+		}
+
+		producersClass = producersClass.getSuperclass();
+
+		while (producersClass != null) {
+			executeFireAction(new WeakIdentityReference<Object>(producersClass, referenceQueue), producer, parameter);
+			producersClass = producersClass.getSuperclass();
+		}
+	}
+
+	private void executeFireAction(Reference<Object> producerReference, Object producer, Object parameter) {
 		ProducerInfo producerInfo = producerInfos.get(producerReference);
 
 		if (producerInfo != null) {
-			producerInfo.fire(action.getProducer(), action.getParameter());
+			producerInfo.fire(producer, parameter);
 		}
 	}
 
@@ -422,15 +532,31 @@ public class Events implements Runnable {
 	 *            the action
 	 */
 	private void executeUnbindAction(Action action) {
-		Reference<Object> producerReference = new WeakIdentityReference<Object>(action.getProducer(), referenceQueue);
+		Object producer = action.getProducer();
 		Reference<Object> consumerReference = new WeakIdentityReference<Object>(action.getParameter(), referenceQueue);
-		ProducerInfo producer = producerInfos.get(producerReference);
 
-		if (producer == null) {
-			return;
+		if (producer instanceof Class) {
+			for (Map.Entry<Reference<Object>, ProducerInfo> entry : producerInfos.entrySet()) {
+				Object current = entry.getKey().get();
+
+				if (current instanceof Class) {
+					if (((Class<?>) producer).isAssignableFrom((Class<?>) current)) {
+						entry.getValue().remove(consumerReference);
+					}
+				}
+				else if (((Class<?>) producer).isInstance(current)) {
+					entry.getValue().remove(consumerReference);
+				}
+			}
 		}
+		else {
+			Reference<Object> producerReference = new WeakIdentityReference<Object>(producer, referenceQueue);
+			ProducerInfo producerInfo = producerInfos.get(producerReference);
 
-		producer.remove(consumerReference);
+			if (producerInfo != null) {
+				producerInfo.remove(consumerReference);
+			}
+		}
 	}
 
 	/**
@@ -460,7 +586,6 @@ public class Events implements Runnable {
 					it.remove();
 				}
 			}
-		}
-	}
-
+        }
+    }
 }
