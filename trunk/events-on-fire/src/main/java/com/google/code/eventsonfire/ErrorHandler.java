@@ -29,31 +29,31 @@ import java.lang.reflect.Method;
 public interface ErrorHandler
 {
 
-	/**
-	 * Called if the invocation of an event handler method fails.
-	 * 
-	 * @param producer the producer of the event
-	 * @param consumer the consumer of the event
-	 * @param event the event itself
-	 * @param method the method which caused the error
-	 * @param message some informative message
-	 * @param cause the exception if available, may be null
-	 */
-	void invocationFailed(Object producer, Object consumer, Object event, Method method, String message, Throwable cause);
+    /**
+     * Called if the invocation of an event handler method fails.
+     * 
+     * @param producer the producer of the event
+     * @param consumer the consumer of the event
+     * @param event the event itself
+     * @param method the method which caused the error
+     * @param message some informative message
+     * @param cause the exception if available, may be null
+     */
+    void invocationFailed(Object producer, Object consumer, Object event, Method method, String message, Throwable cause);
 
-	/**
-	 * Called if a unhandled exception occurs in the event handler thread.
-	 * 
-	 * @param message the message
-	 * @param cause the cause
-	 */
-	void unhandledException(String message, Throwable cause);
+    /**
+     * Called if a unhandled exception occurs in the event handler thread.
+     * 
+     * @param message the message
+     * @param cause the cause
+     */
+    void unhandledException(String message, Throwable cause);
 
-	/**
-	 * Called if the event thread got interrupted.
-	 * 
-	 * @param e the interrupted exception
-	 */
-	void interrupted(InterruptedException e);
+    /**
+     * Called if the event thread got interrupted.
+     * 
+     * @param e the interrupted exception
+     */
+    void interrupted(InterruptedException e);
 
 }

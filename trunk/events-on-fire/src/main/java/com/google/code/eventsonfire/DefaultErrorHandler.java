@@ -29,48 +29,49 @@ import java.lang.reflect.Method;
 public class DefaultErrorHandler implements ErrorHandler
 {
 
-	/**
-	 * Default constructor for the error handler
-	 */
-	public DefaultErrorHandler()
-	{
-		super();
-	}
+    /**
+     * Default constructor for the error handler
+     */
+    public DefaultErrorHandler()
+    {
+        super();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void invocationFailed(final Object producer, final Object consumer, final Object event, final Method method, final String message, final Throwable cause)
-	{
-		System.err.println("Invocation of event handler failed: " + message);
-		System.err.println("\tMethod:   " + method);
-		System.err.println("\tProducer: " + producer);
-		System.err.println("\tConsumer: " + consumer);
-		System.err.println("\tEvent:    " + event);
+    /**
+     * {@inheritDoc}
+     */
+    public void invocationFailed(final Object producer, final Object consumer, final Object event, final Method method,
+        final String message, final Throwable cause)
+    {
+        System.err.println("Invocation of event handler failed: " + message);
+        System.err.println("\tMethod:   " + method);
+        System.err.println("\tProducer: " + producer);
+        System.err.println("\tConsumer: " + consumer);
+        System.err.println("\tEvent:    " + event);
 
-		if (cause != null)
-		{
-			System.err.print("\tCause:    ");
-			cause.printStackTrace(System.err);
-		}
-	}
+        if (cause != null)
+        {
+            System.err.print("\tCause:    ");
+            cause.printStackTrace(System.err);
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void unhandledException(final String message, final Throwable cause)
-	{
-		System.err.println("UNHANDLED EXCEPTION: " + message);
-		cause.printStackTrace(System.err);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void unhandledException(final String message, final Throwable cause)
+    {
+        System.err.println("UNHANDLED EXCEPTION: " + message);
+        cause.printStackTrace(System.err);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void interrupted(InterruptedException e)
-	{
-		System.err.println("Events thread got interrupted.");
-		e.printStackTrace(System.err);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void interrupted(InterruptedException e)
+    {
+        System.err.println("Events thread got interrupted.");
+        e.printStackTrace(System.err);
+    }
 
 }

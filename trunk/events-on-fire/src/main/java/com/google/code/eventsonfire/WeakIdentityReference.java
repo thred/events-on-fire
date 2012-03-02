@@ -33,78 +33,78 @@ import java.lang.ref.WeakReference;
 class WeakIdentityReference<TYPE> extends WeakReference<TYPE>
 {
 
-	private final int hashCode;
+    private final int hashCode;
 
-	/**
-	 * Creates the weak identity reference that refers to the specified referent. The reference is not registered to any
-	 * queue.
-	 * 
-	 * @param referent the object referenced by the weak reference, mandatory
-	 * @throws IllegalArgumentException if the referent is null
-	 */
-	public WeakIdentityReference(final TYPE referent) throws IllegalArgumentException
-	{
-		this(referent, null);
-	}
+    /**
+     * Creates the weak identity reference that refers to the specified referent. The reference is not registered to any
+     * queue.
+     * 
+     * @param referent the object referenced by the weak reference, mandatory
+     * @throws IllegalArgumentException if the referent is null
+     */
+    public WeakIdentityReference(final TYPE referent) throws IllegalArgumentException
+    {
+        this(referent, null);
+    }
 
-	/**
-	 * Creates the weak identity reference with the specified referent. The reference is registered with the specified
-	 * queue.
-	 * 
-	 * @param referent the object referenced by the weak reference, mandatory
-	 * @param queue the queue with which the reference is to be registered, or null if registration is not required
-	 * @throws IllegalArgumentException if the referent is null
-	 */
-	public WeakIdentityReference(final TYPE referent, final ReferenceQueue<? super TYPE> queue)
-	    throws IllegalArgumentException
-	{
-		super(referent, queue);
+    /**
+     * Creates the weak identity reference with the specified referent. The reference is registered with the specified
+     * queue.
+     * 
+     * @param referent the object referenced by the weak reference, mandatory
+     * @param queue the queue with which the reference is to be registered, or null if registration is not required
+     * @throws IllegalArgumentException if the referent is null
+     */
+    public WeakIdentityReference(final TYPE referent, final ReferenceQueue<? super TYPE> queue)
+        throws IllegalArgumentException
+    {
+        super(referent, queue);
 
-		if (referent == null)
-		{
-			throw new IllegalArgumentException("Referent is null");
-		}
+        if (referent == null)
+        {
+            throw new IllegalArgumentException("Referent is null");
+        }
 
-		hashCode = referent.hashCode();
-	}
+        hashCode = referent.hashCode();
+    }
 
-	/**
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode()
-	{
-		return hashCode;
-	}
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode()
+    {
+        return hashCode;
+    }
 
-	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(final Object obj)
-	{
-		if (obj == this)
-		{
-			return true;
-		}
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if (obj == this)
+        {
+            return true;
+        }
 
-		if (obj == null)
-		{
-			return false;
-		}
+        if (obj == null)
+        {
+            return false;
+        }
 
-		if (!(obj instanceof WeakIdentityReference))
-		{
-			return false;
-		}
+        if (!(obj instanceof WeakIdentityReference))
+        {
+            return false;
+        }
 
-		final TYPE referent = get();
+        final TYPE referent = get();
 
-		if (referent == null)
-		{
-			return false;
-		}
+        if (referent == null)
+        {
+            return false;
+        }
 
-		return referent == ((WeakIdentityReference<?>) obj).get();
-	}
+        return referent == ((WeakIdentityReference<?>) obj).get();
+    }
 }
