@@ -35,8 +35,8 @@
  * Copyright &copy; 2011 Manfred Hantschel
  * </p>
  * <p>
- * events-on-fire is distributed under the terms of the <a href="http://www.opensource.org/licenses/mit-license.php">MIT
- * License</a>.
+ * events-on-fire is distributed under the terms of the <a href="http://www.opensource.org/licenses/mit-license.php"
+ * target="_blank">MIT License</a>.
  * </p>
  * 
  * <pre>
@@ -54,8 +54,8 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * </pre>
  * 
- * @see <a href="http://www.opensource.org/licenses/mit-license.php">MIT License</a>
- * @see <a href="http://code.google.com/p/events-on-fire/wiki/Usage">Usage on Google Project Hosting</a>
+ * @see <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">MIT License</a>
+ * @see <a href="http://code.google.com/p/events-on-fire/wiki/Usage" target="_blank">Usage on Google Project Hosting</a>
  * @author Manfred Hantschel
  */
 package com.google.code.eventsonfire;
