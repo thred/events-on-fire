@@ -144,9 +144,7 @@ public class Events implements Runnable
      * Unbinds the specified consumer from all producers. Does nothing if the objects are not bonded.
      * </p>
      * 
-     * @param producer the instance or class of a producer, mandatory
      * @param consumer the consumer / the listener, mandatory
-     * @return the producer
      * @throws IllegalArgumentException if the producer or the consumer is null
      */
     public static void unbind(Object consumer)
