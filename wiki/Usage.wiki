@@ -1,3 +1,4 @@
+#labels Featured
 # events-on-fire usage
 
 [http://code.google.com/p/events-on-fire/wiki/Overview Back to Overview]
@@ -8,9 +9,9 @@
 
 === Include events-on-fire manually ===
 
-Download the latest release: http://...
+Download the latest release: [http://code.google.com/p/events-on-fire/downloads/detail?name=events-on-fire-1.1-complete.jar&can=2&q= events-on-fire-1.1-complete.jar]
 
-Add the jar manually.
+Add the jar manually to your build and execution path.
 
 === Include events-on-fire via Maven ===
 
@@ -20,7 +21,7 @@ Add the following dependency:
 <dependency>
   <groupId>com.google.code.events-on-fire</groupId>
   <artifactId>events-on-fire</artifactId>
-  <version>1.0</version>
+  <version>1.1</version>
 </dependency>
 }}}
 
