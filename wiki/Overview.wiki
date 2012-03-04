@@ -1,4 +1,5 @@
 #summary events-on-fire overview
+#labels Featured
 
 = Overview =
 
