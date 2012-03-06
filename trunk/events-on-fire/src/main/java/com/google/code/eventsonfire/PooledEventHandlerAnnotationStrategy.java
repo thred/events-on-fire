@@ -19,24 +19,56 @@
  */
 package com.google.code.eventsonfire;
 
+import java.lang.reflect.Method;
+
 /**
- * Holds information about an event handler method.
+ * An {@link EventHandlerStrategy} for classes with methods that were tagged with the {@link PooledEventHandler} annotation.
  * 
  * @author Manfred HANTSCHEL
  */
-public interface EventHandlerInfo
+class PooledEventHandlerAnnotationStrategy extends AbstractAnnotatedEventHandlerStrategy<PooledEventHandler>
 {
 
+    public PooledEventHandlerAnnotationStrategy()
+    {
+        super();
+    }
+
     /**
-     * Invokes the method referenced by this information object if applicable for the type of producer, consumer and
-     * event. If an error occurs when invoking the method, the invocationFailed method of the {@link ErrorHandler} is
-     * called.
-     * 
-     * @param producer the producer, mandatory
-     * @param consumer the consumer, mandatory
-     * @param event the event, mandatory
-     * @return true if invoked (or will be invoked in near future), false otherwise
+     * {@inheritDoc}
      */
-    boolean invoke(Object producer, Object consumer, Object event);
+    @Override
+    protected Class<PooledEventHandler> getAnnotationType()
+    {
+        return PooledEventHandler.class;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Class<?>[] getAllowedProducerTypes(PooledEventHandler annotation, Method method)
+    {
+        return annotation.producer();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Class<?>[] getAllowedEventTypes(PooledEventHandler annotation, Method method)
+    {
+        return annotation.event();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected EventHandlerInfo createEventHandlerInfo(PooledEventHandler annotation, Method method,
+        Class<?>[] producerTypes, Class<?>[] eventTypes)
+    {
+        return new PooledEventHandlerAnnotationInfo(method, producerTypes, eventTypes);
+    }
 
 }

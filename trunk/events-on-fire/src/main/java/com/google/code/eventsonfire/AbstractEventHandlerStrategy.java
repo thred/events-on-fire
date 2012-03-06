@@ -19,24 +19,44 @@
  */
 package com.google.code.eventsonfire;
 
+import java.lang.reflect.Method;
+import java.util.Collection;
+
 /**
- * Holds information about an event handler method.
+ * An abstract implementation of an {@link EventHandlerStrategy} that scans a class for possible event handlers
  * 
  * @author Manfred HANTSCHEL
  */
-public interface EventHandlerInfo
+public abstract class AbstractEventHandlerStrategy implements EventHandlerStrategy
 {
 
+    public AbstractEventHandlerStrategy()
+    {
+        super();
+    }
+
     /**
-     * Invokes the method referenced by this information object if applicable for the type of producer, consumer and
-     * event. If an error occurs when invoking the method, the invocationFailed method of the {@link ErrorHandler} is
-     * called.
-     * 
-     * @param producer the producer, mandatory
-     * @param consumer the consumer, mandatory
-     * @param event the event, mandatory
-     * @return true if invoked (or will be invoked in near future), false otherwise
+     * {@inheritDoc}
      */
-    boolean invoke(Object producer, Object consumer, Object event);
+    public void scan(Collection<EventHandlerInfo> infos, Class<?> type)
+    {
+        for (Method method : type.getMethods())
+        {
+            EventHandlerInfo eventHandlerInfo = createEventHandlerInfo(method);
+
+            if (eventHandlerInfo != null)
+            {
+                infos.add(eventHandlerInfo);
+            }
+        }
+    }
+
+    /**
+     * Creates an {@link EventHandlerInfo} if the method is capable of handling events.
+     * 
+     * @param method the method
+     * @return the {@link EventHandlerInfo}, or null if method does not handle events
+     */
+    protected abstract EventHandlerInfo createEventHandlerInfo(Method method);
 
 }

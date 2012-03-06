@@ -19,8 +19,6 @@
  */
 package com.google.code.eventsonfire;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,8 +26,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Contains information about a consumer class. Scans the class for methods annotated with the {@link EventHandler}
- * annotation. Holds these methods and invoke them if necessary and appropriate.
+ * Contains information about a consumer class. Scans the class for methods that may act as event handlers. Holds these
+ * methods and invokes them if necessary and appropriate.
  * 
  * @author Manfred HANTSCHEL
  */
@@ -65,6 +63,9 @@ class ConsumerClassInfo implements Iterable<EventHandlerInfo>
         return result;
     }
 
+    /**
+     * All the {@link EventHandlerInfo}s for event handlers in the class 
+     */
     private final Collection<EventHandlerInfo> infos;
 
     /**
@@ -83,24 +84,12 @@ class ConsumerClassInfo implements Iterable<EventHandlerInfo>
             throw new IllegalArgumentException("Type is null");
         }
 
-        Collection<EventHandlerInfo> infos = new ArrayList<EventHandlerInfo>();
-
-        for (Method method : type.getMethods())
-        {
-            EventHandler annotation = method.getAnnotation(EventHandler.class);
-
-            if (annotation != null)
-            {
-                infos.add(new EventHandlerInfo(method));
-            }
-        }
+        infos = Collections.unmodifiableCollection(Events.scanConsumer(type));
 
         if (infos.size() == 0)
         {
-            throw new IllegalArgumentException("No event handler found: " + type);
+            throw new IllegalArgumentException("No event handlers found in " + type);
         }
-
-        this.infos = Collections.unmodifiableCollection(infos);
     }
 
     /**
@@ -114,8 +103,7 @@ class ConsumerClassInfo implements Iterable<EventHandlerInfo>
     /**
      * Invokes all event handler methods of the class if the method is applicable for the type of producer, consumer and
      * event. If an error occurs when invoking the method, the invocationFailed method of the {@link ErrorHandler} is
-     * called. If the invocation type is set to parallel, it uses the thread pool of the {@link Events} class to
-     * delegate the invocation of the method.
+     * called.
      * 
      * @param producer the producer, mandatory
      * @param consumer the consumer, mandatory
