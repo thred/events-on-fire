@@ -23,11 +23,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * Runnable used for event handler invocations by pooled threads
+ * Runnable used for event handler invocations by other threads
  * 
  * @author Manfred HANTSCHEL
  */
-class Invoker implements Runnable
+class EventHandlerInvoker implements Runnable
 {
 
     private final Object producer;
@@ -35,7 +35,7 @@ class Invoker implements Runnable
     private final Object event;
     private final Method method;
 
-    public Invoker(final Object producer, final Object consumer, final Object event, final Method method)
+    public EventHandlerInvoker(final Object producer, final Object consumer, final Object event, final Method method)
     {
         super();
 
@@ -75,7 +75,7 @@ class Invoker implements Runnable
         {
             Events.getErrorHandler().invocationFailed(producer, consumer, event, method, "Invocation failed", e);
         }
-        catch (final Throwable e)
+        catch (final Exception e)
         {
             Events.getErrorHandler().invocationFailed(producer, consumer, event, method, "Unhandled exception", e);
         }

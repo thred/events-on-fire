@@ -19,24 +19,24 @@
  */
 package com.google.code.eventsonfire;
 
+import java.util.Collection;
+
 /**
- * Holds information about an event handler method.
+ * A strategy for resolving event handlers from classes. Usually this implementation decides, which methods of a class
+ * are event handlers.
  * 
  * @author Manfred HANTSCHEL
  */
-public interface EventHandlerInfo
+public interface EventHandlerStrategy
 {
 
     /**
-     * Invokes the method referenced by this information object if applicable for the type of producer, consumer and
-     * event. If an error occurs when invoking the method, the invocationFailed method of the {@link ErrorHandler} is
-     * called.
+     * Scans the specified class for methods, that are capable of handling events and adds {@link EventHandlerInfo}s for
+     * each method for the specified collection
      * 
-     * @param producer the producer, mandatory
-     * @param consumer the consumer, mandatory
-     * @param event the event, mandatory
-     * @return true if invoked (or will be invoked in near future), false otherwise
+     * @param infos the collection of infos
+     * @param type the class
      */
-    boolean invoke(Object producer, Object consumer, Object event);
+    void scan(Collection<EventHandlerInfo> infos, Class<?> type);
 
 }

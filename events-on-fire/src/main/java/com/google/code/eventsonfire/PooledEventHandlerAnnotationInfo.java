@@ -19,24 +19,28 @@
  */
 package com.google.code.eventsonfire;
 
+import java.lang.reflect.Method;
+
 /**
- * Holds information about an event handler method.
+ * An {@link EventHandlerInfo} for method tagged with the {@link PooledEventHandler} annotation
  * 
  * @author Manfred HANTSCHEL
  */
-public interface EventHandlerInfo
+class PooledEventHandlerAnnotationInfo extends AbstractEventHandlerInfo
 {
 
+    public PooledEventHandlerAnnotationInfo(Method method, Class<?>[] producerTypes, Class<?>[] eventTypes)
+    {
+        super(method, producerTypes, eventTypes);
+    }
+
     /**
-     * Invokes the method referenced by this information object if applicable for the type of producer, consumer and
-     * event. If an error occurs when invoking the method, the invocationFailed method of the {@link ErrorHandler} is
-     * called.
-     * 
-     * @param producer the producer, mandatory
-     * @param consumer the consumer, mandatory
-     * @param event the event, mandatory
-     * @return true if invoked (or will be invoked in near future), false otherwise
+     * {@inheritDoc}
      */
-    boolean invoke(Object producer, Object consumer, Object event);
+    @Override
+    protected void call(Object producer, Object consumer, Object event)
+    {
+        Events.invokeLater(new EventHandlerInvoker(producer, consumer, event, method));
+    }
 
 }

@@ -21,8 +21,10 @@ package com.google.code.eventsonfire;
 
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
-import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.BlockingQueue;
@@ -75,6 +77,10 @@ public class Events implements Runnable
 
     static
     {
+        registerStrategy(new EventHandlerAnnotationStrategy());
+        registerStrategy(new PooledEventHandlerAnnotationStrategy());
+        registerStrategy(new SwingEventHandlerAnnotationStrategy());
+        
         EVENTS_THREAD = new Thread(INSTANCE, "Events Thread");
         EVENTS_THREAD.setDaemon(true);
         EVENTS_THREAD.start();
@@ -290,14 +296,52 @@ public class Events implements Runnable
     /**
      * Adds an event handler invocation to the pooled threads
      * 
-     * @param producer the producer
-     * @param consumer the consumer
-     * @param event the event
-     * @param method the method to call
+     * @param runnable the runnable to be invoked
      */
-    static void invokeLater(Object producer, Object consumer, Object event, Method method)
+    static void invokeLater(Runnable runnable)
     {
-        INSTANCE.executorService.execute(new Invoker(producer, consumer, event, method));
+        INSTANCE.executorService.execute(runnable);
+    }
+
+    /**
+     * Registers a strategy for event handlers. The strategy decides for a method of a consumer, whether it is capable
+     * of handling events or not. By default there exist strategies for following annotations: {@link EventHandler},
+     * {@link PooledEventHandler} and {@link SwingEventHandler}.
+     * 
+     * @param strategy the strategy, never null
+     */
+    public static void registerStrategy(EventHandlerStrategy strategy)
+    {
+        if (strategy == null)
+        {
+            throw new IllegalArgumentException("Strategy is null");
+        }
+
+        synchronized (INSTANCE.strategies)
+        {
+            INSTANCE.strategies.add(strategy);
+        }
+    }
+
+    /**
+     * Scans the consumer class using all registered {@link EventHandlerStrategy}s.
+     * 
+     * @param type the type of the consumer
+     * @return a collection of {@link EventHandlerInfo}s
+     */
+    static Collection<EventHandlerInfo> scanConsumer(Class<?> type)
+    {
+        Collection<EventHandlerInfo> results = new LinkedHashSet<EventHandlerInfo>();
+
+        synchronized (INSTANCE.strategies)
+        {
+            for (EventHandlerStrategy strategy : INSTANCE.strategies)
+            {
+                strategy.scan(results, type);
+            }
+        }
+
+        return results;
     }
 
     /**
@@ -369,6 +413,11 @@ public class Events implements Runnable
     private final ReferenceQueue<Object> referenceQueue;
 
     /**
+     * Holds all strategies for event handler methods
+     */
+    private final Collection<EventHandlerStrategy> strategies;
+
+    /**
      * The thread pool for pending handler invocations.
      */
     private ExecutorService executorService;
@@ -385,6 +434,8 @@ public class Events implements Runnable
         actions = new LinkedBlockingQueue<Action>();
         producerInfos = new ConcurrentHashMap<Reference<Object>, ProducerInfo>();
         referenceQueue = new ReferenceQueue<Object>();
+
+        strategies = new HashSet<EventHandlerStrategy>();
 
         executorService = Executors.newFixedThreadPool(DEFAULT_MAXIMUM_NUMBER_OF_THREADS);
         errorHandler = new DefaultErrorHandler();

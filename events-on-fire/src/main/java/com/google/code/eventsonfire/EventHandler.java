@@ -29,8 +29,8 @@ import java.lang.annotation.Target;
 /**
  * <p>
  * Tags a method as event handler within a consumer, which may be called by the {@link Events} class. The method needs
- * two arguments, the producer and the event. The producer is optional. The method is only called if the type of the
- * producer and the event fits the parameters and optionally the specified types.
+ * two arguments, the producer and the event. The producer is optional. The method will only be called if the type of
+ * the producer and the event fits the parameters and optionally the specified types.
  * </p>
  * 
  * @author Manfred HANTSCHEL
@@ -65,7 +65,9 @@ public @interface EventHandler
      * and should be execute one after another.
      * 
      * @return the type of the invocation of the method
+     * @deprecated use the {@link PooledEventHandler} annotation instead
      */
+    @Deprecated
     boolean pooled() default false;
 
 }
