@@ -80,28 +80,10 @@ public class Events implements Runnable
         registerStrategy(new EventHandlerAnnotationStrategy());
         registerStrategy(new PooledEventHandlerAnnotationStrategy());
         registerStrategy(new SwingEventHandlerAnnotationStrategy());
-        
+
         EVENTS_THREAD = new Thread(INSTANCE, "Events Thread");
         EVENTS_THREAD.setDaemon(true);
         EVENTS_THREAD.start();
-    }
-
-    /**
-     * <p>
-     * Binds the specified consumer / listener to be notified by all events it can handle.
-     * </p>
-     * <p>
-     * The consumer must contain at least one <code>@{@link EventHandler} public void handleEvent(* event)</code>
-     * method, otherwise an exception is thrown. The consumer must have references outside of the Events class. All
-     * references within the Events class are weak, so the objects and the binding gets garbage collected if not
-     * referenced. Does nothing if the objects are already bonded.
-     * 
-     * @param consumer the consumer / the listener, mandatory
-     * @throws IllegalArgumentException if the producer or the consumer is null or the consumer cannot handle events
-     */
-    public static void bind(Object consumer)
-    {
-        bind(Object.class, consumer);
     }
 
     /**
@@ -123,11 +105,12 @@ public class Events implements Runnable
      * collected if not referenced. Does nothing if the objects are already bonded.
      * 
      * @param producer the instance or class of a producer, mandatory
-     * @param consumer the consumer / the listener, mandatory
+     * @param consumers one or more consumers / listeners, mandatory
      * @return the producer
-     * @throws IllegalArgumentException if the producer or the consumer is null or the consumer cannot handle events
+     * @throws IllegalArgumentException if the producer or the consumers are null or one of the consumer cannot handle
+     *             events
      */
-    public static <PRODUCER_TYPE> PRODUCER_TYPE bind(PRODUCER_TYPE producer, Object consumer)
+    public static <PRODUCER_TYPE> PRODUCER_TYPE bind(PRODUCER_TYPE producer, Object... consumers)
         throws IllegalArgumentException
     {
         if (producer == null)
@@ -135,27 +118,22 @@ public class Events implements Runnable
             throw new IllegalArgumentException("Producer is null");
         }
 
-        if (consumer == null)
+        if ((consumers == null) || (consumers.length == 0))
         {
-            throw new IllegalArgumentException("Consumer is null");
+            throw new IllegalArgumentException("Consumers missing");
         }
 
-        INSTANCE.enqueue(new Action(Type.BIND, producer, consumer));
+        for (Object consumer : consumers)
+        {
+            if (consumer == null)
+            {
+                throw new IllegalArgumentException("Consumer is null");
+            }
+
+            INSTANCE.enqueue(new Action(Type.BIND, producer, consumer));
+        }
 
         return producer;
-    }
-
-    /**
-     * <p>
-     * Unbinds the specified consumer from all producers. Does nothing if the objects are not bonded.
-     * </p>
-     * 
-     * @param consumer the consumer / the listener, mandatory
-     * @throws IllegalArgumentException if the producer or the consumer is null
-     */
-    public static void unbind(Object consumer)
-    {
-        unbind(Object.class, consumer);
     }
 
     /**
@@ -175,11 +153,11 @@ public class Events implements Runnable
      * </p>
      * 
      * @param producer the instance or class of a producer, mandatory
-     * @param consumer the consumer / the listener, mandatory
+     * @param consumers one or more consumers / listeners, mandatory
      * @return the producer
-     * @throws IllegalArgumentException if the producer or the consumer is null
+     * @throws IllegalArgumentException if the producer or the consumers are null
      */
-    public static <PRODUCER_TYPE> PRODUCER_TYPE unbind(PRODUCER_TYPE producer, Object consumer)
+    public static <PRODUCER_TYPE> PRODUCER_TYPE unbind(PRODUCER_TYPE producer, Object... consumers)
         throws IllegalArgumentException
     {
         if (producer == null)
@@ -187,12 +165,20 @@ public class Events implements Runnable
             throw new IllegalArgumentException("Producer is null");
         }
 
-        if (consumer == null)
+        if ((consumers == null) || (consumers.length == 0))
         {
-            throw new IllegalArgumentException("Consumer is null");
+            throw new IllegalArgumentException("Consumers missing");
         }
 
-        INSTANCE.enqueue(new Action(Type.UNBIND, producer, consumer));
+        for (Object consumer : consumers)
+        {
+            if (consumer == null)
+            {
+                throw new IllegalArgumentException("Consumer is null");
+            }
+
+            INSTANCE.enqueue(new Action(Type.UNBIND, producer, consumer));
+        }
 
         return producer;
     }
