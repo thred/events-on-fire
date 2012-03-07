@@ -64,12 +64,30 @@ class EventHandlerAnnotationStrategy extends AbstractAnnotatedEventHandlerStrate
     /**
      * {@inheritDoc}
      */
+    @Override
+    protected String[] getAnyTags(EventHandler annotation, Method method)
+    {
+        return annotation.anyTag();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String[] getEachTags(EventHandler annotation, Method method)
+    {
+        return annotation.eachTag();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("deprecation")
     @Override
     protected EventHandlerInfo createEventHandlerInfo(EventHandler annotation, Method method, Class<?>[] producerTypes,
-        Class<?>[] eventTypes)
+        Class<?>[] eventTypes, String[] anyTags, String[] eachTags)
     {
-        return new EventHandlerAnnotationInfo(method, producerTypes, eventTypes, annotation.pooled());
+        return new EventHandlerAnnotationInfo(method, producerTypes, eventTypes, anyTags, eachTags, annotation.pooled());
     }
 
 }

@@ -22,7 +22,8 @@ package com.google.code.eventsonfire;
 import java.lang.reflect.Method;
 
 /**
- * An {@link EventHandlerStrategy} for classes with methods that were tagged with the {@link PooledEventHandler} annotation.
+ * An {@link EventHandlerStrategy} for classes with methods that were tagged with the {@link PooledEventHandler}
+ * annotation.
  * 
  * @author Manfred HANTSCHEL
  */
@@ -65,10 +66,28 @@ class PooledEventHandlerAnnotationStrategy extends AbstractAnnotatedEventHandler
      * {@inheritDoc}
      */
     @Override
-    protected EventHandlerInfo createEventHandlerInfo(PooledEventHandler annotation, Method method,
-        Class<?>[] producerTypes, Class<?>[] eventTypes)
+    protected String[] getAnyTags(PooledEventHandler annotation, Method method)
     {
-        return new PooledEventHandlerAnnotationInfo(method, producerTypes, eventTypes);
+        return annotation.anyTag();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String[] getEachTags(PooledEventHandler annotation, Method method)
+    {
+        return annotation.eachTag();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected EventHandlerInfo createEventHandlerInfo(PooledEventHandler annotation, Method method,
+        Class<?>[] producerTypes, Class<?>[] eventTypes, String[] anyTags, String[] eachTags)
+    {
+        return new PooledEventHandlerAnnotationInfo(method, producerTypes, eventTypes, anyTags, eachTags);
     }
 
 }

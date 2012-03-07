@@ -87,15 +87,15 @@ public class ProducerUnitTest
         final ProducerInfo producer = new ProducerInfo();
 
         producer.add(reference);
-        producer.fire("Producer", "Event #1");
+        producer.fire("Producer", "Event #1", new String[]{});
 
         assert "Event #1".equals(consumer.popEvent().getEvent());
 
-        producer.fire("Producer", Integer.valueOf(42));
+        producer.fire("Producer", Integer.valueOf(42), new String[]{});
 
         assert Integer.valueOf(42).equals(consumer.popEvent().getEvent());
 
-        producer.fire("Producer", new Object());
+        producer.fire("Producer", new Object(), new String[]{});
 
         assert consumer.size() == 0;
     }

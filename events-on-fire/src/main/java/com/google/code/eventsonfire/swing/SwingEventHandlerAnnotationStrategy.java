@@ -70,10 +70,28 @@ class SwingEventHandlerAnnotationStrategy extends AbstractAnnotatedEventHandlerS
      * {@inheritDoc}
      */
     @Override
-    protected EventHandlerInfo createEventHandlerInfo(SwingEventHandler annotation, Method method,
-        Class<?>[] producerTypes, Class<?>[] eventTypes)
+    protected String[] getAnyTags(SwingEventHandler annotation, Method method)
     {
-        return new SwingEventHandlerAnnotationInfo(method, producerTypes, eventTypes);
+        return annotation.anyTag();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String[] getEachTags(SwingEventHandler annotation, Method method)
+    {
+        return annotation.eachTag();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected EventHandlerInfo createEventHandlerInfo(SwingEventHandler annotation, Method method,
+        Class<?>[] producerTypes, Class<?>[] eventTypes, String[] anyTags, String[] eachTags)
+    {
+        return new SwingEventHandlerAnnotationInfo(method, producerTypes, eventTypes, anyTags, eachTags);
     }
 
 }

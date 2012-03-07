@@ -54,4 +54,19 @@ public @interface PooledEventHandler
      */
     Class<?>[] event() default {};
 
+    /**
+     * Optional. One or more tags - the event has to be fired with at least one of these tags to trigger the event
+     * handler.
+     * 
+     * @return an array of strings
+     */
+    String[] anyTag() default {};
+
+    /**
+     * Optional. One or more tags - the event has to be fired with all of these tags to trigger the event handler.
+     * 
+     * @return an array of strings
+     */
+    String[] eachTag() default {};
+
 }

@@ -53,6 +53,7 @@ class Action
     private final Type type;
     private final Object producer;
     private final Object parameter;
+    private final String[] tags;
 
     /**
      * Creates a new action.
@@ -60,9 +61,10 @@ class Action
      * @param type the type of the action, mandatory
      * @param producer the producer, mandatory
      * @param parameter the parameter
+     * @param tags the tags, optional
      * @throws IllegalArgumentException if the action or the producer is null
      */
-    public Action(Type type, Object producer, Object parameter) throws IllegalArgumentException
+    public Action(Type type, Object producer, Object parameter, String... tags) throws IllegalArgumentException
     {
         super();
 
@@ -79,6 +81,7 @@ class Action
         this.type = type;
         this.producer = producer;
         this.parameter = parameter;
+        this.tags = tags;
     }
 
     /**
@@ -109,6 +112,16 @@ class Action
     public Object getParameter()
     {
         return parameter;
+    }
+
+    /**
+     * Returns the tags
+     * 
+     * @return the tags
+     */
+    public String[] getTags()
+    {
+        return tags;
     }
 
     /**

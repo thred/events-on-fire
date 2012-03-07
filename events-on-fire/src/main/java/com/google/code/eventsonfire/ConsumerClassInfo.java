@@ -66,7 +66,7 @@ class ConsumerClassInfo implements Iterable<EventHandlerInfo>
     }
 
     /**
-     * All the {@link EventHandlerInfo}s for event handlers in the class 
+     * All the {@link EventHandlerInfo}s for event handlers in the class
      */
     private final Collection<EventHandlerInfo> infos;
 
@@ -110,12 +110,13 @@ class ConsumerClassInfo implements Iterable<EventHandlerInfo>
      * @param producer the producer, mandatory
      * @param consumer the consumer, mandatory
      * @param event the event, mandatory
+     * @param tags the tags
      */
-    public void invoke(Object producer, Object consumer, Object event)
+    public void invoke(Object producer, Object consumer, Object event, String[] tags)
     {
         for (EventHandlerInfo info : infos)
         {
-            info.invoke(producer, consumer, event);
+            info.invoke(producer, consumer, event, tags);
         }
     }
 
