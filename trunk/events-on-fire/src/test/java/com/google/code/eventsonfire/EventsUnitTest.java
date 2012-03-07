@@ -34,7 +34,7 @@ public class EventsUnitTest
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testBindWithoutConsumer()
     {
-        Events.bind(new Object(), null);
+        Events.bind(new Object(), new Object[]{null});
     }
 
     @Test
@@ -80,7 +80,7 @@ public class EventsUnitTest
         EventsTestConsumer consumerOnInteger = new EventsTestConsumer();
         EventsTestConsumer consumerOnLong = new EventsTestConsumer();
 
-        Events.bind(consumerOnObject);
+        Events.bind(Object.class, consumerOnObject);
         Events.bind(Number.class, consumerOnNumber);
         Events.bind(Integer.class, consumerOnInteger);
         Events.bind(Long.class, consumerOnLong);
@@ -96,7 +96,7 @@ public class EventsUnitTest
         assert "Event #1".equals(consumerOnNumber.popEvent().getEvent());
         assert "Event #1".equals(consumerOnInteger.popEvent().getEvent());
 
-        Events.unbind(consumerOnNumber);
+        Events.unbind(Object.class, consumerOnNumber);
         Events.unbind(Number.class, consumerOnInteger);
         Events.unbind(Number.class, consumerOnLong);
 
