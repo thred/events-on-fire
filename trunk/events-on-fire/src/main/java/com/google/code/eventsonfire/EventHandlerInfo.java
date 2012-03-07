@@ -37,8 +37,9 @@ public interface EventHandlerInfo
      * @param producer the producer, mandatory
      * @param consumer the consumer, mandatory
      * @param event the event, mandatory
+     * @param tags the tags
      * @return true if invoked (or will be invoked in near future), false otherwise
      */
-    boolean invoke(Object producer, Object consumer, Object event);
+    boolean invoke(Object producer, Object consumer, Object event, String[] tags);
 
 }

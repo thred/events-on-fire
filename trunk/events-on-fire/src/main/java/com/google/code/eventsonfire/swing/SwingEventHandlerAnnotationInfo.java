@@ -35,9 +35,10 @@ import com.google.code.eventsonfire.EventHandlerInvoker;
 class SwingEventHandlerAnnotationInfo extends AbstractEventHandlerInfo
 {
 
-    public SwingEventHandlerAnnotationInfo(Method method, Class<?>[] producerTypes, Class<?>[] eventTypes)
+    public SwingEventHandlerAnnotationInfo(Method method, Class<?>[] producerTypes, Class<?>[] eventTypes,
+        String[] anyTags, String[] eachTags)
     {
-        super(method, producerTypes, eventTypes);
+        super(method, producerTypes, eventTypes, anyTags, eachTags);
     }
 
     /**

@@ -198,6 +198,24 @@ public abstract class AbstractAnnotatedEventHandlerStrategy<ANNOTATION_TYPE exte
     protected abstract Class<?>[] getAllowedEventTypes(ANNOTATION_TYPE annotation, Method method);
 
     /**
+     * Returns the anyTag of the annotation.
+     * 
+     * @param annotation the annotation
+     * @param method the method
+     * @return an array of strings, never null
+     */
+    protected abstract String[] getAnyTags(ANNOTATION_TYPE annotation, Method method);
+
+    /**
+     * Returns the eachTag of the annotation.
+     * 
+     * @param annotation the annotation
+     * @param method the method
+     * @return an array of strings, never null
+     */
+    protected abstract String[] getEachTags(ANNOTATION_TYPE annotation, Method method);
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -231,8 +249,10 @@ public abstract class AbstractAnnotatedEventHandlerStrategy<ANNOTATION_TYPE exte
 
         Class<?>[] producerTypes = getProducerTypes(annotation, method);
         Class<?>[] eventTypes = getEventTypes(annotation, method);
+        String[] anyTags = getAnyTags(annotation, method);
+        String[] eachTags = getEachTags(annotation, method);
 
-        return createEventHandlerInfo(annotation, method, producerTypes, eventTypes);
+        return createEventHandlerInfo(annotation, method, producerTypes, eventTypes, anyTags, eachTags);
     }
 
     /**
@@ -242,9 +262,11 @@ public abstract class AbstractAnnotatedEventHandlerStrategy<ANNOTATION_TYPE exte
      * @param method the method
      * @param producerTypes the producer types
      * @param eventTypes the event types
+     * @param anyTags the any tags
+     * @param eachTags the each tags
      * @return the event handler information object
      */
     protected abstract EventHandlerInfo createEventHandlerInfo(ANNOTATION_TYPE annotation, Method method,
-        Class<?>[] producerTypes, Class<?>[] eventTypes);
+        Class<?>[] producerTypes, Class<?>[] eventTypes, String[] anyTags, String[] eachTags);
 
 }

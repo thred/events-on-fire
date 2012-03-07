@@ -52,7 +52,7 @@ class ProducerInfo
      */
     public void add(final Reference<?> consumerReference) throws IllegalArgumentException
     {
-        final Object consumer = consumerReference.get();
+        Object consumer = consumerReference.get();
 
         if (consumer == null)
         {
@@ -100,18 +100,19 @@ class ProducerInfo
      * Fires an event to all consumers
      * 
      * @param event the event
+     * @param tags the tags
      */
-    public void fire(Object producer, final Object event)
+    public void fire(Object producer, Object event, String[] tags)
     {
-        for (final Reference<?> consumerReference : consumerReferences)
+        for (Reference<?> consumerReference : consumerReferences)
         {
-            final Object consumer = consumerReference.get();
+            Object consumer = consumerReference.get();
 
             if (consumer != null)
             {
-                final ConsumerClassInfo consumerClassInfo = ConsumerClassInfo.getInstance(consumer.getClass());
+                ConsumerClassInfo consumerClassInfo = ConsumerClassInfo.getInstance(consumer.getClass());
 
-                consumerClassInfo.invoke(producer, consumer, event);
+                consumerClassInfo.invoke(producer, consumer, event, tags);
             }
         }
     }

@@ -60,6 +60,21 @@ public @interface EventHandler
     Class<?>[] event() default {};
 
     /**
+     * Optional. One or more tags - the event has to be fired with at least one of these tags to trigger the event
+     * handler.
+     * 
+     * @return an array of strings
+     */
+    String[] anyTag() default {};
+
+    /**
+     * Optional. One or more tags - the event has to be fired with all of these tags to trigger the event handler.
+     * 
+     * @return an array of strings
+     */
+    String[] eachTag() default {};
+
+    /**
      * Optional. If set to true, the invocation of the method will be delegated to a thread pool. The execution of the
      * method will not block the event thread. The default value is false, because usually event handler are quite fast
      * and should be execute one after another.

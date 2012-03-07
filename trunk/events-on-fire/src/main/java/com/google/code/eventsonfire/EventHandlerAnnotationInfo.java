@@ -32,9 +32,10 @@ class EventHandlerAnnotationInfo extends AbstractEventHandlerInfo
 
     private final boolean pooled;
 
-    public EventHandlerAnnotationInfo(Method method, Class<?>[] producerTypes, Class<?>[] eventTypes, boolean pooled)
+    public EventHandlerAnnotationInfo(Method method, Class<?>[] producerTypes, Class<?>[] eventTypes, String[] anyTags,
+        String[] eachTags, boolean pooled)
     {
-        super(method, producerTypes, eventTypes);
+        super(method, producerTypes, eventTypes, anyTags, eachTags);
 
         this.pooled = pooled;
     }

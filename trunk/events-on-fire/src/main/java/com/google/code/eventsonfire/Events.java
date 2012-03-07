@@ -202,9 +202,10 @@ public class Events implements Runnable
      * 
      * @param producer the producer, mandatory
      * @param event the event, mandatory
+     * @param tags, optional, can be checked against tags in annotations
      * @throws IllegalArgumentException if the producer or the event is null
      */
-    public static <PRODUCER_TYPE> PRODUCER_TYPE fire(PRODUCER_TYPE producer, Object event)
+    public static <PRODUCER_TYPE> PRODUCER_TYPE fire(PRODUCER_TYPE producer, Object event, String... tags)
         throws IllegalArgumentException
     {
         if (isDisabled())
@@ -222,7 +223,7 @@ public class Events implements Runnable
             throw new IllegalArgumentException("Event is null");
         }
 
-        INSTANCE.enqueue(new Action(Type.FIRE, producer, event));
+        INSTANCE.enqueue(new Action(Type.FIRE, producer, event, tags));
 
         return producer;
     }
@@ -500,38 +501,39 @@ public class Events implements Runnable
     {
         Object producer = action.getProducer();
         Object parameter = action.getParameter();
+        String[] tags = action.getTags();
 
         if (!(producer instanceof Class))
         {
-            executeFireAction(new WeakIdentityReference<Object>(producer, referenceQueue), producer, parameter);
+            executeFireAction(new WeakIdentityReference<Object>(producer, referenceQueue), producer, parameter, tags);
         }
 
         Class<?> producersClass = producer.getClass();
 
-        executeFireAction(new WeakIdentityReference<Object>(producersClass, referenceQueue), producer, parameter);
+        executeFireAction(new WeakIdentityReference<Object>(producersClass, referenceQueue), producer, parameter, tags);
 
         for (Class<?> producersInterface : producersClass.getInterfaces())
         {
             executeFireAction(new WeakIdentityReference<Object>(producersInterface, referenceQueue), producer,
-                parameter);
+                parameter, tags);
         }
 
         producersClass = producersClass.getSuperclass();
 
         while (producersClass != null)
         {
-            executeFireAction(new WeakIdentityReference<Object>(producersClass, referenceQueue), producer, parameter);
+            executeFireAction(new WeakIdentityReference<Object>(producersClass, referenceQueue), producer, parameter, tags);
             producersClass = producersClass.getSuperclass();
         }
     }
 
-    private void executeFireAction(Reference<Object> producerReference, Object producer, Object parameter)
+    private void executeFireAction(Reference<Object> producerReference, Object producer, Object parameter, String[] tags)
     {
         ProducerInfo producerInfo = producerInfos.get(producerReference);
 
         if (producerInfo != null)
         {
-            producerInfo.fire(producer, parameter);
+            producerInfo.fire(producer, parameter, tags);
         }
     }
 

@@ -20,6 +20,9 @@
 package com.google.code.eventsonfire;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Abstract implementation of an {@link EventHandlerInfo} based on a method with possible and allowed producer and event
@@ -33,14 +36,20 @@ public abstract class AbstractEventHandlerInfo implements EventHandlerInfo
     protected final Method method;
     protected final Class<?>[] producerTypes;
     protected final Class<?>[] eventTypes;
+    protected final Set<String> anyTags;
+    protected final Set<String> eachTags;
 
-    public AbstractEventHandlerInfo(Method method, Class<?>[] producerTypes, Class<?>[] eventTypes)
+    public AbstractEventHandlerInfo(Method method, Class<?>[] producerTypes, Class<?>[] eventTypes, String[] anyTags,
+        String[] eachTags)
     {
         super();
 
         this.method = method;
         this.producerTypes = producerTypes;
         this.eventTypes = eventTypes;
+        this.anyTags = ((anyTags != null) && (anyTags.length > 0)) ? new HashSet<String>(Arrays.asList(anyTags)) : null;
+        this.eachTags =
+            ((eachTags != null) && (eachTags.length > 0)) ? new HashSet<String>(Arrays.asList(eachTags)) : null;
     }
 
     /**
@@ -74,11 +83,31 @@ public abstract class AbstractEventHandlerInfo implements EventHandlerInfo
     }
 
     /**
+     * Returns the any tags
+     * 
+     * @return the any tags
+     */
+    public Set<String> getAnyTags()
+    {
+        return anyTags;
+    }
+
+    /**
+     * Returns the each tags
+     * 
+     * @return the each tags
+     */
+    public Set<String> getEachTags()
+    {
+        return eachTags;
+    }
+
+    /**
      * {@inheritDoc}
      */
-    public boolean invoke(Object producer, Object consumer, Object event)
+    public boolean invoke(Object producer, Object consumer, Object event, String[] tags)
     {
-        if (!isCallable(producer.getClass(), event.getClass()))
+        if (!isCallable(producer.getClass(), event.getClass(), tags))
         {
             return false;
         }
@@ -102,11 +131,12 @@ public abstract class AbstractEventHandlerInfo implements EventHandlerInfo
      * 
      * @param producerType the type of the producer
      * @param eventType the type of the event
+     * @param tags TODO
      * @return true if invokable
      */
-    protected boolean isCallable(final Class<?> producerType, final Class<?> eventType)
+    protected boolean isCallable(final Class<?> producerType, final Class<?> eventType, String[] tags)
     {
-        return isProducerAssignable(producerType) && isEventAssignable(eventType);
+        return isProducerAssignable(producerType) && isEventAssignable(eventType) && isTagsMatching(tags);
     }
 
     /**
@@ -150,6 +180,47 @@ public abstract class AbstractEventHandlerInfo implements EventHandlerInfo
         }
 
         return false;
+    }
+
+    protected boolean isTagsMatching(String[] tags)
+    {
+        return (isAnyTagsMatching(tags)) && (isEachTagsMatching(tags));
+    }
+
+    protected boolean isAnyTagsMatching(String[] tags)
+    {
+        if (anyTags == null)
+        {
+            return true;
+        }
+
+        for (String tag : tags)
+        {
+            if (anyTags.contains(tag))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected boolean isEachTagsMatching(String[] tags)
+    {
+        if (eachTags == null)
+        {
+            return true;
+        }
+
+        for (String tag : tags)
+        {
+            if (!eachTags.contains(tag))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }
