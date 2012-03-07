@@ -1,3 +1,12 @@
+events-on-fire 1.2
+==================
+
+The event annotations can now be customized. Added the 
+@PooledEventHandler annotation replacing the pooled flag of the
+default @EventHandler annotation and the @SwingEventHandler
+annotation, calling the handler method by using the Swing event 
+handler thread.  
+
 events-on-fire 1.1
 ==================
 
