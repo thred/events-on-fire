@@ -17,42 +17,39 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.google.code.eventsonfire;
+package com.google.code.eventsonfire.error;
 
+import java.io.PrintStream;
 import java.lang.reflect.Method;
 
-import org.apache.log4j.Logger;
-
 /**
- * Implementation of the {@link ErrorHandler} for LOG4J.
+ * Default implementation of the {@link ErrorHandler}. Writes messages to writer.
  * 
  * @author Manfred HANTSCHEL
  */
-public class Log4jErrorHandler implements ErrorHandler
+public class DefaultErrorHandler implements ErrorHandler
 {
 
-    private static final Logger LOG = Logger.getLogger(Log4jErrorHandler.class);
-
-    private final Logger log;
+    private final PrintStream stream;
 
     /**
-     * Default constructor for the error handler
+     * Default constructor for the error handler, writes to System.err
      */
-    public Log4jErrorHandler()
+    public DefaultErrorHandler()
     {
-        this(LOG);
+        this(System.err);
     }
 
     /**
-     * Constructor for the error handler using the specified logger
+     * Creates an error handler using the specified stream
      * 
-     * @param log the logger
+     * @param stream the stream
      */
-    public Log4jErrorHandler(Logger log)
+    public DefaultErrorHandler(PrintStream stream)
     {
         super();
 
-        this.log = log;
+        this.stream = stream;
     }
 
     /**
@@ -61,15 +58,17 @@ public class Log4jErrorHandler implements ErrorHandler
     public void invocationFailed(final Object producer, final Object consumer, final Object event, final Method method,
         final String message, final Throwable cause)
     {
-        StringBuilder builder = new StringBuilder();
+        stream.println("Invocation of event handler failed: " + message);
+        stream.println("\tMethod:   " + method);
+        stream.println("\tProducer: " + producer);
+        stream.println("\tConsumer: " + consumer);
+        stream.println("\tEvent:    " + event);
 
-        builder.append("Invocation of event handler failed: ").append(message);
-        builder.append("\n\tMethod:   ").append(method);
-        builder.append("\n\tProducer: ").append(producer);
-        builder.append("\n\tConsumer: ").append(consumer);
-        builder.append("\n\tEvent:    ").append(event);
-
-        log.error(builder.toString(), cause);
+        if (cause != null)
+        {
+            stream.print("\tCause:    ");
+            cause.printStackTrace(stream);
+        }
     }
 
     /**
@@ -77,7 +76,8 @@ public class Log4jErrorHandler implements ErrorHandler
      */
     public void unhandledException(final String message, final Throwable cause)
     {
-        log.error("UNHANDLED EXCEPTION: " + message, cause);
+        stream.println("UNHANDLED EXCEPTION: " + message);
+        cause.printStackTrace(stream);
     }
 
     /**
@@ -85,7 +85,8 @@ public class Log4jErrorHandler implements ErrorHandler
      */
     public void interrupted(InterruptedException e)
     {
-        log.warn("Events thread got interrupted", e);
+        stream.println("Events thread got interrupted.");
+        e.printStackTrace(stream);
     }
 
 }

@@ -34,6 +34,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.google.code.eventsonfire.Action.Type;
+import com.google.code.eventsonfire.error.DefaultErrorHandler;
+import com.google.code.eventsonfire.error.ErrorHandler;
 import com.google.code.eventsonfire.swing.SwingEventHandler;
 import com.google.code.eventsonfire.swing.SwingEvents;
 
