@@ -17,9 +17,13 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.google.code.eventsonfire;
+package com.google.code.eventsonfire.swing;
 
 import java.lang.reflect.Method;
+
+import com.google.code.eventsonfire.AbstractAnnotatedEventHandlerStrategy;
+import com.google.code.eventsonfire.EventHandlerInfo;
+import com.google.code.eventsonfire.EventHandlerStrategy;
 
 /**
  * An {@link EventHandlerStrategy} for classes with methods that were tagged with the {@link SwingEventHandler}

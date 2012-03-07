@@ -27,7 +27,7 @@ import java.lang.reflect.Method;
  * 
  * @author Manfred HANTSCHEL
  */
-class EventHandlerInvoker implements Runnable
+public class EventHandlerInvoker implements Runnable
 {
 
     private final Object producer;

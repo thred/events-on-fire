@@ -44,6 +44,36 @@ public abstract class AbstractEventHandlerInfo implements EventHandlerInfo
     }
 
     /**
+     * Returns the method
+     * 
+     * @return the method
+     */
+    public Method getMethod()
+    {
+        return method;
+    }
+
+    /**
+     * Returns all allowed producer types
+     * 
+     * @return an array of producer types
+     */
+    public Class<?>[] getProducerTypes()
+    {
+        return producerTypes;
+    }
+
+    /**
+     * Returns all allowed event types
+     * 
+     * @return an array of event types
+     */
+    public Class<?>[] getEventTypes()
+    {
+        return eventTypes;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public boolean invoke(Object producer, Object consumer, Object event)

@@ -34,6 +34,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.google.code.eventsonfire.Action.Type;
+import com.google.code.eventsonfire.swing.SwingEventHandler;
+import com.google.code.eventsonfire.swing.SwingEvents;
 
 /**
  * <p>
@@ -79,7 +81,9 @@ public class Events implements Runnable
     {
         registerStrategy(new EventHandlerAnnotationStrategy());
         registerStrategy(new PooledEventHandlerAnnotationStrategy());
-        registerStrategy(new SwingEventHandlerAnnotationStrategy());
+
+        // initialize swing events (static init)
+        new SwingEvents();
 
         EVENTS_THREAD = new Thread(INSTANCE, "Events Thread");
         EVENTS_THREAD.setDaemon(true);

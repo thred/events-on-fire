@@ -1,4 +1,4 @@
-package com.google.code.eventsonfire;
+package com.google.code.eventsonfire.swing;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -8,6 +8,8 @@ import javax.swing.JMenuItem;
 
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.google.code.eventsonfire.EventHandlerInfo;
 
 @Test
 public class SwingEventHandlerAnnotationStrategyUnitTest
@@ -44,17 +46,17 @@ public class SwingEventHandlerAnnotationStrategyUnitTest
 
         assert (info instanceof SwingEventHandlerAnnotationInfo);
 
-        SwingEventHandlerAnnotationInfo swingInfo = (SwingEventHandlerAnnotationInfo) info;
+        SwingEventHandlerAnnotationInfo eventHandlerInfo = (SwingEventHandlerAnnotationInfo) info;
 
-        assert ("eventHandler".equals(swingInfo.method.getName()));
+        assert ("eventHandler".equals(eventHandlerInfo.getMethod().getName()));
 
-        assert (swingInfo.producerTypes != null);
-        assert (swingInfo.producerTypes.length == 1);
-        assert (swingInfo.producerTypes[0] == JButton.class);
+        assert (eventHandlerInfo.getProducerTypes() != null);
+        assert (eventHandlerInfo.getProducerTypes().length == 1);
+        assert (eventHandlerInfo.getProducerTypes()[0] == JButton.class);
 
-        assert (swingInfo.eventTypes != null);
-        assert (swingInfo.eventTypes.length == 1);
-        assert (swingInfo.eventTypes[0] == String.class);
+        assert (eventHandlerInfo.getEventTypes() != null);
+        assert (eventHandlerInfo.getEventTypes().length == 1);
+        assert (eventHandlerInfo.getEventTypes()[0] == String.class);
     }
 
     @Test
@@ -80,17 +82,17 @@ public class SwingEventHandlerAnnotationStrategyUnitTest
 
         assert (info instanceof SwingEventHandlerAnnotationInfo);
 
-        SwingEventHandlerAnnotationInfo swingInfo = (SwingEventHandlerAnnotationInfo) info;
+        SwingEventHandlerAnnotationInfo eventHandlerInfo = (SwingEventHandlerAnnotationInfo) info;
 
-        assert ("eventHandler".equals(swingInfo.method.getName()));
+        assert ("eventHandler".equals(eventHandlerInfo.getMethod().getName()));
 
-        assert (swingInfo.producerTypes != null);
-        assert (swingInfo.producerTypes.length == 1);
-        assert (swingInfo.producerTypes[0] == JButton.class);
+        assert (eventHandlerInfo.getProducerTypes() != null);
+        assert (eventHandlerInfo.getProducerTypes().length == 1);
+        assert (eventHandlerInfo.getProducerTypes()[0] == JButton.class);
 
-        assert (swingInfo.eventTypes != null);
-        assert (swingInfo.eventTypes.length == 1);
-        assert (swingInfo.eventTypes[0] == String.class);
+        assert (eventHandlerInfo.getEventTypes() != null);
+        assert (eventHandlerInfo.getEventTypes().length == 1);
+        assert (eventHandlerInfo.getEventTypes()[0] == String.class);
     }
 
     @Test
@@ -116,19 +118,19 @@ public class SwingEventHandlerAnnotationStrategyUnitTest
 
         assert (info instanceof SwingEventHandlerAnnotationInfo);
 
-        SwingEventHandlerAnnotationInfo swingInfo = (SwingEventHandlerAnnotationInfo) info;
+        SwingEventHandlerAnnotationInfo eventHandlerInfo = (SwingEventHandlerAnnotationInfo) info;
 
-        assert ("eventHandler".equals(swingInfo.method.getName()));
+        assert ("eventHandler".equals(eventHandlerInfo.getMethod().getName()));
 
-        assert (swingInfo.producerTypes != null);
-        assert (swingInfo.producerTypes.length == 2);
-        assert (swingInfo.producerTypes[0] == JButton.class);
-        assert (swingInfo.producerTypes[1] == JMenuItem.class);
+        assert (eventHandlerInfo.getProducerTypes() != null);
+        assert (eventHandlerInfo.getProducerTypes().length == 2);
+        assert (eventHandlerInfo.getProducerTypes()[0] == JButton.class);
+        assert (eventHandlerInfo.getProducerTypes()[1] == JMenuItem.class);
 
-        assert (swingInfo.eventTypes != null);
-        assert (swingInfo.eventTypes.length == 2);
-        assert (swingInfo.eventTypes[0] == Integer.class);
-        assert (swingInfo.eventTypes[1] == String.class);
+        assert (eventHandlerInfo.getEventTypes() != null);
+        assert (eventHandlerInfo.getEventTypes().length == 2);
+        assert (eventHandlerInfo.getEventTypes()[0] == Integer.class);
+        assert (eventHandlerInfo.getEventTypes()[1] == String.class);
     }
 
     @Test(expectedExceptions = {IllegalArgumentException.class})
@@ -197,7 +199,7 @@ public class SwingEventHandlerAnnotationStrategyUnitTest
             @SwingEventHandler
             public void eventHandler(JButton producer, String event, String invalid)
             {
-             // intentionally left blank
+                // intentionally left blank
             }
 
         }.getClass());
