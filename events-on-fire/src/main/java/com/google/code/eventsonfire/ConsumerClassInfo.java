@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.google.code.eventsonfire.error.ErrorHandler;
+
 /**
  * Contains information about a consumer class. Scans the class for methods that may act as event handlers. Holds these
  * methods and invokes them if necessary and appropriate.

@@ -19,6 +19,8 @@
  */
 package com.google.code.eventsonfire;
 
+import com.google.code.eventsonfire.error.ErrorHandler;
+
 /**
  * Holds information about an event handler method.
  * 
