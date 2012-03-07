@@ -24,6 +24,8 @@ import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import com.google.code.eventsonfire.swing.SwingEventHandler;
+
 /**
  * Abstract implementation of an {@link EventHandlerStrategy}, that uses simple annotations like the
  * {@link EventHandler}, {@link PooledEventHandler} or {@link SwingEventHandler} annotations.

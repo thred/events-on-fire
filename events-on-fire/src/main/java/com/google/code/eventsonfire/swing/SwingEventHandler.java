@@ -11,7 +11,7 @@
  * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
  * OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.google.code.eventsonfire;
+package com.google.code.eventsonfire.swing;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -19,6 +19,8 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import com.google.code.eventsonfire.Events;
 
 /**
  * <p>
