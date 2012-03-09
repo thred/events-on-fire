@@ -20,6 +20,7 @@
 package com.google.code.eventsonfire.error;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import org.apache.log4j.Logger;
 
@@ -58,8 +59,8 @@ public class Log4jErrorHandler implements ErrorHandler
     /**
      * {@inheritDoc}
      */
-    public void invocationFailed(final Object producer, final Object consumer, final Object event, final Method method,
-        final String message, final Throwable cause)
+    public void invocationFailed(final Method method, final String message, final Throwable cause, final Object producer,
+        final Object consumer, final Object event, String... tags)
     {
         StringBuilder builder = new StringBuilder();
 
@@ -68,6 +69,7 @@ public class Log4jErrorHandler implements ErrorHandler
         builder.append("\n\tProducer: ").append(producer);
         builder.append("\n\tConsumer: ").append(consumer);
         builder.append("\n\tEvent:    ").append(event);
+        builder.append("\n\tTags:     ").append(Arrays.toString(tags));
 
         log.error(builder.toString(), cause);
     }

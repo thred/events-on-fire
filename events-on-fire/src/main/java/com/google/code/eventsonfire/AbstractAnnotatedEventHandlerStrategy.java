@@ -21,8 +21,6 @@ package com.google.code.eventsonfire;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 import com.google.code.eventsonfire.swing.SwingEventHandler;
 
@@ -48,134 +46,6 @@ public abstract class AbstractAnnotatedEventHandlerStrategy<ANNOTATION_TYPE exte
      * @return the type of the annotation
      */
     protected abstract Class<ANNOTATION_TYPE> getAnnotationType();
-
-    /**
-     * Extracts all producer classes either from the annotation or the method itself. Checks for failures. Returns an
-     * empty array if all producers are permitted.
-     * 
-     * @param annotation the annotation
-     * @param method the method
-     * @return all producer classes, empty if all permitted
-     * @throws IllegalArgumentException on any failure
-     */
-    protected Class<?>[] getProducerTypes(ANNOTATION_TYPE annotation, Method method) throws IllegalArgumentException
-    {
-        Set<Class<?>> result = new LinkedHashSet<Class<?>>();
-        Class<?> methodProducerType = getPossibleProducerType(method);
-        Class<?>[] annotatedProducerTypes = getAllowedProducerTypes(annotation, method);
-
-        if ((annotatedProducerTypes == null) || (annotatedProducerTypes.length == 0))
-        {
-            if (methodProducerType != null)
-            {
-                result.add(methodProducerType);
-            }
-        }
-        else
-        {
-            for (final Class<?> annotatedProducer : annotatedProducerTypes)
-            {
-                if ((methodProducerType != null) && (!methodProducerType.isAssignableFrom(annotatedProducer)))
-                {
-                    throw new IllegalArgumentException("Invalid event handler method signature. Producer of "
-                        + annotatedProducer + " cannot be assigned: " + method);
-                }
-
-                result.add(annotatedProducer);
-            }
-        }
-
-        return result.toArray(new Class<?>[result.size()]);
-    }
-
-    /**
-     * Extracts all event classes either from the annotation or the method itself. Checks for failures.
-     * 
-     * @param annotation the annotation
-     * @param method the method
-     * @return all event classes, never null, never empty
-     * @throws IllegalArgumentException on any failure
-     */
-    protected Class<?>[] getEventTypes(ANNOTATION_TYPE annotation, final Method method) throws IllegalArgumentException
-    {
-        final Set<Class<?>> result = new LinkedHashSet<Class<?>>();
-        Class<?> methodEventType = getPossibleEventType(method);
-        Class<?>[] annotatedEventTypes = getAllowedEventTypes(annotation, method);
-
-        if ((annotatedEventTypes == null) || (annotatedEventTypes.length == 0))
-        {
-            if (methodEventType != null)
-            {
-                result.add(methodEventType);
-            }
-        }
-        else
-        {
-            for (final Class<?> annotatedEventType : annotatedEventTypes)
-            {
-                if (!methodEventType.isAssignableFrom(annotatedEventType))
-                {
-                    throw new IllegalArgumentException("Invalid event handler method signature. Event of "
-                        + annotatedEventType + " cannot be assigned: " + method);
-                }
-
-                result.add(annotatedEventType);
-            }
-        }
-
-        return result.toArray(new Class<?>[result.size()]);
-    }
-
-    /**
-     * Returns the possible producer type as determined from the parameters of the method. By default this is the first
-     * parameter, if the method has two parameters or null, if the method has just one parameter (the event)
-     * 
-     * @param method the method
-     * @return the type of the producer, or null if not specified
-     * @throws IllegalArgumentException if the parameter types of the method are invalid
-     */
-    protected Class<?> getPossibleProducerType(Method method) throws IllegalArgumentException
-    {
-        Class<?>[] parameterTypes = method.getParameterTypes();
-
-        if (parameterTypes.length == 2)
-        {
-            return parameterTypes[0];
-        }
-        else if (parameterTypes.length == 1)
-        {
-            return null;
-        }
-
-        throw new IllegalArgumentException("Invalid number of parameters; either (producer, event) or just (event): "
-            + method);
-    }
-
-    /**
-     * Returns the possible event type as determined from the parameters of the method. By default this is the second
-     * parameter, if the method has two parameters or the first parameter if the method has just one parameter (the
-     * event)
-     * 
-     * @param method the method
-     * @return the type of the event, never null
-     * @throws IllegalArgumentException if the parameter types of the method are invalid
-     */
-    protected Class<?> getPossibleEventType(Method method) throws IllegalArgumentException
-    {
-        Class<?>[] parameterTypes = method.getParameterTypes();
-
-        if (parameterTypes.length == 2)
-        {
-            return parameterTypes[1];
-        }
-        else if (parameterTypes.length == 1)
-        {
-            return parameterTypes[0];
-        }
-
-        throw new IllegalArgumentException("Invalid number of parameters; either (producer, event) or just (event): "
-            + method);
-    }
 
     /**
      * Returns the allowed producer types as specified in the annotation. If the annotation does not specify any special
@@ -233,26 +103,8 @@ public abstract class AbstractAnnotatedEventHandlerStrategy<ANNOTATION_TYPE exte
             return null;
         }
 
-        if (method.getReturnType() != void.class)
-        {
-            throw new IllegalArgumentException("Invalid event handler method signature. Return type not supported: "
-                + method);
-        }
-
-        final Class<?>[] parameterTypes = method.getParameterTypes();
-
-        if ((parameterTypes.length < 1) || (parameterTypes.length > 2))
-        {
-            throw new IllegalArgumentException("Invalid event handler method signature. One or two parameters needed: "
-                + method);
-        }
-
-        Class<?>[] producerTypes = getProducerTypes(annotation, method);
-        Class<?>[] eventTypes = getEventTypes(annotation, method);
-        String[] anyTags = getAnyTags(annotation, method);
-        String[] eachTags = getEachTags(annotation, method);
-
-        return createEventHandlerInfo(annotation, method, producerTypes, eventTypes, anyTags, eachTags);
+        return createEventHandlerInfo(annotation, method, getAllowedProducerTypes(annotation, method),
+            getAllowedEventTypes(annotation, method), getAnyTags(annotation, method), getEachTags(annotation, method));
     }
 
     /**
@@ -260,13 +112,14 @@ public abstract class AbstractAnnotatedEventHandlerStrategy<ANNOTATION_TYPE exte
      * 
      * @param annotation the annotation
      * @param method the method
-     * @param producerTypes the producer types
-     * @param eventTypes the event types
-     * @param anyTags the any tags
-     * @param eachTags the each tags
+     * @param producerTypesByAnnotation the producer types
+     * @param eventTypesByAnnotation the event types
+     * @param anyTagsByAnnotation the any tags
+     * @param eachTagsByAnnotation the each tags
      * @return the event handler information object
      */
     protected abstract EventHandlerInfo createEventHandlerInfo(ANNOTATION_TYPE annotation, Method method,
-        Class<?>[] producerTypes, Class<?>[] eventTypes, String[] anyTags, String[] eachTags);
+        Class<?>[] producerTypesByAnnotation, Class<?>[] eventTypesByAnnotation, String[] anyTagsByAnnotation,
+        String[] eachTagsByAnnotation);
 
 }

@@ -21,6 +21,7 @@ package com.google.code.eventsonfire.error;
 
 import java.io.PrintStream;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 /**
  * Default implementation of the {@link ErrorHandler}. Writes messages to writer.
@@ -55,14 +56,15 @@ public class DefaultErrorHandler implements ErrorHandler
     /**
      * {@inheritDoc}
      */
-    public void invocationFailed(final Object producer, final Object consumer, final Object event, final Method method,
-        final String message, final Throwable cause)
+    public void invocationFailed(final Method method, final String message, final Throwable cause, final Object producer,
+        final Object consumer, final Object event, String... tags)
     {
         stream.println("Invocation of event handler failed: " + message);
         stream.println("\tMethod:   " + method);
         stream.println("\tProducer: " + producer);
         stream.println("\tConsumer: " + consumer);
         stream.println("\tEvent:    " + event);
+        stream.println("\tTags:     " + Arrays.toString(tags));
 
         if (cause != null)
         {

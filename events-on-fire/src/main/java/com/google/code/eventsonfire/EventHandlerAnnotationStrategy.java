@@ -84,10 +84,12 @@ class EventHandlerAnnotationStrategy extends AbstractAnnotatedEventHandlerStrate
      */
     @SuppressWarnings("deprecation")
     @Override
-    protected EventHandlerInfo createEventHandlerInfo(EventHandler annotation, Method method, Class<?>[] producerTypes,
-        Class<?>[] eventTypes, String[] anyTags, String[] eachTags)
+    protected EventHandlerInfo createEventHandlerInfo(EventHandler annotation, Method method,
+        Class<?>[] producerTypesByAnnotation, Class<?>[] eventTypesByAnnotation, String[] anyTagsByAnnotation,
+        String[] eachTagsByAnnotation)
     {
-        return new EventHandlerAnnotationInfo(method, producerTypes, eventTypes, anyTags, eachTags, annotation.pooled());
+        return new EventHandlerAnnotationInfo(method, producerTypesByAnnotation, eventTypesByAnnotation,
+            anyTagsByAnnotation, eachTagsByAnnotation, annotation.pooled());
     }
 
 }

@@ -85,9 +85,11 @@ class PooledEventHandlerAnnotationStrategy extends AbstractAnnotatedEventHandler
      */
     @Override
     protected EventHandlerInfo createEventHandlerInfo(PooledEventHandler annotation, Method method,
-        Class<?>[] producerTypes, Class<?>[] eventTypes, String[] anyTags, String[] eachTags)
+        Class<?>[] producerTypesByAnnotation, Class<?>[] eventTypesByAnnotation, String[] anyTagsByAnnotation,
+        String[] eachTagsByAnnotation)
     {
-        return new PooledEventHandlerAnnotationInfo(method, producerTypes, eventTypes, anyTags, eachTags);
+        return new PooledEventHandlerAnnotationInfo(method, producerTypesByAnnotation, eventTypesByAnnotation,
+            anyTagsByAnnotation, eachTagsByAnnotation);
     }
 
 }

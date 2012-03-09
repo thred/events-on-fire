@@ -31,15 +31,15 @@ public interface ErrorHandler
 
     /**
      * Called if the invocation of an event handler method fails.
-     * 
-     * @param producer the producer of the event
-     * @param consumer the consumer of the event
-     * @param event the event itself
      * @param method the method which caused the error
      * @param message some informative message
      * @param cause the exception if available, may be null
+     * @param producer the producer of the event
+     * @param consumer the consumer of the event
+     * @param event the event itself
+     * @param tags the tags, if any
      */
-    void invocationFailed(Object producer, Object consumer, Object event, Method method, String message, Throwable cause);
+    void invocationFailed(Method method, String message, Throwable cause, Object producer, Object consumer, Object event, String... tags);
 
     /**
      * Called if a unhandled exception occurs in the event handler thread.

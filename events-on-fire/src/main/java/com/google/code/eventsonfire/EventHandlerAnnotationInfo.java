@@ -32,10 +32,10 @@ class EventHandlerAnnotationInfo extends AbstractEventHandlerInfo
 
     private final boolean pooled;
 
-    public EventHandlerAnnotationInfo(Method method, Class<?>[] producerTypes, Class<?>[] eventTypes, String[] anyTags,
-        String[] eachTags, boolean pooled)
+    public EventHandlerAnnotationInfo(Method method, Class<?>[] producerTypesByAnnotation,
+        Class<?>[] eventTypesByAnnotation, String[] anyTagsByAnnotation, String[] eachTagsByAnnotation, boolean pooled)
     {
-        super(method, producerTypes, eventTypes, anyTags, eachTags);
+        super(method, producerTypesByAnnotation, eventTypesByAnnotation, anyTagsByAnnotation, eachTagsByAnnotation);
 
         this.pooled = pooled;
     }
@@ -44,43 +44,34 @@ class EventHandlerAnnotationInfo extends AbstractEventHandlerInfo
      * {@inheritDoc}
      */
     @Override
-    protected void call(Object producer, Object consumer, Object event)
+    protected void call(Object producer, Object consumer, Object event, String... tags)
     {
         if (pooled)
         {
-            Events.invokeLater(new EventHandlerInvoker(producer, consumer, event, method));
+            Events.invokeLater(new EventHandlerInvoker(methodType, method, producer, consumer, event, tags));
 
             return;
         }
 
-        final Class<?>[] parameterTypes = method.getParameterTypes();
-
         try
         {
-            if (parameterTypes.length == 1)
-            {
-                method.invoke(consumer, event);
-            }
-            else
-            {
-                method.invoke(consumer, producer, event);
-            }
+            method.invoke(consumer, methodType.toParameters(producer, event, tags));
         }
         catch (final IllegalArgumentException e)
         {
-            Events.getErrorHandler().invocationFailed(producer, consumer, event, method, "Invalid argument", e);
+            Events.getErrorHandler().invocationFailed(method, "Invalid argument", e, producer, consumer, event, tags);
         }
         catch (final IllegalAccessException e)
         {
-            Events.getErrorHandler().invocationFailed(producer, consumer, event, method, "Illegal access", e);
+            Events.getErrorHandler().invocationFailed(method, "Illegal access", e, producer, consumer, event, tags);
         }
         catch (final InvocationTargetException e)
         {
-            Events.getErrorHandler().invocationFailed(producer, consumer, event, method, "Invocation failed", e);
+            Events.getErrorHandler().invocationFailed(method, "Invocation failed", e, producer, consumer, event, tags);
         }
         catch (final Exception e)
         {
-            Events.getErrorHandler().invocationFailed(producer, consumer, event, method, "Unhandled exception", e);
+            Events.getErrorHandler().invocationFailed(method, "Unhandled exception", e, producer, consumer, event, tags);
         }
     }
 
