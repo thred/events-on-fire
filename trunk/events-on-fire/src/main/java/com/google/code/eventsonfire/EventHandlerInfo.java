@@ -40,6 +40,6 @@ public interface EventHandlerInfo
      * @param tags the tags
      * @return true if invoked (or will be invoked in near future), false otherwise
      */
-    boolean invoke(Object producer, Object consumer, Object event, String[] tags);
+    boolean invoke(Object producer, Object consumer, Object event, String... tags);
 
 }

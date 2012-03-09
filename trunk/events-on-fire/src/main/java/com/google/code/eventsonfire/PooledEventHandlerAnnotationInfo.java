@@ -29,19 +29,19 @@ import java.lang.reflect.Method;
 class PooledEventHandlerAnnotationInfo extends AbstractEventHandlerInfo
 {
 
-    public PooledEventHandlerAnnotationInfo(Method method, Class<?>[] producerTypes, Class<?>[] eventTypes,
-        String[] anyTags, String[] eachTags)
+    public PooledEventHandlerAnnotationInfo(Method method, Class<?>[] producerTypesByAnnotation,
+        Class<?>[] eventTypesByAnnotation, String[] anyTagsByAnnotation, String[] eachTagsByAnnotation)
     {
-        super(method, producerTypes, eventTypes, anyTags, eachTags);
+        super(method, producerTypesByAnnotation, eventTypesByAnnotation, anyTagsByAnnotation, eachTagsByAnnotation);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void call(Object producer, Object consumer, Object event)
+    protected void call(Object producer, Object consumer, Object event, String... tags)
     {
-        Events.invokeLater(new EventHandlerInvoker(producer, consumer, event, method));
+        Events.invokeLater(new EventHandlerInvoker(methodType, method, producer, consumer, event, tags));
     }
 
 }

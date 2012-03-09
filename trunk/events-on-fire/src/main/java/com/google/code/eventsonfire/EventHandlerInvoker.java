@@ -22,6 +22,8 @@ package com.google.code.eventsonfire;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import com.google.code.eventsonfire.AbstractEventHandlerInfo.MethodType;
+
 /**
  * Runnable used for event handler invocations by other threads
  * 
@@ -30,19 +32,24 @@ import java.lang.reflect.Method;
 public class EventHandlerInvoker implements Runnable
 {
 
+    private final MethodType methodType;
+    private final Method method;
     private final Object producer;
     private final Object consumer;
     private final Object event;
-    private final Method method;
+    private final String[] tags;
 
-    public EventHandlerInvoker(final Object producer, final Object consumer, final Object event, final Method method)
+    public EventHandlerInvoker(MethodType methodType, Method method, Object producer, Object consumer, Object event,
+        String... tags)
     {
         super();
 
+        this.methodType = methodType;
+        this.method = method;
         this.producer = producer;
         this.consumer = consumer;
         this.event = event;
-        this.method = method;
+        this.tags = tags;
     }
 
     /**
@@ -50,34 +57,25 @@ public class EventHandlerInvoker implements Runnable
      */
     public void run()
     {
-        final Class<?>[] parameterTypes = method.getParameterTypes();
-
         try
         {
-            if (parameterTypes.length == 1)
-            {
-                method.invoke(consumer, event);
-            }
-            else
-            {
-                method.invoke(consumer, producer, event);
-            }
+            method.invoke(consumer, methodType.toParameters(producer, event, tags));
         }
         catch (final IllegalArgumentException e)
         {
-            Events.getErrorHandler().invocationFailed(producer, consumer, event, method, "Invalid argument", e);
+            Events.getErrorHandler().invocationFailed(method, "Invalid argument", e, producer, consumer, event, tags);
         }
         catch (final IllegalAccessException e)
         {
-            Events.getErrorHandler().invocationFailed(producer, consumer, event, method, "Illegal access", e);
+            Events.getErrorHandler().invocationFailed(method, "Illegal access", e, producer, consumer, event, tags);
         }
         catch (final InvocationTargetException e)
         {
-            Events.getErrorHandler().invocationFailed(producer, consumer, event, method, "Invocation failed", e);
+            Events.getErrorHandler().invocationFailed(method, "Invocation failed", e, producer, consumer, event, tags);
         }
         catch (final Exception e)
         {
-            Events.getErrorHandler().invocationFailed(producer, consumer, event, method, "Unhandled exception", e);
+            Events.getErrorHandler().invocationFailed(method, "Unhandled exception", e, producer, consumer, event, tags);
         }
     }
 }

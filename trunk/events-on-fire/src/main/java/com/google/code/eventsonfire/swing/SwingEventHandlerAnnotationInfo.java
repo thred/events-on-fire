@@ -35,19 +35,19 @@ import com.google.code.eventsonfire.EventHandlerInvoker;
 class SwingEventHandlerAnnotationInfo extends AbstractEventHandlerInfo
 {
 
-    public SwingEventHandlerAnnotationInfo(Method method, Class<?>[] producerTypes, Class<?>[] eventTypes,
-        String[] anyTags, String[] eachTags)
+    public SwingEventHandlerAnnotationInfo(Method method, Class<?>[] producerTypesByAnnotation,
+        Class<?>[] eventTypesByAnnotation, String[] anyTagsByAnnotation, String[] eachTagsByAnnotation)
     {
-        super(method, producerTypes, eventTypes, anyTags, eachTags);
+        super(method, producerTypesByAnnotation, eventTypesByAnnotation, anyTagsByAnnotation, eachTagsByAnnotation);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void call(Object producer, Object consumer, Object event)
+    protected void call(Object producer, Object consumer, Object event, String... tags)
     {
-        SwingUtilities.invokeLater(new EventHandlerInvoker(producer, consumer, event, method));
+        SwingUtilities.invokeLater(new EventHandlerInvoker(methodType, method, producer, consumer, event));
     }
 
 }
