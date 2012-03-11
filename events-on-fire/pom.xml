@@ -12,7 +12,7 @@
 
 	<groupId>com.googlecode.events-on-fire</groupId>
 	<artifactId>events-on-fire</artifactId>
-	<version>1.2</version>
+	<version>1.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Events On Fire</name>
