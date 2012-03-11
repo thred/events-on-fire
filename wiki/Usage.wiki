@@ -9,7 +9,10 @@
 
 === Include events-on-fire manually ===
 
-Download the latest release: [http://code.google.com/p/events-on-fire/downloads/detail?name=events-on-fire-1.1-complete.jar&can=2&q= events-on-fire-1.1-complete.jar]
+Download the latest release: 
+  * [http://code.google.com/p/events-on-fire/downloads/detail?name=events-on-fire-1.2-dist.tar.gz&can=2&q= events-on-fire-1.2-dist.tar.gz], distribution, contains jar, sources and java-doc, tar.gz format 
+  * [http://code.google.com/p/events-on-fire/downloads/detail?name=events-on-fire-1.2-dist.zip&can=2&q= events-on-fire-1.2-dist.zip], distribution, contains jar, sources and java-doc, zip format 
+  * [http://code.google.com/p/events-on-fire/downloads/detail?name=events-on-fire-1.2-complete.jar&can=2&q= events-on-fire-1.2-complete.jar], just the jar, but contains the sources
 
 Add the jar manually to your build and execution path.
 
@@ -21,7 +24,7 @@ Add the following dependency:
 <dependency>
   <groupId>com.google.code.events-on-fire</groupId>
   <artifactId>events-on-fire</artifactId>
-  <version>1.1</version>
+  <version>1.2</version>
 </dependency>
 }}}
 
@@ -31,7 +34,7 @@ You can use any object as event. Usually you create a class that holds all the s
  
 === Create a consumer (your listener) ===
 
-Add a method for the event handlung to your class. Tag it with the @EventHandler annotation:
+Add a method for the event handler to your class. Tag it with the @EventHandler annotation:
 
 {{{
 public class MyClass {
@@ -55,7 +58,7 @@ Events.bind(producer, consumer);
 
 The producer usually is your controller. In Swing this may be your Frame or a Component. In Web-Applications this may be the instance of a service. 
 
-The consumer is the class with the handleEvent method. Keep in mind, that you have to handle the instance of the consumer. The references in the Events class are weak. If there is no reference left, the consumer will get cleaned up by the garbage collector.
+The consumer is the class with the event handler. Keep in mind, that you have to handle the instance of the consumer. The references in the Events class are weak. If there is no reference left, the consumer will get cleaned up by the garbage collector.
 
 === Fire the event ===
 
