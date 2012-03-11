@@ -12,7 +12,7 @@
 
 	<groupId>com.googlecode.events-on-fire</groupId>
 	<artifactId>events-on-fire</artifactId>
-	<version>1.3-SNAPSHOT</version>
+	<version>1.2</version>
 	<packaging>jar</packaging>
 
 	<name>Events On Fire</name>
@@ -40,9 +40,9 @@
 	</issueManagement>
 
 	<scm>
-		<connection>scm:svn:http://events-on-fire.googlecode.com/svn/tags/events-on-fire-1.0</connection>
-		<developerConnection>scm:svn:https://events-on-fire.googlecode.com/svn/tags/events-on-fire-1.0</developerConnection>
-		<url>http://events-on-fire.googlecode.com/svn/tags/events-on-fire-1.0</url>
+		<connection>scm:svn:http://events-on-fire.googlecode.com/svn/tags/1.2</connection>
+		<developerConnection>scm:svn:https://events-on-fire.googlecode.com/svn/tags/1.2</developerConnection>
+		<url>http://events-on-fire.googlecode.com/svn/tags/1.2</url>
 	</scm>
 
 	<developers>
