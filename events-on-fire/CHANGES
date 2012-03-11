@@ -7,6 +7,15 @@ default @EventHandler annotation and the @SwingEventHandler
 annotation, calling the handler method by using the Swing event 
 handler thread.  
 
+Added tags as additional parameter (varargs). The tags can be
+checked using the annotations. It is now possible to create
+event handler methods without parameters, just watching the
+specified tags.
+
+Added an AWTEvents and a SwingEvents class, providing predefined
+Action-, Change- and SelectionListeners. These listeners fire 
+the events they get.
+
 events-on-fire 1.1
 ==================
 
