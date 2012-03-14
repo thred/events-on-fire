@@ -140,6 +140,21 @@ public class EventsUnitTest
     }
 
     @Test
+    public void testFireToInstancesOfSpecialB() throws InterruptedException
+    {
+        EventsTestConsumer consumer = new EventsTestConsumer();
+        
+        Events.bind(EventsUnitTest.class, consumer);
+        Events.fire(EventsUnitTest.class, "Event #1");
+        
+        consumer.waitForSize(1);
+        
+        assert "Event #1".equals(consumer.popEvent().getEvent());
+        
+        Events.unbind(EventsUnitTest.class, consumer);
+    }
+
+    @Test
     public void testDisable() throws InterruptedException
     {
         final Object producer = new Object();
@@ -160,13 +175,8 @@ public class EventsUnitTest
         assert "Event #1".equals(consumer.popEvent().getEvent());
     }
 
-    public void testCleanupConsumer()
-    {
-        // final Object producer = new Object();
-        // final TestConsumer consumer = new TestConsumer();
-        //
-        // Events.bind(producer, consumer);
-
-    }
-
+//    public static void main(String[] args) throws InterruptedException
+//    {
+//        new EventsUnitTest().testFireToInstancesOfSpecialB();
+//    }
 }
