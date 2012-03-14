@@ -107,4 +107,14 @@ class WeakIdentityReference<TYPE> extends WeakReference<TYPE>
 
         return referent == ((WeakIdentityReference<?>) obj).get();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString()
+    {
+        return "WeakIdentityReference of " + get();
+    }
+
 }

@@ -502,13 +502,17 @@ public class Events implements Runnable
         Object producer = action.getProducer();
         Object parameter = action.getParameter();
         String[] tags = action.getTags();
-
+        Class<?> producersClass;
+        
         if (!(producer instanceof Class))
         {
             executeFireAction(new WeakIdentityReference<Object>(producer, referenceQueue), producer, parameter, tags);
+            
+            producersClass = producer.getClass();
         }
-
-        Class<?> producersClass = producer.getClass();
+        else {
+           producersClass = (Class<?>) producer;
+        }
 
         executeFireAction(new WeakIdentityReference<Object>(producersClass, referenceQueue), producer, parameter, tags);
 

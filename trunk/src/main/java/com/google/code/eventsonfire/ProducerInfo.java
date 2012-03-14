@@ -117,4 +117,22 @@ class ProducerInfo
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString()
+    {
+        StringBuilder builder = new StringBuilder("ProducerInfo {");
+
+        for (Reference<?> reference : consumerReferences)
+        {
+            builder.append("\n\t").append(reference);
+        }
+
+        builder.append("\n}");
+
+        return builder.toString();
+    }
+
 }
