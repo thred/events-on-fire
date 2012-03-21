@@ -150,7 +150,7 @@ public abstract class AbstractEventHandlerInfo implements EventHandlerInfo
                 validateAssignableProvider(method, parameterTypes[0], producerTypesByAnnotation);
                 validateAssignableEvent(method, parameterTypes[1], eventTypesByAnnotation);
 
-                methodType = MethodType.EVENT_TAGS;
+                methodType = MethodType.PROVIDER_EVENT;
                 producerTypes = toArray(parameterTypes[0], producerTypesByAnnotation);
                 eventTypes = toArray(parameterTypes[1], eventTypesByAnnotation);
             }
@@ -163,7 +163,7 @@ public abstract class AbstractEventHandlerInfo implements EventHandlerInfo
             validateAssignableEvent(method, parameterTypes[1], eventTypesByAnnotation);
             validateTagsOfString(method, parameterTypes[2]);
 
-            methodType = MethodType.EVENT_TAGS;
+            methodType = MethodType.PROVIDER_EVENT_TAGS;
             producerTypes = toArray(parameterTypes[0], producerTypesByAnnotation);
             eventTypes = toArray(parameterTypes[1], eventTypesByAnnotation);
         }
