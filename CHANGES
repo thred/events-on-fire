@@ -1,3 +1,14 @@
+events-on-fire 1.2.2
+====================
+
+Fixed invocation of three-parameter event handler methods.
+Added fireOnKeyStroke methods to SwingEvents.
+
+events-on-fire 1.2.1
+====================
+
+Fixed binding to class producers.
+
 events-on-fire 1.2
 ==================
 
