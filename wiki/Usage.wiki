@@ -10,9 +10,9 @@
 === Include events-on-fire manually ===
 
 Download the latest release: 
-  * [http://code.google.com/p/events-on-fire/downloads/detail?name=events-on-fire-1.2.1-dist.tar.gz&can=2&q= events-on-fire-1.2.1-dist.tar.gz], distribution, contains jar, sources and java-doc, tar.gz format 
-  * [http://code.google.com/p/events-on-fire/downloads/detail?name=events-on-fire-1.2.1-dist.zip&can=2&q= events-on-fire-1.2.1-dist.zip], distribution, contains jar, sources and java-doc, zip format 
-  * [http://code.google.com/p/events-on-fire/downloads/detail?name=events-on-fire-1.2.1-complete.jar&can=2&q= events-on-fire-1.2.1-complete.jar], just the jar, but contains the sources
+  * [http://code.google.com/p/events-on-fire/downloads/detail?name=events-on-fire-1.2.2-dist.tar.gz&can=2&q= events-on-fire-1.2.2-dist.tar.gz], distribution, contains jar, sources and java-doc, tar.gz format 
+  * [http://code.google.com/p/events-on-fire/downloads/detail?name=events-on-fire-1.2.2-dist.zip&can=2&q= events-on-fire-1.2.2-dist.zip], distribution, contains jar, sources and java-doc, zip format 
+  * [http://code.google.com/p/events-on-fire/downloads/detail?name=events-on-fire-1.2.2-complete.jar&can=2&q= events-on-fire-1.2.2-complete.jar], just the jar, but contains the sources
 
 Add the jar manually to your build and execution path.
 
@@ -24,7 +24,7 @@ Add the following dependency:
 <dependency>
   <groupId>com.google.code.events-on-fire</groupId>
   <artifactId>events-on-fire</artifactId>
-  <version>1.2.1</version>
+  <version>1.2.2</version>
 </dependency>
 }}}
 
