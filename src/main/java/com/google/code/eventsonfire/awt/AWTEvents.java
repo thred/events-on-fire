@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import com.google.code.eventsonfire.Events;
 
@@ -74,6 +76,36 @@ public class AWTEvents
         public void actionPerformed(ActionEvent event)
         {
             fire(event.getSource(), event, event.getActionCommand());
+        }
+    }
+
+    /**
+     * A custom implementation of the item listener interface using either the specified producer or the source of the
+     * event and the specified tags.
+     * 
+     * @author ham
+     */
+    public static class EventsItemListener extends AbstractListener implements ItemListener
+    {
+
+        /**
+         * Creates an item listener using the specified producer and tags. If the producer is null, the source of the
+         * event will be used as producer.
+         * 
+         * @param producer the producer, may be null
+         * @param tags the tags, may be null
+         */
+        public EventsItemListener(Object producer, String... tags)
+        {
+            super(producer, tags);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void itemStateChanged(ItemEvent event)
+        {
+            fire(event.getSource(), event);
         }
     }
 
@@ -154,6 +186,7 @@ public class AWTEvents
     }
 
     private static final ActionListener DEFAULT_ACTION_LISTENER = new EventsActionListener(null);
+    private static final ItemListener DEFAULT_ITEM_LISTENER = new EventsItemListener(null);
     private static final FocusListener DEFAULT_FOCUS_GAINED_LISTENER = new EventsFocusGainedListener(null);
     private static final FocusListener DEFAULT_FOCUS_LOST_LISTENER = new EventsFocusLostListener(null);
 
@@ -180,6 +213,29 @@ public class AWTEvents
     public static ActionListener fireOnAction(Object producer, String... tags)
     {
         return new EventsActionListener(producer, tags);
+    }
+
+    /**
+     * Returns an item listener, that fires an event using the source of the event as producer.
+     * 
+     * @return the item listener
+     */
+    public static ItemListener fireOnItemChanged()
+    {
+        return DEFAULT_ITEM_LISTENER;
+    }
+
+    /**
+     * Creates an item listener, that fires an event using the specified producer and the specified tags. If the
+     * producer is null, the source of the event will be used as producer.
+     * 
+     * @param producer the producer
+     * @param tags the tags
+     * @return the item listener
+     */
+    public static ItemListener fireOnItemChanged(Object producer, String... tags)
+    {
+        return new EventsItemListener(producer, tags);
     }
 
     /**
