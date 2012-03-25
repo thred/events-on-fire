@@ -3,6 +3,7 @@ events-on-fire 1.2.2
 
 Fixed invocation of three-parameter event handler methods.
 Added fireOnKeyStroke methods to SwingEvents.
+Added ItemListener methods to AWTEvents.
 
 events-on-fire 1.2.1
 ====================
