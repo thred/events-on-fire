@@ -6,6 +6,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import com.google.code.eventsonfire.Events;
 
@@ -185,10 +187,570 @@ public class AWTEvents
         }
     }
 
+    /**
+     * A custom implementation of the window listener interface using either the specified producer or the source of the
+     * event and the specified tags or the action command of the event as tag. Reacts only to window activated events.
+     * 
+     * @author ham
+     */
+    public static class EventsWindowActivatedListener extends AbstractListener implements WindowListener
+    {
+
+        /**
+         * Creates a window listener using the specified producer and tags. If the producer is null, the source of the
+         * event will be used as producer.
+         * 
+         * @param producer the producer, may be null
+         * @param tags the tags, may be null
+         */
+        public EventsWindowActivatedListener(Object producer, String... tags)
+        {
+            super(producer, tags);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowActivated(WindowEvent event)
+        {
+            fire(event.getSource(), event);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowClosed(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowClosing(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowDeactivated(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowDeiconified(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowIconified(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowOpened(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+    }
+
+    /**
+     * A custom implementation of the window listener interface using either the specified producer or the source of the
+     * event and the specified tags or the action command of the event as tag. Reacts only to window closed events.
+     * 
+     * @author ham
+     */
+    public static class EventsWindowClosedListener extends AbstractListener implements WindowListener
+    {
+
+        /**
+         * Creates a window listener using the specified producer and tags. If the producer is null, the source of the
+         * event will be used as producer.
+         * 
+         * @param producer the producer, may be null
+         * @param tags the tags, may be null
+         */
+        public EventsWindowClosedListener(Object producer, String... tags)
+        {
+            super(producer, tags);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowActivated(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowClosed(WindowEvent event)
+        {
+            fire(event.getSource(), event);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowClosing(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowDeactivated(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowDeiconified(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowIconified(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowOpened(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+    }
+
+    /**
+     * A custom implementation of the window listener interface using either the specified producer or the source of the
+     * event and the specified tags or the action command of the event as tag. Reacts only to window closing events.
+     * 
+     * @author ham
+     */
+    public static class EventsWindowClosingListener extends AbstractListener implements WindowListener
+    {
+
+        /**
+         * Creates a window listener using the specified producer and tags. If the producer is null, the source of the
+         * event will be used as producer.
+         * 
+         * @param producer the producer, may be null
+         * @param tags the tags, may be null
+         */
+        public EventsWindowClosingListener(Object producer, String... tags)
+        {
+            super(producer, tags);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowActivated(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowClosed(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowClosing(WindowEvent event)
+        {
+            fire(event.getSource(), event);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowDeactivated(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowDeiconified(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowIconified(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowOpened(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+    }
+
+    /**
+     * A custom implementation of the window listener interface using either the specified producer or the source of the
+     * event and the specified tags or the action command of the event as tag. Reacts only to window deactivated events.
+     * 
+     * @author ham
+     */
+    public static class EventsWindowDeactivatedListener extends AbstractListener implements WindowListener
+    {
+
+        /**
+         * Creates a window listener using the specified producer and tags. If the producer is null, the source of the
+         * event will be used as producer.
+         * 
+         * @param producer the producer, may be null
+         * @param tags the tags, may be null
+         */
+        public EventsWindowDeactivatedListener(Object producer, String... tags)
+        {
+            super(producer, tags);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowActivated(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowClosed(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowClosing(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowDeactivated(WindowEvent event)
+        {
+            fire(event.getSource(), event);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowDeiconified(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowIconified(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowOpened(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+    }
+
+    /**
+     * A custom implementation of the window listener interface using either the specified producer or the source of the
+     * event and the specified tags or the action command of the event as tag. Reacts only to window deiconified events.
+     * 
+     * @author ham
+     */
+    public static class EventsWindowDeiconifiedListener extends AbstractListener implements WindowListener
+    {
+
+        /**
+         * Creates a window listener using the specified producer and tags. If the producer is null, the source of the
+         * event will be used as producer.
+         * 
+         * @param producer the producer, may be null
+         * @param tags the tags, may be null
+         */
+        public EventsWindowDeiconifiedListener(Object producer, String... tags)
+        {
+            super(producer, tags);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowActivated(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowClosed(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowClosing(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowDeactivated(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowDeiconified(WindowEvent event)
+        {
+            fire(event.getSource(), event);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowIconified(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowOpened(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+    }
+
+    /**
+     * A custom implementation of the window listener interface using either the specified producer or the source of the
+     * event and the specified tags or the action command of the event as tag. Reacts only to window iconified events.
+     * 
+     * @author ham
+     */
+    public static class EventsWindowIconifiedListener extends AbstractListener implements WindowListener
+    {
+
+        /**
+         * Creates a window listener using the specified producer and tags. If the producer is null, the source of the
+         * event will be used as producer.
+         * 
+         * @param producer the producer, may be null
+         * @param tags the tags, may be null
+         */
+        public EventsWindowIconifiedListener(Object producer, String... tags)
+        {
+            super(producer, tags);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowActivated(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowClosed(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowClosing(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowDeactivated(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowDeiconified(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowIconified(WindowEvent event)
+        {
+            fire(event.getSource(), event);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowOpened(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+    }
+
+    /**
+     * A custom implementation of the window listener interface using either the specified producer or the source of the
+     * event and the specified tags or the action command of the event as tag. Reacts only to window opened events.
+     * 
+     * @author ham
+     */
+    public static class EventsWindowOpenedListener extends AbstractListener implements WindowListener
+    {
+
+        /**
+         * Creates a window listener using the specified producer and tags. If the producer is null, the source of the
+         * event will be used as producer.
+         * 
+         * @param producer the producer, may be null
+         * @param tags the tags, may be null
+         */
+        public EventsWindowOpenedListener(Object producer, String... tags)
+        {
+            super(producer, tags);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowActivated(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowClosed(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowClosing(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowDeactivated(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowDeiconified(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowIconified(WindowEvent event)
+        {
+            // intentionally left blank
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void windowOpened(WindowEvent event)
+        {
+            fire(event.getSource(), event);
+        }
+
+    }
+
     private static final ActionListener DEFAULT_ACTION_LISTENER = new EventsActionListener(null);
     private static final ItemListener DEFAULT_ITEM_LISTENER = new EventsItemListener(null);
     private static final FocusListener DEFAULT_FOCUS_GAINED_LISTENER = new EventsFocusGainedListener(null);
     private static final FocusListener DEFAULT_FOCUS_LOST_LISTENER = new EventsFocusLostListener(null);
+    private static final WindowListener DEFAULT_WINDOW_ACTIVATED_LISTENER = new EventsWindowActivatedListener(null);
+    private static final WindowListener DEFAULT_WINDOW_CLOSED_LISTENER = new EventsWindowClosedListener(null);
+    private static final WindowListener DEFAULT_WINDOW_CLOSING_LISTENER = new EventsWindowClosingListener(null);
+    private static final WindowListener DEFAULT_WINDOW_DEACTIVATED_LISTENER = new EventsWindowDeactivatedListener(null);
+    private static final WindowListener DEFAULT_WINDOW_DEICONIFIED_LISTENER = new EventsWindowDeiconifiedListener(null);
+    private static final WindowListener DEFAULT_WINDOW_ICONIFIED_LISTENER = new EventsWindowIconifiedListener(null);
+    private static final WindowListener DEFAULT_WINDOW_OPENED_LISTENER = new EventsWindowOpenedListener(null);
 
     /**
      * Returns an action listener, that fires an event using the source of the event as producer and the action command
@@ -282,6 +844,167 @@ public class AWTEvents
     public static FocusListener fireOnFocusLost(Object producer, String... tags)
     {
         return new EventsFocusLostListener(producer, tags);
+    }
+
+    /**
+     * Returns a window listener, that fires an event on window activated using the source of the event as producer.
+     * 
+     * @return the focus listener
+     */
+    public static WindowListener fireOnWindowActivated()
+    {
+        return DEFAULT_WINDOW_ACTIVATED_LISTENER;
+    }
+
+    /**
+     * Creates a window listener, that fires an event on window activated using the specified producer and the specified
+     * tags. If the producer is null, the source of the event will be used as producer.
+     * 
+     * @param producer the producer
+     * @param tags the tags
+     * @return the focus listener
+     */
+    public static WindowListener fireOnWindowActivated(Object producer, String... tags)
+    {
+        return new EventsWindowActivatedListener(producer, tags);
+    }
+
+    /**
+     * Returns a window listener, that fires an event on window closed using the source of the event as producer.
+     * 
+     * @return the focus listener
+     */
+    public static WindowListener fireOnWindowClosed()
+    {
+        return DEFAULT_WINDOW_CLOSED_LISTENER;
+    }
+
+    /**
+     * Creates a window listener, that fires an event on window closed using the specified producer and the specified
+     * tags. If the producer is null, the source of the event will be used as producer.
+     * 
+     * @param producer the producer
+     * @param tags the tags
+     * @return the focus listener
+     */
+    public static WindowListener fireOnWindowClosed(Object producer, String... tags)
+    {
+        return new EventsWindowClosedListener(producer, tags);
+    }
+
+    /**
+     * Returns a window listener, that fires an event on window closing using the source of the event as producer.
+     * 
+     * @return the focus listener
+     */
+    public static WindowListener fireOnWindowClosing()
+    {
+        return DEFAULT_WINDOW_CLOSING_LISTENER;
+    }
+
+    /**
+     * Creates a window listener, that fires an event on window closing using the specified producer and the specified
+     * tags. If the producer is null, the source of the event will be used as producer.
+     * 
+     * @param producer the producer
+     * @param tags the tags
+     * @return the focus listener
+     */
+    public static WindowListener fireOnWindowClosing(Object producer, String... tags)
+    {
+        return new EventsWindowClosingListener(producer, tags);
+    }
+
+    /**
+     * Returns a window listener, that fires an event on window deactivated using the source of the event as producer.
+     * 
+     * @return the focus listener
+     */
+    public static WindowListener fireOnWindowDeactivated()
+    {
+        return DEFAULT_WINDOW_DEACTIVATED_LISTENER;
+    }
+
+    /**
+     * Creates a window listener, that fires an event on window deactivated using the specified producer and the
+     * specified tags. If the producer is null, the source of the event will be used as producer.
+     * 
+     * @param producer the producer
+     * @param tags the tags
+     * @return the focus listener
+     */
+    public static WindowListener fireOnWindowDeactivated(Object producer, String... tags)
+    {
+        return new EventsWindowDeactivatedListener(producer, tags);
+    }
+
+    /**
+     * Returns a window listener, that fires an event on window deiconified using the source of the event as producer.
+     * 
+     * @return the focus listener
+     */
+    public static WindowListener fireOnWindowDeiconified()
+    {
+        return DEFAULT_WINDOW_DEICONIFIED_LISTENER;
+    }
+
+    /**
+     * Creates a window listener, that fires an event on window deiconified using the specified producer and the
+     * specified tags. If the producer is null, the source of the event will be used as producer.
+     * 
+     * @param producer the producer
+     * @param tags the tags
+     * @return the focus listener
+     */
+    public static WindowListener fireOnWindowDeiconified(Object producer, String... tags)
+    {
+        return new EventsWindowDeiconifiedListener(producer, tags);
+    }
+
+    /**
+     * Returns a window listener, that fires an event on window iconified using the source of the event as producer.
+     * 
+     * @return the focus listener
+     */
+    public static WindowListener fireOnWindowIconified()
+    {
+        return DEFAULT_WINDOW_ICONIFIED_LISTENER;
+    }
+
+    /**
+     * Creates a window listener, that fires an event on window iconified using the specified producer and the specified
+     * tags. If the producer is null, the source of the event will be used as producer.
+     * 
+     * @param producer the producer
+     * @param tags the tags
+     * @return the focus listener
+     */
+    public static WindowListener fireOnWindowIconified(Object producer, String... tags)
+    {
+        return new EventsWindowIconifiedListener(producer, tags);
+    }
+
+    /**
+     * Returns a window listener, that fires an event on window opened using the source of the event as producer.
+     * 
+     * @return the focus listener
+     */
+    public static WindowListener fireOnWindowOpened()
+    {
+        return DEFAULT_WINDOW_OPENED_LISTENER;
+    }
+
+    /**
+     * Creates a window listener, that fires an event on window opened using the specified producer and the specified
+     * tags. If the producer is null, the source of the event will be used as producer.
+     * 
+     * @param producer the producer
+     * @param tags the tags
+     * @return the focus listener
+     */
+    public static WindowListener fireOnWindowOpened(Object producer, String... tags)
+    {
+        return new EventsWindowOpenedListener(producer, tags);
     }
 
 }
