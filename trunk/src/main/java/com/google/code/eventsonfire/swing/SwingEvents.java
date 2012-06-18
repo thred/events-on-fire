@@ -74,6 +74,11 @@ public class SwingEvents extends AWTEvents
          */
         public void valueChanged(ListSelectionEvent event)
         {
+            if (event.getValueIsAdjusting())
+            {
+                return;
+            }
+
             fire(event.getSource(), event);
         }
     }
@@ -237,6 +242,18 @@ public class SwingEvents extends AWTEvents
     public static ChangeListener fireOnChange()
     {
         return DEFAULT_CHANGE_LISTENER;
+    }
+
+    /**
+     * Creates a change listener, that fires an event using the source of the event as producer and the specified tags.
+     * If the producer is null, the source of the event will be used as producer.
+     * 
+     * @param tags the tags
+     * @return the change listener
+     */
+    public static ChangeListener fireOnChange(String... tags)
+    {
+        return new EventsChangeListener(null, tags);
     }
 
     /**
