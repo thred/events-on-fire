@@ -31,7 +31,6 @@ public class SwingEventHandlerAnnotationStrategyUnitTest
         strategy.scan(infos, new Object()
         {
 
-            @SuppressWarnings("unused")
             @SwingEventHandler
             public void eventHandler(JButton producer, String event)
             {
@@ -67,7 +66,6 @@ public class SwingEventHandlerAnnotationStrategyUnitTest
         strategy.scan(infos, new Object()
         {
 
-            @SuppressWarnings("unused")
             @SwingEventHandler(producer = JButton.class, event = String.class)
             public void eventHandler(Object producer, Object event)
             {
@@ -103,7 +101,6 @@ public class SwingEventHandlerAnnotationStrategyUnitTest
         strategy.scan(infos, new Object()
         {
 
-            @SuppressWarnings("unused")
             @SwingEventHandler(producer = {JButton.class, JMenuItem.class}, event = {Integer.class, String.class})
             public void eventHandler(Object producer, Object event)
             {
@@ -141,7 +138,6 @@ public class SwingEventHandlerAnnotationStrategyUnitTest
         strategy.scan(infos, new Object()
         {
 
-            @SuppressWarnings("unused")
             @SwingEventHandler(producer = JButton.class)
             public void eventHandler(JMenuItem producer, Object event)
             {
@@ -159,7 +155,6 @@ public class SwingEventHandlerAnnotationStrategyUnitTest
         strategy.scan(infos, new Object()
         {
 
-            @SuppressWarnings("unused")
             @SwingEventHandler(event = String.class)
             public void eventHandler(Integer event)
             {
@@ -177,7 +172,6 @@ public class SwingEventHandlerAnnotationStrategyUnitTest
         strategy.scan(infos, new Object()
         {
 
-            @SuppressWarnings("unused")
             @SwingEventHandler
             public String eventHandler(String event)
             {
@@ -195,7 +189,6 @@ public class SwingEventHandlerAnnotationStrategyUnitTest
         strategy.scan(infos, new Object()
         {
 
-            @SuppressWarnings("unused")
             @SwingEventHandler
             public void eventHandler(JButton producer, String event, String invalid)
             {

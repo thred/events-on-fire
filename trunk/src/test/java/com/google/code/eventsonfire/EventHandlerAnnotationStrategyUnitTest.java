@@ -29,7 +29,6 @@ public class EventHandlerAnnotationStrategyUnitTest
         strategy.scan(infos, new Object()
         {
 
-            @SuppressWarnings("unused")
             @EventHandler
             public void eventHandler(JButton producer, String event)
             {
@@ -65,7 +64,6 @@ public class EventHandlerAnnotationStrategyUnitTest
         strategy.scan(infos, new Object()
         {
 
-            @SuppressWarnings("unused")
             @EventHandler(producer = JButton.class, event = String.class)
             public void eventHandler(Object producer, Object event)
             {
@@ -101,7 +99,6 @@ public class EventHandlerAnnotationStrategyUnitTest
         strategy.scan(infos, new Object()
         {
 
-            @SuppressWarnings("unused")
             @EventHandler(producer = {JButton.class, JMenuItem.class}, event = {Integer.class, String.class})
             public void eventHandler(Object producer, Object event)
             {
@@ -139,7 +136,6 @@ public class EventHandlerAnnotationStrategyUnitTest
         strategy.scan(infos, new Object()
         {
 
-            @SuppressWarnings("unused")
             @EventHandler(producer = JButton.class)
             public void eventHandler(JMenuItem producer, Object event)
             {
@@ -157,7 +153,6 @@ public class EventHandlerAnnotationStrategyUnitTest
         strategy.scan(infos, new Object()
         {
 
-            @SuppressWarnings("unused")
             @EventHandler(event = String.class)
             public void eventHandler(Integer event)
             {
@@ -175,7 +170,6 @@ public class EventHandlerAnnotationStrategyUnitTest
         strategy.scan(infos, new Object()
         {
 
-            @SuppressWarnings("unused")
             @EventHandler
             public String eventHandler(String event)
             {
@@ -193,11 +187,10 @@ public class EventHandlerAnnotationStrategyUnitTest
         strategy.scan(infos, new Object()
         {
 
-            @SuppressWarnings("unused")
             @EventHandler
             public void eventHandler(JButton producer, String event, String invalid)
             {
-             // intentionally left blank
+                // intentionally left blank
             }
 
         }.getClass());
