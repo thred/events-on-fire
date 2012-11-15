@@ -1,5 +1,4 @@
-/*
- * Copyright (c) 2011, 2012 events-on-fire Team
+/* Copyright (c) 2011, 2012 events-on-fire Team
  * 
  * This file is part of Events-On-Fire (http://code.google.com/p/events-on-fire), licensed under the terms of the MIT
  * License (MIT).
@@ -15,8 +14,7 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
  * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
- * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 package com.google.code.eventsonfire;
 
 import java.lang.ref.Reference;
@@ -27,11 +25,10 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.DelayQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import com.google.code.eventsonfire.Action.Type;
 import com.google.code.eventsonfire.error.DefaultErrorHandler;
@@ -136,7 +133,7 @@ public class Events implements Runnable
                 throw new IllegalArgumentException("Consumer is null");
             }
 
-            INSTANCE.enqueue(new Action(Type.BIND, producer, consumer));
+            INSTANCE.enqueue(new Action(Type.BIND, producer, consumer, System.nanoTime()));
         }
 
         return producer;
@@ -183,7 +180,7 @@ public class Events implements Runnable
                 throw new IllegalArgumentException("Consumer is null");
             }
 
-            INSTANCE.enqueue(new Action(Type.UNBIND, producer, consumer));
+            INSTANCE.enqueue(new Action(Type.UNBIND, producer, consumer, System.nanoTime()));
         }
 
         return producer;
@@ -191,8 +188,9 @@ public class Events implements Runnable
 
     /**
      * <p>
-     * Fires the specified event from the specified instance of a producer. Notifies all consumers that are either
-     * directly bonded to the producer or that are bonded to the class, any sub-class or any interface of the producer.
+     * Fires the specified event from the specified instance of a producer immediately. Notifies all consumers that are
+     * either directly bonded to the producer or that are bonded to the class, any sub-class or any interface of the
+     * producer.
      * </p>
      * <p>
      * Calls the appropriate <code>@{@link EventHandler} public void handleEvent(* event)</code> method of all
@@ -207,6 +205,30 @@ public class Events implements Runnable
      */
     public static <PRODUCER_TYPE> PRODUCER_TYPE fire(PRODUCER_TYPE producer, Object event, String... tags)
         throws IllegalArgumentException
+    {
+        return fire(producer, event, 0, tags);
+    }
+
+    /**
+     * <p>
+     * Fires the specified event from the specified instance of a producer. Additionally defines an delay for firing
+     * this event (in seconds). Notifies all consumers that are either directly bonded to the producer or that are
+     * bonded to the class, any sub-class or any interface of the producer.
+     * </p>
+     * <p>
+     * Calls the appropriate <code>@{@link EventHandler} public void handleEvent(* event)</code> method of all
+     * consumers. Does nothing, if events are disabled for the current thread. Does nothing, if there are no consumers
+     * bonded to the producer.
+     * </p>
+     * 
+     * @param producer the producer, mandatory
+     * @param event the event, mandatory
+     * @param delayInSeconds the delay for triggering this event in seconds
+     * @param tags, optional, can be checked against tags in annotations
+     * @throws IllegalArgumentException if the producer or the event is null
+     */
+    public static <PRODUCER_TYPE> PRODUCER_TYPE fire(PRODUCER_TYPE producer, Object event, double delayInSeconds,
+        String... tags) throws IllegalArgumentException
     {
         if (isDisabled())
         {
@@ -223,7 +245,8 @@ public class Events implements Runnable
             throw new IllegalArgumentException("Event is null");
         }
 
-        INSTANCE.enqueue(new Action(Type.FIRE, producer, event, tags));
+        INSTANCE.enqueue(new Action(Type.FIRE, producer, event,
+            (long) (System.nanoTime() + (1000000000 * delayInSeconds)), tags));
 
         return producer;
     }
@@ -393,7 +416,7 @@ public class Events implements Runnable
     /**
      * The queue containing actions which wait to get executed.
      */
-    private final BlockingQueue<Action> actions;
+    private final DelayQueue<Action> actions;
 
     /**
      * A map containing all {@link ProducerInfo} objects containing the consumers by the producers.
@@ -424,7 +447,7 @@ public class Events implements Runnable
     {
         super();
 
-        actions = new LinkedBlockingQueue<Action>();
+        actions = new DelayQueue<Action>();
         producerInfos = new ConcurrentHashMap<Reference<Object>, ProducerInfo>();
         referenceQueue = new ReferenceQueue<Object>();
 
@@ -503,15 +526,16 @@ public class Events implements Runnable
         Object parameter = action.getParameter();
         String[] tags = action.getTags();
         Class<?> producersClass;
-        
+
         if (!(producer instanceof Class))
         {
             executeFireAction(new WeakIdentityReference<Object>(producer, referenceQueue), producer, parameter, tags);
-            
+
             producersClass = producer.getClass();
         }
-        else {
-           producersClass = (Class<?>) producer;
+        else
+        {
+            producersClass = (Class<?>) producer;
         }
 
         executeFireAction(new WeakIdentityReference<Object>(producersClass, referenceQueue), producer, parameter, tags);
@@ -526,7 +550,8 @@ public class Events implements Runnable
 
         while (producersClass != null)
         {
-            executeFireAction(new WeakIdentityReference<Object>(producersClass, referenceQueue), producer, parameter, tags);
+            executeFireAction(new WeakIdentityReference<Object>(producersClass, referenceQueue), producer, parameter,
+                tags);
             producersClass = producersClass.getSuperclass();
         }
     }
