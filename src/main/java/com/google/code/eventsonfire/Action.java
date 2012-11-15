@@ -1,5 +1,4 @@
-/*
- * Copyright (c) 2011, 2012 events-on-fire Team
+/* Copyright (c) 2011, 2012 events-on-fire Team
  * 
  * This file is part of Events-On-Fire (http://code.google.com/p/events-on-fire), licensed under the terms of the MIT
  * License (MIT).
@@ -15,16 +14,18 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
  * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
- * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 package com.google.code.eventsonfire;
+
+import java.util.concurrent.Delayed;
+import java.util.concurrent.TimeUnit;
 
 /**
  * An action within the {@link Events} object. All references are hard ones, because this object should not live long.
  * 
  * @author Manfred Hantschel
  */
-class Action
+class Action implements Delayed
 {
 
     /**
@@ -53,6 +54,7 @@ class Action
     private final Type type;
     private final Object producer;
     private final Object parameter;
+    private final long nanosToTrigger;
     private final String[] tags;
 
     /**
@@ -64,7 +66,8 @@ class Action
      * @param tags the tags, optional
      * @throws IllegalArgumentException if the action or the producer is null
      */
-    public Action(Type type, Object producer, Object parameter, String... tags) throws IllegalArgumentException
+    public Action(Type type, Object producer, Object parameter, long nanosToTrigger, String... tags)
+        throws IllegalArgumentException
     {
         super();
 
@@ -81,6 +84,7 @@ class Action
         this.type = type;
         this.producer = producer;
         this.parameter = parameter;
+        this.nanosToTrigger = nanosToTrigger;
         this.tags = tags;
     }
 
@@ -115,6 +119,24 @@ class Action
     }
 
     /**
+     * Returns the nano seconds, when the event should get triggered
+     * 
+     * @return the nano seconds, when the event should get triggered
+     */
+    public long getNanosToTrigger()
+    {
+        return nanosToTrigger;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public long getDelay(TimeUnit unit)
+    {
+        return unit.convert(nanosToTrigger - System.nanoTime(), TimeUnit.NANOSECONDS);
+    }
+
+    /**
      * Returns the tags
      * 
      * @return the tags
@@ -122,6 +144,14 @@ class Action
     public String[] getTags()
     {
         return tags;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int compareTo(Delayed o)
+    {
+        return (int) (getDelay(TimeUnit.NANOSECONDS) - o.getDelay(TimeUnit.NANOSECONDS));
     }
 
     /**
