@@ -1,4 +1,5 @@
-/* Copyright (c) 2011, 2012 events-on-fire Team
+/*
+ * Copyright (c) 2011, 2012 events-on-fire Team
  * 
  * This file is part of Events-On-Fire (http://code.google.com/p/events-on-fire), licensed under the terms of the MIT
  * License (MIT).
@@ -14,7 +15,8 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
  * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
- * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
+ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 package com.google.code.eventsonfire;
 
 import java.lang.ref.Reference;
@@ -206,7 +208,9 @@ public class Events implements Runnable
     public static <PRODUCER_TYPE> PRODUCER_TYPE fire(PRODUCER_TYPE producer, Object event, String... tags)
         throws IllegalArgumentException
     {
-        return fire(producer, event, 0, tags);
+        fire(producer, event, 0, tags);
+
+        return producer;
     }
 
     /**
@@ -227,12 +231,12 @@ public class Events implements Runnable
      * @param tags, optional, can be checked against tags in annotations
      * @throws IllegalArgumentException if the producer or the event is null
      */
-    public static <PRODUCER_TYPE> PRODUCER_TYPE fire(PRODUCER_TYPE producer, Object event, double delayInSeconds,
+    public static <PRODUCER_TYPE> EventReference fire(PRODUCER_TYPE producer, Object event, double delayInSeconds,
         String... tags) throws IllegalArgumentException
     {
         if (isDisabled())
         {
-            return producer;
+            return new DisabledReference();
         }
 
         if (producer == null)
@@ -245,10 +249,8 @@ public class Events implements Runnable
             throw new IllegalArgumentException("Event is null");
         }
 
-        INSTANCE.enqueue(new Action(Type.FIRE, producer, event,
+        return INSTANCE.enqueue(new Action(Type.FIRE, producer, event,
             (long) (System.nanoTime() + (1000000000 * delayInSeconds)), tags));
-
-        return producer;
     }
 
     /**
@@ -461,10 +463,13 @@ public class Events implements Runnable
      * Adds an action to the pending actions
      * 
      * @param action the action
+     * @return an reference to the event
      */
-    private void enqueue(Action action)
+    private EventReference enqueue(Action action)
     {
         actions.add(action);
+
+        return new ActionReference(action);
     }
 
     /**
@@ -482,19 +487,24 @@ public class Events implements Runnable
                 {
                     Action action = actions.take();
 
-                    switch (action.getType())
+                    if (!action.isCanceled())
                     {
-                        case FIRE:
-                            executeFireAction(action);
-                            break;
+                        switch (action.getType())
+                        {
+                            case FIRE:
+                                executeFireAction(action);
+                                break;
 
-                        case BIND:
-                            executeBindAction(action);
-                            break;
+                            case BIND:
+                                executeBindAction(action);
+                                break;
 
-                        case UNBIND:
-                            executeUnbindAction(action);
-                            break;
+                            case UNBIND:
+                                executeUnbindAction(action);
+                                break;
+                        }
+
+                        action.setExecuted(true);
                     }
 
                     cleanupReferences();

@@ -143,13 +143,44 @@ public class EventsUnitTest
     public void testFireToInstancesOfSpecialB() throws InterruptedException
     {
         EventsTestConsumer consumer = new EventsTestConsumer();
-        
+
         Events.bind(EventsUnitTest.class, consumer);
         Events.fire(EventsUnitTest.class, "Event #1");
-        
+
         consumer.waitForSize(1);
-        
+
         assert "Event #1".equals(consumer.popEvent().getEvent());
+
+        Events.unbind(EventsUnitTest.class, consumer);
+    }
+
+    @Test
+    public void testFireTimedAndCancel() throws InterruptedException
+    {
+        EventsTestConsumer consumer = new EventsTestConsumer();
+
+        Events.bind(EventsUnitTest.class, consumer);
+
+        long millis = System.currentTimeMillis();
+
+        EventReference reference1 = Events.fire(EventsUnitTest.class, "Event #1", 2);
+        EventReference reference2 = Events.fire(EventsUnitTest.class, "Event #2", 2);
+
+        assert !reference1.isFired();
+        assert !reference1.isCanceled();
+
+        assert !reference2.isFired();
+        assert !reference2.isCanceled();
+
+        reference1.cancel();
+
+        consumer.waitForSize(1);
+
+        long time = System.currentTimeMillis() - millis;
+        
+        assert time >= 2000 : "Too early: " + time;
+        assert "Event #2".equals(consumer.popEvent().getEvent());
+        assert consumer.isEmpty();
         
         Events.unbind(EventsUnitTest.class, consumer);
     }
@@ -175,8 +206,8 @@ public class EventsUnitTest
         assert "Event #1".equals(consumer.popEvent().getEvent());
     }
 
-//    public static void main(String[] args) throws InterruptedException
-//    {
-//        new EventsUnitTest().testFireToInstancesOfSpecialB();
-//    }
+    //    public static void main(String[] args) throws InterruptedException
+    //    {
+    //        new EventsUnitTest().testFireToInstancesOfSpecialB();
+    //    }
 }
