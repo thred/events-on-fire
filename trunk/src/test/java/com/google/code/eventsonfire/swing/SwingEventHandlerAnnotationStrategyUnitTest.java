@@ -32,6 +32,7 @@ public class SwingEventHandlerAnnotationStrategyUnitTest
         {
 
             @SwingEventHandler
+            @edu.umd.cs.findbugs.annotations.SuppressWarnings(value={"UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS"}, justification="Testcase")
             public void eventHandler(JButton producer, String event)
             {
                 // intentionally left blank
@@ -67,6 +68,7 @@ public class SwingEventHandlerAnnotationStrategyUnitTest
         {
 
             @SwingEventHandler(producer = JButton.class, event = String.class)
+            @edu.umd.cs.findbugs.annotations.SuppressWarnings(value={"UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS"}, justification="Testcase")
             public void eventHandler(Object producer, Object event)
             {
                 // intentionally left blank
@@ -102,6 +104,7 @@ public class SwingEventHandlerAnnotationStrategyUnitTest
         {
 
             @SwingEventHandler(producer = {JButton.class, JMenuItem.class}, event = {Integer.class, String.class})
+            @edu.umd.cs.findbugs.annotations.SuppressWarnings(value={"UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS"}, justification="Testcase")
             public void eventHandler(Object producer, Object event)
             {
                 // intentionally left blank
@@ -139,6 +142,7 @@ public class SwingEventHandlerAnnotationStrategyUnitTest
         {
 
             @SwingEventHandler(producer = JButton.class)
+            @edu.umd.cs.findbugs.annotations.SuppressWarnings(value={"UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS"}, justification="Testcase")
             public void eventHandler(JMenuItem producer, Object event)
             {
                 // intentionally left blank
@@ -156,6 +160,7 @@ public class SwingEventHandlerAnnotationStrategyUnitTest
         {
 
             @SwingEventHandler(event = String.class)
+            @edu.umd.cs.findbugs.annotations.SuppressWarnings(value={"UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS"}, justification="Testcase")
             public void eventHandler(Integer event)
             {
                 // intentionally left blank
@@ -173,6 +178,7 @@ public class SwingEventHandlerAnnotationStrategyUnitTest
         {
 
             @SwingEventHandler
+            @edu.umd.cs.findbugs.annotations.SuppressWarnings(value={"UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS"}, justification="Testcase")
             public String eventHandler(String event)
             {
                 return null;
@@ -190,6 +196,7 @@ public class SwingEventHandlerAnnotationStrategyUnitTest
         {
 
             @SwingEventHandler
+            @edu.umd.cs.findbugs.annotations.SuppressWarnings(value={"UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS"}, justification="Testcase")
             public void eventHandler(JButton producer, String event, String invalid)
             {
                 // intentionally left blank
