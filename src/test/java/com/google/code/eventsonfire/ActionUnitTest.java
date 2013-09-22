@@ -65,6 +65,7 @@ public class ActionUnitTest
     }
 
     @Test
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="EC_NULL_ARG", justification="Testcase")
     public void testEquals()
     {
         final Action action = new Action(Type.FIRE, "producer", "parameter", 42);

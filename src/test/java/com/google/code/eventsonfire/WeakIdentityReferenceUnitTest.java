@@ -37,6 +37,7 @@ public class WeakIdentityReferenceUnitTest
     }
 
     @Test
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value={"ES_COMPARING_STRINGS_WITH_EQ"}, justification="Testcase")
     public void testHashCode()
     {
         String referent = new String("Referent A");
@@ -57,6 +58,7 @@ public class WeakIdentityReferenceUnitTest
     }
 
     @Test
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value={"EC_NULL_ARG", "ES_COMPARING_STRINGS_WITH_EQ"}, justification="Testcase")
     public void testEquals()
     {
         String referentA = new String("Referent A");
