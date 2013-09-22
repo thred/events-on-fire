@@ -1,4 +1,5 @@
-/* Copyright (c) 2011, 2012 events-on-fire Team
+/*
+ * Copyright (c) 2011, 2012 events-on-fire Team
  * 
  * This file is part of Events-On-Fire (http://code.google.com/p/events-on-fire), licensed under the terms of the MIT
  * License (MIT).
@@ -14,7 +15,8 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
  * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
- * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
+ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 package com.google.code.eventsonfire;
 
 import java.util.concurrent.Delayed;
@@ -56,6 +58,9 @@ class Action implements Delayed
     private final Object parameter;
     private final long nanosToTrigger;
     private final String[] tags;
+
+    private boolean executed = false;
+    private boolean canceled = false;
 
     /**
      * Creates a new action.
@@ -144,6 +149,46 @@ class Action implements Delayed
     public String[] getTags()
     {
         return tags;
+    }
+
+    /**
+     * Returns true if this action was executed
+     * 
+     * @return true if this action was executed
+     */
+    public boolean isExecuted()
+    {
+        return executed;
+    }
+
+    /**
+     * Sets the executed flag
+     * 
+     * @param executed the executed flag
+     */
+    public void setExecuted(boolean executed)
+    {
+        this.executed = executed;
+    }
+
+    /**
+     * Returns true if this action was canceled
+     * 
+     * @return true if this action was canceled
+     */
+    public boolean isCanceled()
+    {
+        return canceled;
+    }
+
+    /**
+     * Sets the canceled flag
+     * 
+     * @param canceled the flag
+     */
+    public void setCanceled(boolean canceled)
+    {
+        this.canceled = canceled;
     }
 
     /**
